@@ -5,7 +5,6 @@ import { useUser } from "@/context/UserContext";
 import { founderSidebar } from "@/data/founderSidebarData";
 import { investorSidebar } from "@/data/investorSidebarData";
 import DashboardLayout from "@/layouts/Advisor/DashboardLayout";
-import { Head } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { FaCheckCircle, FaExclamationCircle, FaEdit } from "react-icons/fa";

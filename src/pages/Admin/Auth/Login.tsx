@@ -1,6 +1,5 @@
 // LoginPage.tsx
 import { useState, useEffect } from "react";
-import { Head, router } from "@inertiajs/react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import axiosClient from "@/axiosClient";
