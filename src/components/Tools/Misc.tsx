@@ -295,7 +295,7 @@ const roundedCondition = (direction:string) => {
 export const classMap = {
 
   // index styling
-  indexCard: "border-t-3 border-l-2 border-r-2 border-[var(--owner)] text-primary rounded-md min-h-70 max-w-80 p-4 bg-gradient-to-b from-[var(--tbg)] via-[var(--tbg)] to-[var(--background)]",
+  indexCard: (minH = 30, maxH = 50) => `border-t-3 border-l-2 border-r-2 border-[var(--owner)] text-primary rounded-md min-h-${minH} h-${maxH} w-90 p-4 bg-gradient-to-b hover:bg-gradient-to-t from-[var(--tbg)] via-[var(--tbg)] to-[var(--background)] hover:to-[var(--tbg)] transition-colors duration-300`,
 
   indexFaqCard: () => `flex flex-col border-t-3 border-l-2 border-r-2 border-[var(--owner)] text-primary rounded-md w-full p-4` ,
 

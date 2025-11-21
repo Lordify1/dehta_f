@@ -81,7 +81,7 @@ const Layout: React.FC<LayoutProps> = ({ children, showNavs = true }) => {
           <Link
             to={`${appUrl}`}
             replace={true}
-            className="text-2xl font-extrabold tracking-wider text-[var(--primary)] select-none cursor-default"
+            className="text-2xl font-extrabold tracking-wider text-[var(--primary)] select-none cursor-default w-20"
           >
             <img src={`${appUrl}/logo.svg`} alt="" />
           </Link>

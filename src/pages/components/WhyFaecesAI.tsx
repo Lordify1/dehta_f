@@ -49,11 +49,11 @@ const WhyFaecesAI: React.FC = () => {
         {indexFeatures.map((it:any, ind:any) => {
           return(
             <>
-            <section key={ind} className={`${classMap.indexCard}`}>
-              <div className="flex flex-row items-center justify-start">
+            <section key={ind} className={`${classMap.indexCard()}`}>
+              <div className="flex flex-row items-center justify-start mb-4">
                 {it.icon} <h4 className='text-3xl'>{it.label}</h4>
               </div>
-              <p>{it.text}</p>
+              <p className=''>{it.text}</p>
             </section>
             </>
           )

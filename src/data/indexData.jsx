@@ -1,4 +1,4 @@
-import { FaChartBar, FaComment, FaSearch } from 'react-icons/fa';
+import { FaChartBar, FaComment, FaSearch, FaCoins, FaCartPlus, FaMoneyBillWave, FaBolt, FaUserPlus, FaVoteYea, FaTrophy, FaSlidersH } from 'react-icons/fa';
 
 export const indexFeatures = [
     {
@@ -58,5 +58,59 @@ export const faq = [
         label: 'How do I start?',
         text: 'Just click Get Started → connect wallet → explore the dashboard.',
         key: 'seven'
+    },
+]
+
+
+export const LensInfo = [
+    {
+        icon: <FaCoins className='text-5xl text-[var(--owner)] p-2'/>,
+        text: 'Earn Lens'
+    },
+    {
+        icon: <FaMoneyBillWave className='text-5xl text-[var(--owner)] p-2'/>,
+        text: 'Spend Lens'
+    },
+    {
+        icon: <FaCartPlus className='text-5xl text-[var(--owner)] p-2'/>,
+        text: 'Buy Lens'
+    },
+]
+
+
+export const TrendBetData = [
+    {
+        type: "creator",
+        data: [
+            {
+                text: "Launch Trend",
+                icon: <FaBolt className='text-5xl text-[var(--owner)] p-2'/>
+            },
+            {
+                text: "Set Conditions",
+                icon: <FaSlidersH className='text-5xl text-[var(--owner)] p-2'/>
+            },
+            {
+                text: "Get Rewards",
+                icon: <FaCoins className='text-5xl text-[var(--owner)] p-2'/>
+            },
+        ]
+    },
+    {
+        type: "participant",
+        data: [
+            {
+                text: "Join Trend",
+                icon: <FaUserPlus className='text-5xl text-[var(--owner)] p-2'/>
+            },
+            {
+                text: "Cast Vote",
+                icon: <FaVoteYea className='text-5xl text-[var(--owner)] p-2'/>
+            },
+            {
+                text: "Win Payouts",
+                icon: <FaTrophy className='text-5xl text-[var(--owner)] p-2'/>
+            },
+        ]
     },
 ]

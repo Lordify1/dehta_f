@@ -14,7 +14,7 @@ const HeroSection: React.FC = () => {
     >
       <Fade cascade damping={0.3} duration={1000} triggerOnce={false}>
         <div className="max-w-5xl space-y-3 lg:space-y-8">
-          <h1 className="text-4xl lg:text-8xl">The Future of Crytpo Intelligence Starts Here</h1>
+          <h1 className="text-4xl lg:text-7xl">The Future of Crytpo Intelligence Starts Here</h1>
           <p>Real-time market insights, prediction tools, trending narratives, and AI-powered crypto analytics; all in one Ecosystem</p>
           <button className={`${classMap.button()}`}>
             Get Started

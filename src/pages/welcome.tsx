@@ -17,6 +17,9 @@ import { Helmet } from 'react-helmet-async';
 import { appName } from '@/app';
 import SaleTimer from './components/PrivateSalePage/SaleTimer';
 import FAQ from './components/Faq';
+import LensSection from './components/LensSection';
+import GlassSection from './components/GlassSection';
+import TrendBetSection from './components/TrendBetSection';
 
 
 
@@ -33,6 +36,9 @@ const Home: React.FC = () => {
         </Helmet>
         <HeroSection />
         <WhyFaecesAI/>
+        <LensSection/>
+        <GlassSection/>
+        <TrendBetSection/>
         <FAQ/>
         {/* <AboutFaeces /> */}
         {/* <DemoSection/> */}
