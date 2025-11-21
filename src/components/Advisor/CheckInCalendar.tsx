@@ -1,0 +1,148 @@
+import { useState, useEffect } from "react";
+import { classMap, emptyData } from "../Tools/Misc";
+import { FaCalendar, FaCheckCircle, FaHistory } from "react-icons/fa";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { appUrl } from "@/app";
+
+type Props = {
+  lens: (e: any) => void;
+  streak: (e: any) => void;
+  transactions: (e: any) => void;
+  checkins: any;
+  history: any
+};
+
+const CheckInCalendar = ({ lens, streak, transactions, checkins, history }: Props) => {
+  // Create a 30-day calendar
+  const [calendar, setCalendar] = useState(Array(30).fill(false));
+  const [claimedToday, setClaimedToday] = useState(false);
+  const [todayIndex, setTodayIndex] = useState(1);
+  const [view, setView] = useState('calendar')
+
+
+  useEffect(() => {
+    if (checkins) {
+      const { streak, last_checkin } = checkins;
+
+      // Fill the calendar up to current streak as claimed
+      const filled = Array(30)
+        .fill(false)
+        .map((_, i) => i < streak);
+
+      setCalendar(filled);
+
+      // Set today's box (next after current streak)
+      const nextDay = streak >= 30 ? 30 : streak + 1;
+      setTodayIndex(nextDay);
+
+      // Determine if the user already checked in today
+      const lastDate = new Date(last_checkin);
+      const today = new Date();
+      const sameDay =
+        lastDate.getFullYear() === today.getFullYear() &&
+        lastDate.getMonth() === today.getMonth() &&
+        lastDate.getDate() === today.getDate();
+
+      setClaimedToday(sameDay);
+    }
+  }, [checkins]);
+
+  const handleCheckin = async (index: number) => {
+    if (index !== todayIndex) return;
+    if (claimedToday) return;
+
+    try {
+      const res = await axios.post(`${appUrl}/checkin/create`);
+      toast.success("✅ Check-in success! +1,000 Lens added.");
+
+      setClaimedToday(true);
+      const updated = [...calendar];
+      updated[index - 1] = true; // Mark today's as claimed
+      setCalendar(updated);
+
+      lens((prev: any) => prev + 1000);
+      streak((prev: any) => prev + 1);
+      transactions((prev: any) => [
+        {
+          id: Date.now(),
+          desc: "Daily Check-in Reward",
+          amount: "+1,000",
+          date: "Today",
+        },
+        ...prev,
+      ]);
+
+    } catch (error: any) {
+      console.error(error);
+      setClaimedToday(false);
+      toast.error("Failed to check in. Try again later.");
+    }
+  };
+
+  return (
+    <section className={`${classMap.userCard(1)} h-[70vh]`}>
+      <div className="flex flex-row items-center justify-between w-full mb-3 transition-all">
+        {view === 'calendar' ?  
+        <h3 className="font-bold flex text-start items-center gap-2">
+          <FaCalendar onClick={() => setView('history')} className="inline text-[var(--owner)]"/> 30-Day Check-in Calendar
+        </h3>
+        : 
+          <h3 className="font-bold flex text-start items-center gap-2">
+          <FaHistory onClick={() => setView('calendar')} className="inline text-[var(--owner)]"/> Check-in History
+        </h3>
+      }
+      </div>
+      {view === 'calendar' ? (<div className="grid grid-cols-5 bg-background rounded-sm p-2">
+        {calendar.map((checked, index) => {
+          const isToday = index + 1 === todayIndex;
+          const isClaimable = isToday && !claimedToday;
+          const claimed = checked;
+
+          return (
+            <div
+              key={index}
+              onClick={() => handleCheckin(index + 1)}
+              className={`w-full flex items-center justify-center border-1 border-muted rounded-sm transition-all p-3 ${
+                claimed
+                  ? "bg-green-600 text-primary border-green-500 cursor-not-allowed"
+                  : isClaimable
+                  ? "bg-yellow-600 text-primary border-yellow-400 animate-pulse cursor-pointer"
+                  : "bg-muted opacity-80 cursor-not-allowed"
+              } hover:scale-110`}
+              title={`Day ${index + 1}`}
+            >
+              {claimed ? <FaCheckCircle className="text-primary" /> : (
+                <div>
+                <p>{index + 1}</p>
+                <small className="text-sm opacity-50 text-[var(--owner)]">+1000</small>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>) : (
+        <div className="space-y-3 w-full overflow-y-auto min-h-80">
+          {history ? (history.map((tx:any, index:any) => (
+            <div
+              key={index}
+              className={`${classMap.section} text-start`}
+            >
+              <span>{tx.streak} Streak Count</span>
+              <span className={"text-[var(--owner)]"}>
+               {tx.lens_reward}
+              </span>
+            </div>
+          ))) : (emptyData('No Lens Activity Yet'))}
+        </div>
+      )}
+      <p className="mt-3 text-sm text-gray-400">
+        {claimedToday
+          ? "You've already checked in today! 🎉"
+          : "Click today’s box to claim your 1,000 Lens."}
+      </p>
+    </section>
+  );
+};
+
+export default CheckInCalendar;
