@@ -21,10 +21,10 @@ import {WebProviders} from './lib/WebProviders.jsx';
 
 export const appName = 'Dehta';
 export const advisorName = "Dehta";
-export const appUrl = import.meta.env.VITE_APP_URL || "http://localhost:5173";
-// export const appUrl =  "https://dehta.tech"
-export const advisorUrl = import.meta.env.VITE_APP_URL || 'http://localhost:5173';
-// export const advisorUrl = "https://dehta.tech";
+// export const appUrl = import.meta.env.VITE_APP_URL || "http://localhost:5173";
+export const appUrl =  "https://dehta.tech"
+// export const advisorUrl = import.meta.env.VITE_APP_URL || 'http://localhost:5173';
+export const advisorUrl = "https://dehta.tech";
 export const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
 export const date = (): number => { return new Date().getFullYear() }
 export const wc_projectId = import.meta.env.VITE_PROJECT_ID_WC;

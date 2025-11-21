@@ -16,7 +16,7 @@ const TrendBetSection: React.FC = () => {
       <div className="mx-auto max-w-7xl items-center">
         <h1 className="text-3xl lg:text-6xl mb-4">TrendBet</h1>
         <div className='grid grid-cols-1 gap-3 pt-5 items-center justify-center'>
-            <h1 className='text-3xl lg:text-4xl'>As a Creator</h1>
+            {/* <h1 className='text-3xl lg:text-4xl'>As a Creator</h1> */}
             <div className="grid grid-cols-1 lg:grid-cols-3">
                 <section className='flex flex-col items-center justify-center'>
                     {TrendBetData.map((it:any) => {
