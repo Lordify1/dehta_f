@@ -11,15 +11,15 @@ import {WebProviders} from '@/lib/WebProviders.jsx';
 export const appName = 'Dehta';
 export const advisorName = "Dehta";
 // live 
-// export const appUrl =  "https://dehta.tech"
-// export const advisorUrl = "https://dehta.tech";
-// export const apiUrl = "https://api.dehta.tech";
+export const appUrl =  "https://dehta.tech"
+export const advisorUrl = "https://dehta.tech";
+export const apiUrl = "https://api.dehta.tech";
 
 
 // dev
-export const appUrl = "http://localhost:3000";
-export const advisorUrl = 'http://localhost:3000';
-export const apiUrl = "http://localhost:8000";
+// export const appUrl = "http://localhost:3000";
+// export const advisorUrl = 'http://localhost:3000';
+// export const apiUrl = "http://localhost:8000";
 
 export const date = (): number => { return new Date().getFullYear() }
 // export const wc_projectId = '1af94f6197a84bb9b0bbf205a8e25fb0';
