@@ -9,8 +9,7 @@ const TrendingTokens = () => {
   const fetchTrending = async () => {
     try {
       const res = await fetch(
-        "https://api.coinranking./",
-        // "https://api.coinranking.com/v2/coins?limit=5&orderBy=change&orderDirection=desc",
+        "https://api.coinranking.com/v2/coins?limit=5&orderBy=change&orderDirection=desc",
         {
           headers: {
             "x-access-token": "coinrankinga66957141a09518a2c111bd27765b8a77ea9f88ca5ed2bab"
