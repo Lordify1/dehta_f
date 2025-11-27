@@ -1,5 +1,3 @@
-// AdminLayout.tsx
-import { Head, usePage } from "@inertiajs/react";
 import { sidebarData } from "@/data/sidebarData";
 import { PropsWithChildren, useState } from "react";
 import { appUrl } from "@/app";
@@ -8,6 +6,7 @@ import { FaBars, FaHamburger, FaIdeal, FaSignOutAlt } from "react-icons/fa";
 import { useUser } from "@/context/UserContext";
 import { classMap } from "@/components/Tools/Misc";
 import axios from "axios";
+import { apiUrl } from "../App";
 
 
 
@@ -21,8 +20,8 @@ export const AdminLayout = ({ children }: PropsWithChildren) => {
 
     const Logout = async () => {
       try{
-        const res = await axios.post(`${appUrl}/logout`);
-        console.log(res)
+        const res = await axios.post(`${apiUrl}/api/logout`);
+        localStorage.removeItem('user')
         window.location.href = appUrl
       }catch(err){
         console.log(err)

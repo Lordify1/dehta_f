@@ -1,6 +1,7 @@
 import React, { useEffect } from "react"
 import { buttonClass, classMap, inputClass, stages } from "./Misc"
 import { IoReload, IoReloadCircle } from "react-icons/io5"
+import { FaFilter, FaSlidersH } from "react-icons/fa"
 
 type Props = {
     showFilters: boolean,
@@ -31,67 +32,27 @@ const Filters = ({showFilters, data, filteredData}:Props) => {
       filteredData(filtered)
     }
     return(
-        <div
-          className={`${
-            showFilters ? 'block' : 'hidden'
-          } lg:block col-span-3 bg-accent border border-primary p-4 rounded-md`}
-        >
-          <div className="flex flex-row items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold">Filter Projects</h2>
-            <button onClick={() => {
-                setSearch({text_search: '', stage: '', industry: ''}),
-                filterData(search)
-            }}>
-                <IoReload className="text-accent-foreground text-lg hover:text-red-500"/>
-            </button>
-          </div>
-          <div className="mb-4">
-            <label
-            className={`${classMap.label}`}
-            >Search</label>
-            <input type="search" className={inputClass()} name="" id="" 
-            value={search.text_search}
-            onChange={e => {
-                setSearch({ ...search, text_search: e.target.value })
-            }}
-            />
-          </div>
-          <div className="mb-4">
-            <label
-            className={`${classMap.label}`}
-            >Stage</label>
-            <select 
-            className={inputClass()}
-            value={search.stage}
-            onChange={e => setSearch({...search, stage: e.target.value})}
-            >
-              <option value="">Any</option>
-              {stages.map((item, index) => {
-                return(
-                  <option value={item.key}>{item.label}</option>
-                )
-              })}
-            </select>
-          </div>
-
-          <div className="mb-4">
-            <label
-            className={`${classMap.label}`}
-            >Industry</label>
-            <input 
-            className={inputClass()}
-            value={search.industry}
-            onChange={e => setSearch({...search, industry: e.target.value})}
-            type="text"
-            />
-          </div>
-
-          <div className="me-2">
-            <button 
-          onClick={(e:any) => filterData(search)}
-          className={`${classMap.button('','','','','down')} w-full`}>Apply Filters</button>
-          </div>
-        </div>
+          <>
+            <div className="mb-4 w-full">
+              <div className="relative">
+                <input
+                  type="search"
+                  className={`${classMap.dehtaBorder()} rounded-2xl pr-12 p-3 text-lg lg:text-2xl w-full`}
+                  value={search.text_search}
+                  onChange={e => setSearch({ ...search, text_search: e.target.value })}
+                  placeholder="Search..."
+                />
+                <button
+                  type="button"
+                  onClick={() => filterData(search)}
+                  className={`flex absolute right-1 top-1/2 -translate-y-1/2 text-primary text-lg lg:text-2xl`}
+                  aria-label="Apply filters"
+                ><FaSlidersH className="mt-1 me-1 text-[var(--owner)]"/>
+                  Filters
+                </button>
+              </div>
+            </div>
+          </>
     )
 }
 

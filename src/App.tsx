@@ -1,46 +1,34 @@
-import { StrictMode } from 'react'
-import './app.css';
-import React, {lazy, Suspense, useEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { createRoot } from 'react-dom/client';
-import { initializeTheme } from './hooks/use-appearance';
-import LoaderWrapper from './components/LoaderWrapper';
-import 'react-toastify/dist/ReactToastify.css';
-import { ToastContainer } from 'react-toastify';
-import { OffCanvasProvider } from './context/OffCanvasContext';
-import { AuthProvider } from './context/AuthContext';
-import { UserProvider } from './context/UserContext';
-import { UIProvider } from './context/UIContext';
-import { FetchProvider } from './context/FetchContext';
-import { MiscProvider } from './context/MiscContext';
-import FaecesRouter from './routes/router';
-import axios from 'axios';
-import {WebProviders} from './lib/WebProviders.jsx';
-// Import your pages explicitly
+import { OffCanvasProvider } from '@/context/OffCanvasContext';
+import { UserProvider } from '@/context/UserContext';
+import { UIProvider } from '@/context/UIContext';
+import { FetchProvider } from '@/context/FetchContext';
+import { MiscProvider } from '@/context/MiscContext';
+import FaecesRouter from '@/routes/router';
+import {WebProviders} from '@/lib/WebProviders.jsx';
 
+// Import your pages explicitly
 
 export const appName = 'Dehta';
 export const advisorName = "Dehta";
-// export const appUrl = import.meta.env.VITE_APP_URL || "http://localhost:5173";
-export const appUrl =  "https://dehta.tech"
-// export const advisorUrl = import.meta.env.VITE_APP_URL || 'http://localhost:5173';
-export const advisorUrl = "https://dehta.tech";
-export const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
+// live 
+// export const appUrl =  "https://dehta.tech"
+// export const advisorUrl = "https://dehta.tech";
+// export const apiUrl = "https://api.dehta.tech";
+
+
+// dev
+export const appUrl = "http://localhost:3000";
+export const advisorUrl = 'http://localhost:3000';
+export const apiUrl = "http://localhost:8000";
+
 export const date = (): number => { return new Date().getFullYear() }
-export const wc_projectId = import.meta.env.VITE_PROJECT_ID_WC;
-export const saleWallet = import.meta.env.VITE_SALE_WALLET;
+// export const wc_projectId = '1af94f6197a84bb9b0bbf205a8e25fb0';
+export const saleWallet = '0x1cf1b22dafe0d2c3e10979054b7154a6cd81ba3b';
+export const coinrankingApiKey = 'coinrankinga66957141a09518a2c111bd27765b8a77ea9f88ca5ed2bab'
 
 const App = () => {
 
-  const [user, setUser] = useState([]);
-
-  setInterval(() => {
-    localStorage.removeItem('fa_user')
-  }, 100000);
-
-
   return (
-    <AuthProvider auth={user}>
       <MiscProvider>
       <WebProviders>
       <UserProvider>
@@ -54,16 +42,7 @@ const App = () => {
       </UserProvider>
       </WebProviders>
       </MiscProvider>
-    </AuthProvider>
   );
 };
 
-// Initialize the app
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-)
-
-// This will set light / dark mode on load...
-initializeTheme();
+export default App

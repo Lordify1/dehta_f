@@ -15,6 +15,7 @@ import GlassForm from "@/components/Admin/GlassForm";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import ProjectEditForm from "@/components/Admin/ProjectEditForm";
+import { apiUrl } from "../../../App";
 
 
 export default function ProjectIndex() {
@@ -33,7 +34,7 @@ export default function ProjectIndex() {
 
     const updateStatus = async (id, stat) => {
       try{
-        const res = await axios.post(`${advisorUrl}/project/set_status/${id}/${stat}`);
+        const res = await axios.post(`${apiUrl}/api/project/set_status/${id}/${stat}`);
         setIsLoading(true)
       }catch(err){
         console.log(err)
@@ -89,7 +90,7 @@ export default function ProjectIndex() {
             setShowForm(true);
           }} />
           <SendRequest
-          url={`/admin/glass/delete/${record.id}`}
+          url={`/api/admin/glass/delete/${record.id}`}
           method="delete"
           deleteBtn={true}
           data={{ id: record.id }}
@@ -104,9 +105,8 @@ export default function ProjectIndex() {
   ];
 
   useEffect(()=>{
-    axios.post(appUrl + '/admin/projects/get')
+    axios.post(apiUrl + '/api/admin/projects/get')
     .then((res :any) => {
-      console.log(res.data),
       setDataSource(res.data),
       setIsLoading(false)
     })

@@ -1,10 +1,6 @@
 import { useAccount, useSendTransaction } from 'wagmi';
 import { useState } from 'react';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { parseEther } from 'ethers';
 import { toast } from 'react-toastify';
-import { getChainId } from '@wagmi/core';
-import { config } from '../../../wagmi'
 
 
 const WalletConnect = ({ hero = false, presale = false }) => {
@@ -14,7 +10,7 @@ const WalletConnect = ({ hero = false, presale = false }) => {
     const [loading, setIsLoading] = useState(false);
     const [transactionHash, setTransactionHash] = useState('');
     
-    const chainid = getChainId(config);
+    const chainid = ''
 
     const recipientAddress = '0xDefe84Db01b8b1A2c1e065325fFAc692581B2Db6';
 
@@ -60,7 +56,7 @@ const WalletConnect = ({ hero = false, presale = false }) => {
     
             const transaction = await sendTransactionAsync({
                 to: recipientAddress,
-                value: parseEther(ethAmount),
+                value: ethAmount,
                 // gasLimit: 21000,
             });
 
@@ -151,22 +147,13 @@ const WalletConnect = ({ hero = false, presale = false }) => {
                 )}
                 {hero && (
                     <>
-                        <ConnectButton
-                            showBalance={false}
-                            accountStatus={false || undefined}
-                            chainStatus="name"
-                        />
                         <a href="#privateSale" className="btn fbtn btn-sm">
                             🧻 Buy $FAECES
                         </a>
                     </>
                 )}
                 {presale && !isConnected && (
-                    <ConnectButton
-                        showBalance={false}
-                        accountStatus={false || undefined}
-                        chainStatus="name"
-                    />
+                    <></>
                 )}
             </section>
 

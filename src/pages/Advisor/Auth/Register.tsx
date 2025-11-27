@@ -6,15 +6,16 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useUser } from "@/context/UserContext";
+import Layout from "../../components/Layout";
 
 
 
 const inputFields = [
-  { name: "name", type: "text", placeholder: "Full Name", roles: ["founder", "investor"] },
-  { name: "username", type: "text", placeholder: "Username", roles: ["founder", "investor"] },
-  { name: "email", type: "email", placeholder: "Email", roles: ["founder", "investor"] },
-  { name: "password", type: "password", placeholder: "Password", roles: ["founder", "investor"] },
-  // { name: "project", type: "text", placeholder: "Project / Alias", roles: ["investor"] },
+  { label: "Name", name: "name", type: "text", placeholder: "Full Name", roles: ["founder", "investor"] },
+  { label: "Username", name: "username", type: "text", placeholder: "Username", roles: ["founder", "investor"] },
+  { label: "Email Address", name: "email", type: "email", placeholder: "Email", roles: ["founder", "investor"] },
+  { label: "Password", name: "password", type: "password", placeholder: "Password", roles: ["founder", "investor"] },
+  { label: "Referral Id", name: "referral", type: "text", placeholder: "Referral ID", roles: ["founder", "investor"] }
 ];
 
 export default function Register() {
@@ -27,9 +28,8 @@ export default function Register() {
     role: "",
     platform: "advisor",
     project: "",
+    referral: "",
   });
-
-  const auth = useUser()
 
   // guestCheck(auth)
 
@@ -50,18 +50,19 @@ export default function Register() {
       <Helmet>
         <title>Register - {appName}</title>
       </Helmet>
-      <div className={`${centerFocus()} bg-background herobg`}>
+      <Layout showNavs={false}>
+      <div className={`${centerFocus()} bg-background herobg mt-20 lg:mt-0`}>
         <h1 className="text-2xl md:text-3xl text-center font-bold mb-6">Join {!role ? ' as ...' : (role === 'investor' ? ' as an Investor' : ' as a Founder')}</h1>
         <div className="flex space-x-4 mb-6">
           <button
             onClick={() => handleRoleSelect("founder")}
-            className={`${classMap.button(`${role === 'founder' ? 'bg-[var(--color-muted)]' : ''}`, '', '', '', 'left')}`}
+            className={`${classMap.button(`${role === 'founder' ? 'bg-(--color-muted)' : ''}`, '', '', '', 'left')}`}
           >
             I'm a Founder
           </button>
           <button
             onClick={() => handleRoleSelect("investor")}
-            className={`${classMap.button(`${role === 'investor' ? 'bg-[var(--color-muted)]' : ''}`, '', '', '','right')}`}
+            className={`${classMap.button(`${role === 'investor' ? 'bg-(--color-muted)' : ''}`, '', '', '','right')}`}
           >
             I'm an Investor
           </button>
@@ -74,7 +75,9 @@ export default function Register() {
               .map((field) => {
                 if (field.name === "password") {
                   return (
-                    <div key={field.name} className="relative">
+                    <div key={field.name}>
+                      <label htmlFor="password" className={`${classMap.label()}`}>Password</label>
+                      <div className="relative">
                       <input
                         type={showPassword ? "text" : "password"}
                         name="password"
@@ -93,10 +96,13 @@ export default function Register() {
                       >
                         {showPassword ? <FaEyeSlash/> : <FaEye className="text-[var(--owner)]"/>}
                       </button>
+                      </div>
                     </div>
                   );
                 }
                 return (
+                  <div className="flex flex-col">
+                  <label htmlFor={field.name} className={`${classMap.label()}`}>{field.label}</label>
                   <input
                     key={field.name}
                     type={field.type}
@@ -107,6 +113,7 @@ export default function Register() {
                     className={`${classMap.input()}`}
                     required
                   />
+                  </div>
                 );
               })}
 
@@ -124,11 +131,12 @@ export default function Register() {
 
         <p className="text-primary mt-6">
           Already have an account?{" "}
-          <Link to={`${advisorUrl}/login`} className="underline text-[var(--owner)]">
+          <Link to={`/login`} className="underline text-[var(--owner)]">
             Login
           </Link>
         </p>
       </div>
+      </Layout>
     </>
   );
 }

@@ -7,6 +7,7 @@ import SendRequest from "@/components/Tools/SendRequest";
 import axios from "axios";
 import { advisorUrl, appUrl } from "@/app";
 import { toast } from "react-toastify";
+import { apiUrl } from "../../../App";
 
 export function ProjectFormDeck({ isUpdate = false }) {
   const [file, setFile] = useState<File | null>(null);
@@ -791,8 +792,8 @@ export const ProjectFormManual = ({ isUpdate = false, project, adminUrl = false}
                           <ImageUploadDiv
                           value={formData.founder[item.key] || ""}
                           onChange={(e) => handleChange('founder', {...formData.founder, [item.key]: e})}
-                          uploadUrl={`${appUrl}/upload-file`}
-                          deleteUrl={`${appUrl}/delete-file`}
+                          uploadUrl={`${apiUrl}/api/upload-file`}
+                          deleteUrl={`${apiUrl}/api/delete-file`}
                           path="/files/projects/founder/"
                           />
                         )}

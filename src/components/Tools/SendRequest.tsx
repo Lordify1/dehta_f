@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Button, Modal } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import { appUrl } from "@/app";
 import { classMap } from "./Misc";
-import { FaCircle, FaCircleNotch, FaTruckLoading } from "react-icons/fa";
+import { FaCircle, FaCircleNotch, FaTrash, FaTruckLoading } from "react-icons/fa";
+import { apiUrl } from "../../App";
+import axiosClient from "../../axiosClient";
+import { useUser } from '@/context/UserContext';
 
 export default function SendRequest({
   text = "Submit",
@@ -32,6 +35,7 @@ export default function SendRequest({
   const [isProcessing, setIsProcessing] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [eventRef, setEventRef] = useState<null | React.MouseEvent<HTMLButtonElement>>(null);
+  const { setUser } = useUser()
 
   // const mainUrl = appUrl;
 
@@ -65,25 +69,34 @@ export default function SendRequest({
       headers["Content-Type"] = "multipart/form-data";
     }
 
-    const mainUrl = appUrl + url;
+    const mainUrl = apiUrl + url;
 
     if (requestData instanceof FormData) {
       for (let pair of requestData.entries()) {
         console.log(pair[0]+ ':', pair[1]);
       }
     } else {
-      console.log(requestData);
+      // console.log(requestData);
     }
 
-    console.log(requestData)
 
     try {
+      await axios.get(`${apiUrl}/sanctum/csrf-cookie`, {
+        withCredentials: true
+      })
+
       const response = await axios({
         method,
         url: mainUrl,
         data: requestData,
         headers,
       });
+
+      // console.log(response)
+
+      const user = await axios.get(`${apiUrl}/api/user`, {
+        withCredentials: true
+      })
 
       toast.success(response?.data?.message || "Success!");
       onResponse?.(response);
@@ -92,7 +105,6 @@ export default function SendRequest({
         isSuccess(response.status === 200 || response.status === 204);
       }
 
-      console.log(response)
 
       if (response?.data?.redirectUrl && redirect){
         if(response?.data?.intended === true){
@@ -153,10 +165,9 @@ export default function SendRequest({
           {isProcessing ? <div className="flex items-center w-full justify-center"><FaCircleNotch className="text-1xl h-6 text-center opacity-60 text-[var(--primary)] animate-spin transitions duration-500 "/></div> : text}
         </button>
       ) : (
-        <Button 
+        <FaTrash 
         onClick={handleClick}
-        icon={<DeleteOutlined/>}
-        />
+        className="text-red-500"/>
       )}
 
       <Modal

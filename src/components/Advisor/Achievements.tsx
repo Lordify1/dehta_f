@@ -51,7 +51,8 @@ const AchievementPanel = ({userAchievements, achievementTypes} : {userAchievemen
   // ];
 
   return (
-    <section className={`${classMap.userCard(1)} shadow-lg h-[70vh] overflow-y-scroll transition-all`}>
+    <section className={`${classMap.dehtaCard()} border-(--owner) shadow-lg max-h-[60vh] transition-all`}>
+    <div className="overflow-y-scroll">
       <h3 className="text-lg font-semibold text-start text-primary mb-4 flex items-center gap-2">
         <FaAward/> Achievements
       </h3>
@@ -107,10 +108,7 @@ const AchievementPanel = ({userAchievements, achievementTypes} : {userAchievemen
           emptyData('No Achievements Yet')
         ))}
       </div>
-{/* 
-      <div className="mt-4 w-full text-center text-xs text-primary">
-        <p>Unlock achievements to earn more Lens 💎</p>
-      </div> */}
+    </div>
     </section>
   );
 };

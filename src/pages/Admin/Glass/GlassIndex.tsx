@@ -13,10 +13,13 @@ import { IoTrashOutline } from "react-icons/io5";
 import NewsletterTrash from "@/components/Admin/NewsletterTrash";
 import GlassForm from "@/components/Admin/GlassForm";
 import { Helmet } from "react-helmet-async";
+import { apiUrl } from "../../../App";
+import { useOffCanvas } from "../../../context/OffCanvasContext";
 
 
 export default function GlassIndex() {
   const [showForm, setShowForm] = useState(false);
+  const {setShowOffCanvas, setOffId, SetOfftitle, Offtitle, OffId} = useOffCanvas()
   const [showTrash, setShowTrash] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
   const [dataSource, setDataSource ] = useState([]);
@@ -37,19 +40,11 @@ export default function GlassIndex() {
       dataIndex: "description",
     },
     {
-      title: "Lens Cost",
-      dataIndex: "lens_cost",
-    },
-    {
-      title: "Rarity",
-      dataIndex: "rarity",
-    },
-    {
-      title: "Icon",
+      title: "Image",
       dataIndex: "icon",
       render: (_:any, record:any) => {
         return(
-            record?.icon
+            <img src={record?.icon} className="w-15" alt="" />
         )
       }
     },
@@ -61,9 +56,12 @@ export default function GlassIndex() {
           <Button icon={<EditOutlined />} onClick={() => {
             setSelectedData(record);
             setShowForm(true);
+            setShowOffCanvas(true);
+            setOffId('CreateGlass');
+            SetOfftitle('Edit Glass');
           }} />
           <SendRequest
-          url={`/admin/glass/delete/${record.id}`}
+          url={`/api/admin/glass/delete/${record.id}`}
           method="delete"
           deleteBtn={true}
           data={{ id: record.id }}
@@ -78,9 +76,8 @@ export default function GlassIndex() {
   ];
 
   useEffect(()=>{
-    axios.post(appUrl + '/admin/glass/get')
+    axios.post(apiUrl + '/api/admin/glass/get')
     .then((res :any) => {
-      console.log(res.data),
       setDataSource(res.data),
       setIsLoading(false)
     })
@@ -101,6 +98,9 @@ export default function GlassIndex() {
             onClick={() => {
               setSelectedData(null);
               setShowForm(true);
+              setShowOffCanvas(true);
+              setOffId('CreateGlass');
+              SetOfftitle('Create Glass');
             }}
           >
             + Add Glass
@@ -118,13 +118,13 @@ export default function GlassIndex() {
         <Offcanvas
           isOpen={showForm}
           onClose={() => setShowForm(false)}
-          title={selectedData ? "Edit Glass" : "Add Glass"}
+          title={Offtitle}
         >
-          <GlassForm
+          {OffId === 'CreateGlass' && (<GlassForm
           onClose={() => setShowForm(false)}
           onResponse={() => setIsLoading(true)}
           EditData={selectedData}
-          />
+          />)}
         </Offcanvas>
       </div>
     </AdminLayout>

@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import SendRequest from "@/components/Tools/SendRequest";
-import { advisorName, advisorUrl, appName } from "@/app";
-import { classMap, guestCheck } from "@/components/Tools/Misc";
+import { appName } from "@/app";
+import { classMap} from "@/components/Tools/Misc";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { useUser } from "@/context/UserContext";
+import Layout from "../../components/Layout";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+
 
 
 
@@ -14,9 +16,7 @@ export default function Login() {
     password: "",
   });
 
-  const auth = useUser();
-
-  // guestCheck(auth)
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -28,27 +28,44 @@ export default function Login() {
         <title>Login - {appName}</title>
         <meta name="description" content="Login to your dashboard" />
       </Helmet>
+      <Layout showNavs={false}>
       <div className="min-h-screen bg-background text-primary flex flex-col items-center justify-center px-4 py-8 herobg">
-        <h1 className="text-3xl font-bold mb-6">Welcome back 👋</h1>
+        <h1 className="text-3xl lg:text-4xl font-bold mb-2">Welcome back</h1>
         <p className="text-primary mb-6">Login to your dashboard</p>
 
         <form className="w-full max-w-md space-y-4">
-          <input
-            type="email"
-            name="email"
-            value={form.email}
-            onChange={handleChange}
-            placeholder="Email"
-            className={`${classMap.input}`}
-          />
-          <input
-            type="password"
-            name="password"
-            value={form.password}
-            onChange={handleChange}
-            placeholder="Password"
-            className={`${classMap.input}`}
-          />
+          <div className="flex flex-col">
+            <label htmlFor="email" className={`${classMap.label()}`}>Email</label>
+            <input
+              type="email"
+              name="email"
+              value={form.email}
+              onChange={handleChange}
+              placeholder="Email"
+              className={`${classMap.input()}`}
+            />
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="password" className={`${classMap.label()}`}>Password</label>
+            <div className="relative">
+              <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              value={form.password}
+              onChange={handleChange}
+              placeholder="Password"
+              className={`${classMap.input()}`}
+            />
+            <button
+              type="button"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[var(--owner)]"
+              onClick={() => setShowPassword((v) => !v)}
+              tabIndex={-1}
+            >
+              {showPassword ? <FaEyeSlash/> : <FaEye className="text-(--owner)"/>}
+            </button>
+            </div>
+          </div>
 
           <SendRequest
             url="/login"
@@ -62,14 +79,15 @@ export default function Login() {
         </form>
 
         <p className="text-primary mt-6">
-          <Link to={`${advisorUrl}/register`} className="underline text-[var(--ceo)]">
+          <Link to={`/register`} className="underline text-[var(--owner)]">
             Register
-          </Link> {" "} | {" "}
-          <Link to={`${advisorUrl}/reset-password`} className="underline text-[var(--ceo)]">
+          </Link> {" "} - {" "}
+          <Link to={`/reset-password`} className="underline text-[var(--owner)]">
               Forgot Password
             </Link>
         </p>
       </div>
+      </Layout>
     </>
   );
 }

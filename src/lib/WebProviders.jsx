@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createAppKit } from '@reown/appkit/react'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 
-const projectId = import.meta.env.VITE_PROJECT_ID_WC
+const projectId = '1af94f6197a84bb9b0bbf205a8e25fb0'
 
 const networks = [mainnet, polygon]
 const wagmiAdapter = new WagmiAdapter({ networks, projectId })

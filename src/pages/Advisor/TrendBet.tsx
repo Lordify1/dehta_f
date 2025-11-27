@@ -12,6 +12,10 @@ import axios from "axios";
 import { useEffect, useState } from "react"
 import { Helmet } from "react-helmet-async"
 import { FaChartLine, FaPen, FaSearch } from "react-icons/fa";
+import { apiUrl } from "../../App";
+import TrendCarousel, { DehtaConstruct, emptyResult } from "../../components/Tools/Misc";
+import Carousel from "../../components/ui/Carousel";
+import useEmblaCarousel from "embla-carousel-react";
 
 
 const TrendBet = () => {
@@ -19,11 +23,12 @@ const TrendBet = () => {
     const {user, role, sidebarData} = useUser();
     const {selectedTrend} = useMisc();
     const [trends, setTrends] = useState([]);
-    const {setShowOffCanvas, OffId, Offtitle} = useOffCanvas();
+    const [userTrends, setUserTrends] = useState([]);
+    const {setShowOffCanvas, OffId, Offtitle, setOffId, SetOfftitle} = useOffCanvas();
 
     const getTrendBets = async () => {
         try{
-            const res = await axios.post(`${appUrl}/trendbet/get`);
+            const res = await axios.post(`${apiUrl}/api/trendbet/get`);
             setTrends(res.data)
             setIsLoading(false)
         }catch(err){
@@ -34,6 +39,7 @@ const TrendBet = () => {
 
     useEffect(() => {
         getTrendBets();
+        setUserTrends(user?.trends)
     },[selectedTrend])
 
     return(
@@ -47,7 +53,7 @@ const TrendBet = () => {
                 sidebarData={sidebarData}
                 sidebarDataType={`${role}`}
                 >
-                    <LoadingDiv layout={[[3], [1,1,1,1], [1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1]]} height="h-30"/>
+                    <LoadingDiv layout={[[3], [2], [1]]} height="h-20"/>
                 </DashboardLayout>
             ) : (
                 <>
@@ -56,19 +62,48 @@ const TrendBet = () => {
                 sidebarData={sidebarData}
                 sidebarDataType={`${role}`}
                 >
-                    <section className={`${classMap.section} flex flex-col md:flex-col lg:flex-row mb-6`}>
-                      <h2 className="text-2xl font-bold flex items-center gap-2">
-                        <FaChartLine className="text-[var(--owner)]" /> TrendBet
-                      </h2>
-                      <small className="text-[var(--muted-foreground)] text-center">
-                        Create <FaPen className="inline underline text-[var(--owner)]"/> or Vote the Trend
-                      </small>
+                    
+                    
+                <div className="flex flex-col">
+                    {user?.trendbet_role === 'creator' && (
+                    <section className={`flex flex-col p-3 rounded-2xl ${classMap.dehtaCard()}`}>
+                        <div className="mb-3">
+                            <div className="flex flex-row">
+                                <h1 className="text-3xl lg:text-5xl">Your Trends</h1>
+                                <button
+                                      onClick={() => {setOffId('CreateTrend'); setShowOffCanvas(true); SetOfftitle('Create Trend')}}
+                                      className={`flex ms-2 ${classMap.button()}`}
+                                    >
+                                    <FaPen className="m-0 p-0"/>
+                                </button>
+                            </div>
+                            <small>View the Progress of Trends you Created</small>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 w-full p-3">
+                        {userTrends && userTrends.length > 0 ? (
+                        userTrends.length === 1 ? (
+                            <TrendCard {...userTrends[0]} data={userTrends[0]} />
+                        ) : (
+                            <div className="col-span-4 w-full">
+                            <TrendCarousel trends={userTrends} />
+                            </div>
+                        )
+                        ) : (
+                        <div className="flex flex-col col-span-4 w-full opacity-50">
+                            {emptyResult('Your Trends will Show Here')}
+                        </div>
+                        )}
+                        </div>
                     </section>
-
+                    )}
                 
                     {/* Trendbets  */}
-
-                    <section className={'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 w-full'}>
+                    <section className={'flex flex-col mt-2'}>
+                        <div className="flex flex-col mb-3 bg-(--owner) p-4 text-black rounded-2xl h-40 items-center justify-center">
+                            <h1 className="text-4xl lg:text-5xl">Vote Trend</h1>
+                            <small>Participate in active Trends created by Others</small>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5 w-full p-3">
                         {trends && trends.length > 0 ? ( trends.map((trend, key) => {
                             return(
                                 <TrendCard
@@ -79,11 +114,12 @@ const TrendBet = () => {
                         }) ) : (
                             emptyData('No Trend to Bet On Yet')
                         )}
+                        </div>
                     </section>
-
+                </div>
                     
                 </DashboardLayout>
-                {<TrendCreateBtn/>}
+                {/* {<TrendCreateBtn/>} */}
 
                 {/* Create Trend  */}
                 <Offcanvas title={Offtitle}>

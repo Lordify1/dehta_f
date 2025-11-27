@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import {faq} from "@/data/indexData"
-import { classMap } from "../../components/Tools/Misc"
+import { classMap, SlideRight } from "../../components/Tools/Misc"
 import { FaMinus, FaPlus } from "react-icons/fa";
 
 
@@ -37,13 +37,14 @@ const FAQ = () => {
     return(
     <section
       id="faq"
-      className="relative text-[var(--primary)] py-10 px-6 sm:px-16 overflow-hidden"
+      className="relative text-(--primary) py-10 px-6 sm:px-16 overflow-hidden"
     >
       <div className="grid grid-cols-1 gap-4 mx-auto max-w-7xl">
         <h1 className="text-3xl lg:text-6xl mb-4">Frequently Asked Questions</h1>
         {faq.map((it:any, ind:any) => {
             return(
-                <div className={`${classMap.indexFaqCard()} ${hidden[it.key] === true ? '' : 'bg-[var(--owner)]'}`}>
+              <SlideRight delay={7} threshold={0.70}>
+                <div className={`${classMap.indexFaqCard()} ${hidden[it.key] === true ? '' : 'bg-(--owner)'} transition-all transform-content duration-300`}>
                     <section className="flex flex-row justify-between items-center p-2">
                         <h4 className={`text-2xl lg:text-4xl ${hidden[it.key] === true ? 'text-primary' : 'text-black'}`}>{it.label}</h4>
                         <button
@@ -57,6 +58,7 @@ const FAQ = () => {
                         <span>{it.text}</span>
                     </section>
                 </div>
+              </SlideRight>
             )
         })}
       </div>

@@ -1,4 +1,4 @@
-import { FaChartBar, FaComment, FaSearch, FaCoins, FaCartPlus, FaMoneyBillWave, FaBolt, FaUserPlus, FaVoteYea, FaTrophy, FaSlidersH } from 'react-icons/fa';
+import { FaChartBar, FaComment, FaSearch, FaCoins, FaCartPlus, FaMoneyBillWave, FaBolt, FaUserPlus, FaVoteYea, FaTrophy, FaSlidersH, FaPlusCircle, FaGlobe, FaUsers, FaRobot, FaHandshake, FaChartLine } from 'react-icons/fa';
 
 export const indexFeatures = [
     {
@@ -17,7 +17,6 @@ export const indexFeatures = [
         text: 'Dehta Tracks rising narrative across crypto communities'
     },
 ]
-
 
 export const faq = [
     {
@@ -61,7 +60,6 @@ export const faq = [
     },
 ]
 
-
 export const LensInfo = [
     {
         icon: <FaCoins className='text-5xl text-[var(--owner)] p-2'/>,
@@ -76,7 +74,6 @@ export const LensInfo = [
         text: 'Buy Lens'
     },
 ]
-
 
 export const TrendBetData = [
     {
@@ -112,5 +109,64 @@ export const TrendBetData = [
                 icon: <FaTrophy className='text-5xl text-[var(--owner)] p-2'/>
             },
         ]
+    },
+]
+
+
+
+export const ProjectsData = [
+    {
+        label: "Create your project",
+        text: "Start a new project in minutes with clean tools built for builders.",
+        icon: <FaPlusCircle className='text-7xl text-[var(--owner)] p-2'/>
+    },
+    {
+        label: "List it publicly",
+        text: "Show your project to the entire community and start getting eyes on it.",
+        icon: <FaGlobe className='text-7xl text-[var(--owner)] p-2'/>
+    },
+    {
+        label: "Get community insights",
+        text: "See what people think through reactions, comments and engagement signals.",
+        icon: <FaUsers className='text-7xl text-[var(--owner)] p-2'/>
+    },
+    {
+        label: "Receive AI analysis",
+        text: "Get smart, data-backed evaluations to guide your next moves.",
+        icon: <FaRobot className='text-7xl text-[var(--owner)] p-2'/>
+    },
+    {
+        label: "Attract collaborators",
+        text: "Connect with people who want to build with you or support your vision.",
+        icon: <FaHandshake className='text-7xl text-[var(--owner)] p-2'/>
+    },
+    {
+        label: "Track performance",
+        text: "Watch your growth with clear metrics and activity tracking.",
+        icon: <FaChartLine className='text-7xl text-[var(--owner)] p-2'/>
+    },
+    
+]
+
+
+
+export const TeamData = [
+    {
+        name: "Glick Fortune",
+        position: "Founder",
+        image: "/assets/images/team/phi.jpg",
+        link: "https://x.com/jon_thebull?s=21"
+    },
+    {
+        name: "Jeremy Ford",
+        position: "Co-Founder",
+        image: "/assets/images/team/jeremy.jpeg",
+        link: "https://x.com/jon_thebull?s=21"
+    },
+    {
+        name: "Peter Donaldson",
+        position: "Advisor",
+        image: "/assets/images/team/peter.jpeg",
+        link: "https://www.linkedin.com/in/pete-donaldson"
     },
 ]

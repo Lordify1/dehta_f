@@ -1,179 +1,211 @@
 import { advisorUrl, appName } from "@/app";
-import { classMap, colorMap } from "@/components/Tools/Misc";
-import SendRequest from "@/components/Tools/SendRequest";
+import { classMap } from "@/components/Tools/Misc";
 import { useUser } from "@/context/UserContext";
 import { founderSidebar } from "@/data/founderSidebarData";
 import { investorSidebar } from "@/data/investorSidebarData";
 import DashboardLayout from "@/layouts/Advisor/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useState, useRef } from "react";
 import { Helmet } from "react-helmet-async";
-import { FaCheckCircle, FaExclamationCircle, FaEdit } from "react-icons/fa";
-
-// Import all avatars from folder (e.g. /public/avatars)
-const avatarImages = import.meta.glob("/public/assets/avatars/*.png", { eager: true });
-
-// console.log(avatarImages)
+import { FaCopy, FaEdit } from "react-icons/fa";
+import { emptyResult, Lens } from "../../../components/Tools/Misc";
+import AchievementPanel from "../../../components/Advisor/Achievements";
+import LensActivity from "../../../components/Advisor/LensActivity";
+import CheckInCalendar from "../../../components/Advisor/CheckInCalendar";
+import { useOffCanvas } from "../../../context/OffCanvasContext";
+import Offcanvas from "../../../components/ui/Offcanvas";
+import EditProfile from "../../../components/Advisor/Forms/EditProfile";
+import { apiUrl } from "../../../App";
+import axios from "axios";
 
 const Profile = () => {
-  const {user} = useUser()
+  const { user, setUser } = useUser();
+
   const [data, setData] = useState({
     name: user?.name || "",
     username: user?.username || "",
     email: user?.email || "",
     role: user?.role || "founder",
-    avatar: user?.avatar || Object.values(avatarImages)[0]?.default,
+    avatar: user?.avatar
   });
 
-  const [showAvatarPicker, setShowAvatarPicker] = useState(false);
-
-  // Fields config (Loop instead of hardcoding)
-  const fields = [
-    { id: "name", label: "Name", type: "text", editable: true },
-    { id: "username", label: "Username", type: "text", editable: true },
-    { id: "email", label: "Email", type: "text", editable: false },
-  ];
-
-  const handleChange = (e:any) => {
-    const { id, value } = e.target;
-    setData((prev) => ({ ...prev, [id]: value }));
-  };
-
-  const handleAvatarSelect = (src:any) => {
-    setData((prev) => ({ ...prev, avatar: src }));
-    setShowAvatarPicker(false);
-  };
-
-  const handleRoleChange = (role:any) => {
-    setData((prev) => ({ ...prev, role }));
-  };
+  const fileInputRef = useRef(null);
+  const [userGlasses, setUserGlasses] = useState([]);
+  const { setShowOffCanvas, OffId, Offtitle, setOffId, SetOfftitle } = useOffCanvas();
 
   const sidebarData = data.role === "founder" ? founderSidebar : investorSidebar;
+
+  // Handle real avatar upload
+  const handleAvatarUpload = async (file:File) => {
+    const formData = new FormData();
+    formData.append("avatar", file);
+
+    try {
+      const res = await axios.post(`${apiUrl}/api/profile/avatar_upload`, formData);
+
+      console.log(res)
+
+      // Update UI avatar
+      setData((prev) => ({ ...prev, avatar: res.data.avatar_url }));
+
+      // // Update global user data
+      setUser((prev) => ({ ...prev, avatar: res.data.avatar_url }));
+
+    } catch (err) {
+      console.error("Error uploading avatar:", err);
+    }
+  };
 
   return (
     <>
       <Helmet>
         <title>Profile - {appName}</title>
       </Helmet>
+
       <DashboardLayout
         title="Profile"
         user={user}
         sidebarDataType={data.role}
         sidebarData={sidebarData}
       >
-        <div className="grid place-items-center w-full min-h-[80vh]">
-          <div className="p-6 rounded-2xl shadow-lg w-full max-w-xl space-y-6">
-            {/* Avatar Section */}
-            <div className="relative flex flex-col items-center">
+        <section className="grid grid-cols-1 gap-3">
+
+          <div className={`${classMap.dehtaCard()} grid grid-cols-1 lg:grid-cols-2 p-2 mt-2 mb-2`}>
+            <div
+              className="flex flex-col items-center justify-center p-4"
+              aria-label="User profile"
+            >
+              {/* Avatar */}
+              <div className="relative" role="group" aria-roledescription="avatar upload">
               <img
-                src={data.avatar}
-                alt="Avatar"
-                className={`w-28 ${classMap.hoverImg} border-primary h-28 rounded-xl object-cover border-4  shadow-lg`}
+                src={data.avatar || "https://placehold.co/100x100"}
+                alt={`${user?.username || "User"} avatar`}
+                className={`${classMap.dehtaBorder()} rounded-full w-24 h-24 object-cover bg-accent`}
               />
+
+              {/* Trigger upload instantly */}
               <button
-                onClick={() => setShowAvatarPicker(!showAvatarPicker)}
-                className={`absolute top-0 right-1 text-secondary p-2 rounded-full ${classMap.hover()} transition`}
-                title="Change Avatar"
+                type="button"
+                onClick={() => (fileInputRef.current as HTMLInputElement | null)?.click()}
+                className="absolute bottom-0 right-0 bg-accent text-white p-2 rounded-full shadow-md hover:opacity-90 focus:outline-none focus:ring"
+                aria-label="Change profile picture"
+                title="Change profile picture"
               >
-                <FaEdit />
+                <FaEdit size={14} />
               </button>
 
-              {/* Avatar Picker Dropdown */}
-              {showAvatarPicker && (
-                <div className={`mt-4 grid grid-cols-4 gap-2 p-4 rounded-xl border border-border shadow-lg animate-fadeIn transition-all duration-500`}>
-                  {Object.values(avatarImages).map((img: any, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => handleAvatarSelect(img.default)}
-                      className={`w-30 ${classMap.hoverImg} h-30 rounded-xl border-2 hover:border-primary transition-all ${
-                        data.avatar === img.default ? `border-primary` : "border-secondary"
-                      }`}
-                    >
-                      <img
-                        src={img.default}
-                        alt={`avatar-${idx}`}
-                        className="w-full h-full object-cover"
-                      />
-                    </button>
-                  ))}
+              {/* Hidden Upload Input */}
+              <input
+                type="file"
+                accept="image/*"
+                ref={fileInputRef as any}
+                className="hidden"
+                aria-hidden="true"
+                onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+                // show a quick local preview while upload completes
+                try {
+                  const preview = URL.createObjectURL(file);
+                  setData((prev) => ({ ...prev, avatar: preview }));
+                } catch (err) {
+                  /* ignore preview errors */
+                }
+                handleAvatarUpload(file);
+                // allow re-uploading same file again
+                e.currentTarget.value = "";
+                }}
+              />
+              </div>
+
+              <div className="text-center mt-3">
+              <p className="font-semibold">{data.name || user?.username}</p>
+              {/* {user?.email && <p className="text-xs text-muted-foreground">{user.email}</p>} */}
+              <small className="inline-block mt-1 px-2 py-0.5 text-xs rounded bg-muted text-muted-foreground">
+                {user?.role}
+              </small>
+              </div>
+
+              <div className="mt-3 w-full flex flex-col items-center gap-2">
+              <p
+                className={`${classMap.dehtaBorder()} rounded-full px-3 py-1 flex items-center gap-2`}
+                aria-live="polite"
+              >
+                {Lens()}
+                <span className="font-medium">
+                {(user?.total_lens ?? 0).toLocaleString()} Lens {(user?.total_lens ?? 0) === 1 ? "" : "Owned"}
+                </span>
+              </p>
+
+              {user?.ref_id && (
+                <div className="flex items-center gap-2 text-sm text-gray-500">
+                <span className="font-mono bg-muted px-2 py-1 rounded">{user.ref_id}</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                  const txt = user.ref_id;
+                  if (navigator.clipboard?.writeText) {
+                    navigator.clipboard.writeText(txt).catch(() => window.prompt("Copy referral id:", txt));
+                  } else {
+                    window.prompt("Copy referral id:", txt);
+                  }
+                  }}
+                  className="text-xs px-2 py-1 rounded border border-gray-200 hover:bg-gray-100"
+                  title="Copy referral id"
+                  aria-label="Copy referral id"
+                >
+                  <FaCopy />
+                </button>
                 </div>
               )}
+              </div>
+
+              <button
+              className={`${classMap.button()} mt-4 flex items-center justify-center`}
+              onClick={() => {
+                SetOfftitle("Edit Profile");
+                setOffId("editProfile");
+                setShowOffCanvas(true);
+              }}
+              aria-haspopup="dialog"
+              aria-controls="editProfile"
+              >
+              Edit Profile
+              </button>
             </div>
 
-            {/* Fields Section */}
-            <div className="space-y-4">
-              {fields.map((field) => (
-                <div key={field.id}>
-                  <label htmlFor={field.id} className={`${classMap.label}`}>
-                    {field.label}
-                  </label>
-                  <div className="relative">
-                    <input
-                      type={field.type}
-                      id={field.id}
-                      value={data[field.id]}
-                      onChange={field.editable ? handleChange : undefined}
-                      readOnly={!field.editable}
-                      disabled={!field.editable}
-                      className={`${classMap.input()} ${
-                        !field.editable ? "bg-[var(--muted)] text-primary cursor-not-allowed" : ""
-                      }`}
-                    />
-                    {/* Email verification icon */}
-                    {/* {field.id === "email" && (
-                      <span className="absolute right-0 top-1/2 -translate-y-1/2">
-                        {user?.email_verified_at ? (
-                          <FaCheckCircle className={`text-[var(--owner)] me-2`} title="Email Verified" />
-                        ) : (
-                          <SendRequest
-                          url={`/email/verification-notification`}
-                          method="post"
-                          onResponse={() => {}}
-                          useIcon={true}
-                          className="text-sm"
-                          text="Verify"
-                          direction="none"
-                          title="Verify Email"
-                          />
-                        )}
-                      </span>
-                    )} */}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Role Toggle */}
-            <div>
-              <label className={`${classMap.label}`}>User Type</label>
-              <div className="flex items-center gap-4 mt-2">
-                {["founder", "investor"].map((role) => (
-                  <button
-                    key={role}
-                    onClick={() => handleRoleChange(role)}
-                    className={`px-4 py-2 rounded-xl font-semibold capitalize transition border ${
-                      data.role === role
-                        ? `bg-[var(--owner)]`
-                        : `bg-[var(--accent)]`
-                    }`}
-                  >
-                    {role}
-                  </button>
-                ))}
+            {/* Glass NFTs */}
+            <div className="flex flex-col mt-3">
+              <div className="flex flex-row min-h-80 w-full items-center justify-center">
+                {userGlasses.length > 0 ? (
+                  userGlasses.map((it, ind) => (
+                    <div key={ind} className={`${classMap.dehtaCard()} flex flex-col items-center`}>
+                      <img src={it?.icon} alt="" className="w-30" />
+                    </div>
+                  ))
+                ) : (
+                  <div className="opacity-50">{emptyResult("Your Glass NFTs will appear here")}</div>
+                )}
               </div>
             </div>
-
-            {/* Action Buttons */}
-            <div className="flex justify-end gap-4 pt-4 border-t border-border">
-              <SendRequest
-              url={`/profile`}
-              method="post"
-              data={data}
-              text="Update"
-              onResponse={() => {}}
-              />
-            </div>
           </div>
-        </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+            <AchievementPanel userAchievements={user?.achievements} />
+            <LensActivity userTransact={user?.lens_transactions} />
+            <CheckInCalendar
+              lens={() => {}}
+              streak={() => {}}
+              checkins={user?.checkins[0]}
+              transactions={() => {}}
+              history={user?.checkinhistory}
+              dView="history"
+            />
+          </div>
+        </section>
+
+        <Offcanvas title={Offtitle}>
+          {OffId === "editProfile" && <EditProfile />}
+        </Offcanvas>
       </DashboardLayout>
     </>
   );

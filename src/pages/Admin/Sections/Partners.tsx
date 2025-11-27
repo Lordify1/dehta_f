@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Button, Table } from "antd";
 import Datatable from "@/components/Tools/Datatable";
 import PartnerForm from "@/components/admin/PartnerForm";
-import { EyeOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import Offcanvas from "@/components/Ui/Offcanvas";
 import { AdminLayout } from "@/layouts/AdminLayout";
 import axios from "axios";
 import { appUrl } from "@/app";
 import SendRequest from "@/components/Tools/SendRequest";
+import { FaEdit } from "react-icons/fa";
+import { apiUrl } from "../../../App";
 
 
 export default function PartnersPage() {
@@ -42,12 +43,12 @@ export default function PartnersPage() {
       key: "actions",
       render: (_:any,record:any) => (
         <div className="flex items-center gap-2">
-          <Button icon={<EditOutlined />} onClick={() => {
+          <Button icon={<FaEdit />} onClick={() => {
             setSelectedData(record);
             setShowForm(true);
           }} />
           <SendRequest
-          url={`/admin/partners/delete/${record.id}`}
+          url={`/api/admin/partners/delete/${record.id}`}
           method="delete"
           deleteBtn={true}
           data={{ id: record.id }}
@@ -62,7 +63,7 @@ export default function PartnersPage() {
   ];
 
   useEffect(()=>{
-    axios.get(appUrl + '/admin/partners/get')
+    axios.get(apiUrl + '/api/admin/partners/get')
     .then((res :any) => {
       console.log(res),
       setDataSource(res.data),

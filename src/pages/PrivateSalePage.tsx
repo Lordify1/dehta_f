@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import Layout from './components/Layout';
 import SaleTimer from './components/PrivateSalePage/SaleTimer';
-import { ethers } from 'ethers';
 import { classMap } from '@/components/Tools/Misc';
 import { Helmet } from 'react-helmet-async';
 import { toast } from 'react-toastify';
 import { appUrl, saleWallet } from '@/app';
 import axios from 'axios';
+import { PresaleBtn } from '../components/Tools/Misc';
+import { apiUrl } from '../App';
 
 const TOKEN_PRICE = 0.007;    // USD per token
 const WALLET_ADDRESS = saleWallet;
@@ -19,17 +20,6 @@ const PrivateSalePage: React.FC = () => {
   const [tokenAmount, setTokenAmount] = useState(0);
   const [sending, setSending] = useState(false);
   const [txnHash, setTxnHash] = useState("");
-
-  // Optional wallet connection
-  const connectWallet = async () => {
-    try {
-      const provider = new ethers.BrowserProvider((window as any).ethereum);
-      const accounts = await provider.send("eth_requestAccounts", []);
-      setWalletAddress(accounts[0]);
-    } catch {
-      toast.error("Wallet connection failed");
-    }
-  };
 
   // Token preview based on USD
   const handleUsdChange = (v: string) => {
@@ -131,9 +121,9 @@ const sendRequest = async () => {
       wallet: from,
     };
 
-    localStorage.setItem(`faeces_tx_${id}`, JSON.stringify(record));
+    localStorage.setItem(`dehta_tx_${id}`, JSON.stringify(record));
 
-    const res = await axios.post(`${appUrl}/api/private-sale/verify`, record);
+    const res = await axios.post(`${apiUrl}/api/private-sale/verify`, record);
 
     toast.success(res.data.message ?? "Request received. Awaiting confirmation.");
   } catch (err) {
@@ -147,7 +137,7 @@ const sendRequest = async () => {
 
 
   const cancelTx = () => {
-    const keys = Object.keys(localStorage).filter(k => k.startsWith("faeces_tx_"));
+    const keys = Object.keys(localStorage).filter(k => k.startsWith("dehta_tx_"));
     keys.forEach(key => localStorage.removeItem(key));
     toast.error("Previous pending transaction removed.");
   };
@@ -159,135 +149,117 @@ const sendRequest = async () => {
 
   return (
     <Layout showNavs={false}>
-      <Helmet><title>Faeces Token Private Sale</title></Helmet>
+      <Helmet><title>$Dehta Token Private Sale</title></Helmet>
 
-      <section className="text-primary py-20 px-6 sm:px-16 ogbg">
-        <div className="max-w-4xl mx-auto flex flex-col items-center space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start justify-items-center p-4 mt-20 text-white">
 
-          <SaleTimer />
-
-          <h2 className="sm:text-3xl font-extrabold text-center tracking-tight text-secondary drop-shadow-lg">
+        {/* Left Hero */}
+        <section className="w-full flex lg:justify-end text-center lg:text-right">
+          <h2 className="text-5xl font-black drop-shadow-xl leading-tight max-w-xs">
             OG Private Sale Party!!
           </h2>
+        </section>
 
-          <p className="text-center text-lg text-primary max-w-xl mx-auto mt-2">
-            Secure your <span className="font-semibold text-[var(--owner)]">$FAECES</span> tokens.
+        {/* Center Form */}
+        <section className="max-w-5xl w-full flex flex-col items-center space-y-6">
+
+          <p className={classMap.subText}>
+            Secure your <span className="font-semibold text-[var(--owner)]">$Dehta</span> tokens before the doors close.
           </p>
 
-          {/* Wallet connect */}
-          {/* {!walletAddress && (
-            <appkit-button
-              label="Connect Wallet (Optional)"
-              // onClick={connectWallet}
-              class="my-4"
-            />
-          )} */}
-
-          {walletAddress && (
-            <p className="text-center text-sm break-words">
-              Connected: {walletAddress}
+          <div className={classMap.glassCard("p-5 w-full text-center")}>
+            <h3 className="font-bold text-white">Contract Address</h3>
+            <p className="font-mono text-sm break-all">
+              0x57299E7A2c1544429Bcf9FdAad5b364D20EEF797
             </p>
-          )}
-
-          <div className="flex flex-col items-center justify-between bg-background p-3 border border-secondary text-center rounded-2xl">
-            <p className='font-mono break-all'><h3>Contract Address:</h3>
-            0x57299E7A2c1544429Bcf9FdAad5b364D20EEF797</p>
-            <p>1 $FCS = $0.007</p>
+            <p className="mt-2 text-white/70 text-sm">1 $DTA = $0.007</p>
           </div>
 
-          {/* payment block */}
-          <div className="flex flex-col bg-accent border border-[var(--primary)] p-6 rounded-lg shadow-lg max-w-3xl mx-auto mt-4 space-y-3 w-full overflow-hidden">
+          <div className={classMap.glassCard("p-6 w-full space-y-5")}>
 
-            <h3 className="font-semibold text-xl text-primary">Send BASE to</h3>
+            <h3 className="font-semibold text-xl text-white">Send BASE to</h3>
 
-            <div className="flex items-center justify-between bg-background p-3 rounded-2xl border border-secondary w-full">
-              <span className="font-mono break-all pr-2 flex-1">{WALLET_ADDRESS}</span>
-              <button onClick={copyAddress} className={classMap.button("","","","","right")}>
+            <div className="flex items-center gap-3 bg-white/5 p-3 rounded-xl border border-white/10">
+              <span className="font-mono text-sm break-all flex-1">
+                {WALLET_ADDRESS}
+              </span>
+              <button onClick={copyAddress} className={classMap.button()}>
                 Copy
               </button>
             </div>
 
-            {/* BIG NOTICE */}
-            <p className="text-xs text-[var(--muted-foreground)] mt-4 leading-relaxed">
+            <p className="text-xs text-white/50 leading-relaxed">
               • Send BASE to the address above.<br/>
-              • Copy your transaction hash (TX HASH).<br/>
-              • Paste it below and submit.<br/>
-              • Then chill while we verify on-chain.<br/>
-              We’ll notify you if confirmed or still pending. If something breaks, you can cancel and submit again.
+              • Paste your transaction hash.<br/>
+              • Submit and relax while we verify.<br/>
             </p>
 
-            <p className="text-sm text-[var(--muted-foreground)]">
-              Minimum $30, Maximum $750
-            </p>
-
-            {/* wallet input only if not connected */}
             {!walletAddress && (
               <>
-                <label className={classMap.label()}>Your wallet</label>
+                <label className={classMap.label}>Your wallet</label>
                 <input
                   type="text"
                   placeholder="Enter wallet address"
+                  className={classMap.input()}
                   value={manualWallet}
                   onChange={e => setManualWallet(e.target.value)}
-                  className={classMap.input()}
                 />
               </>
             )}
 
-            {/* Amount */}
-            <label className={classMap.label()}>Amount (USD)</label>
+            <label className={classMap.label}>Amount (USD)</label>
             <input
               type="number"
+              className={classMap.input()}
+              value={usdAmount}
               min={30}
               max={750}
-              value={usdAmount}
-              onChange={(e) => handleUsdChange(e.target.value)}
-              className={classMap.input()}
-              required
+              onChange={e => handleUsdChange(e.target.value)}
             />
 
             {tokenAmount > 0 && (
-              <p className="mt-1 text-sm">
-                You will receive about{" "}
-                <span className="font-bold text-primary">
-                  {tokenAmount.toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 2 })} $FAECES
+              <p className="text-sm text-white">
+                You’ll receive about
+                <span className="font-bold ml-1 text-[var(--owner)]">
+                  {tokenAmount.toLocaleString(undefined, { maximumFractionDigits: 2 })} $Dehta
                 </span>
               </p>
             )}
 
-            {/* tx hash always required */}
-            <label className={classMap.label()}>Transaction Hash</label>
+            <label className={classMap.label}>Transaction Hash</label>
             <input
               type="text"
               value={txnHash}
               placeholder="Paste tx hash"
-              onChange={(e) => setTxnHash(e.target.value)}
+              onChange={e => setTxnHash(e.target.value)}
               className={classMap.input()}
-              required
             />
 
             <button
               disabled={sending}
               onClick={sendRequest}
-              className={`${classMap.button("","","","","right")} mt-4`}
+              className={classMap.button() + " w-full mt-2"}
             >
               {sending ? "Submitting..." : "I've Sent It"}
             </button>
 
-            {/* <button
-              onClick={cancelTx}
-              className={`text-xs underline mt-2`}
-            >
-              Cancel old transaction
-            </button> */}
-
-            <p className="text-xs text-[var(--muted-foreground)] mt-2">
-              After submitting, we verify the transaction and deliver tokens.
+            <p className="text-xs text-white/50 text-center">
+              Tokens are delivered after verification.
             </p>
+
           </div>
-        </div>
-      </section>
+        </section>
+
+        {/* Right Hero Mirror */}
+        <section className="w-full flex lg:justify-start text-center lg:text-left">
+          <h2 className="text-5xl font-black drop-shadow-xl leading-tight max-w-xs opacity-50">
+            OG Private Sale Party!!
+          </h2>
+        </section>
+
+      </div>
     </Layout>
+
   );
 };
 

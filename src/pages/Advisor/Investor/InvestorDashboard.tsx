@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from "react";
 import DashboardLayout from "@/layouts/Advisor/DashboardLayout";
-import { founderSidebar } from "@/data/founderSidebarData";
-import { LoadingDiv, classMap, buttonClass } from "@/components/Tools/Misc";
-import { FaGlasses, FaFire, FaLock, FaShoppingCart, FaCoins, FaTrophy, FaSearch } from "react-icons/fa";
-import SendRequest from "@/components/Tools/SendRequest";
+import { LoadingDiv, classMap } from "@/components/Tools/Misc";
 import CheckInCalendar from "@/components/Advisor/CheckInCalendar";
-import AchievementPanel from "@/components/Advisor/Achievements";
-import LensActivity from "@/components/Advisor/LensActivity";
 import { Helmet } from "react-helmet-async";
-import { appName } from "@/app";
+import { appName, appUrl } from "@/app";
 import { useUser } from "@/context/UserContext";
+import TrendingTokens from "../../../components/Advisor/TrendingTokens";
+import TrendBetDB from "../../../components/Advisor/TrendBetDB";
 import { investorSidebar } from "@/data/investorSidebarData";
 
 const InvestorDashboard = () => {
@@ -36,94 +33,46 @@ const InvestorDashboard = () => {
         </DashboardLayout>
       ) : (
         <DashboardLayout sidebarDataType="investor" sidebarData={investorSidebar}>
-          {/* Welcome Banner */}
-          {(user?.checkins[0]?.streak && user?.checkins[0]?.streak > 1) && (
-            <section className="text-sm flex flex-row items-center justify-between bg-[var(--owner)] p-4 mb-4 rounded-2xl text-primary">
-              <h4>
-                Welcome back, {user?.username} 👋; You’ve checked in for{" "}
-                <strong>{user?.checkins[0]?.streak || 0}</strong> days straight — keep your streak alive!
-              </h4>
-              <span className="text-2xl animate-pulse">🔥</span>
-            </section>
-          )}
+          <div className="">
+            {/* Welcome Banner */}
+              <h1 className="text-2xl lg:text-4xl mb-3">GM, {user?.username} 👋</h1>
+            
+        
+            {/* User Info & Lens Summary */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
           
-
-          {/* User Info & Lens Summary */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
-            {/* <section
-              className={`${classMap.userCard(3)} flex flex-row items-center justify-between`}
-            >
-              <div className="flex items-center">
-                <img
-                  src={user?.avatar || "https://placehold.co/100x100"}
-                  alt="User Avatar"
-                  className="w-16 h-16 rounded-full border-border"
-                />
-                <div className="ml-3 flex flex-col">
-                  <h2 className="text-lg font-bold">{user?.username}</h2>
-                  <div className="flex">
-                    <span className={`${classMap.tempBtn}`}>
-                    <FaGlasses className="inline mr-1"/> {glasses}
-                  </span>
-                  <span className={`${classMap.tempBtn}`}><FaSearch className="inline mr-1"/> {lens.toLocaleString()}</span>
-                  </div>
-                </div>
-              </div>
-            </section> */}
-
-            <section className={`${classMap.userCard(3)} flex flex-col justify-center text-start`}>
-              <h3 className="font-semibold text-lg mb-2">Lens Goal Progress</h3>
-              <div className="w-full bg-muted rounded-full h-3">
-                <div
-                  className="bg-[var(--owner)] animate-pulse h-3 rounded-full transition-all duration-1000"
-                  style={{ width: `${(lens / 30000) * 100}%` }}
-                ></div>
-              </div>
-              <p className="mt-2 text-sm text-gray-400">
-                {lens.toLocaleString()} / 30,000 Lens —{" "}
-                {lens >= 30000 ? (
-                  <span className="text-green-400">✅ Ready to Unlock Project Listing!</span>
-                ) : (
-                  `${(30000 - lens).toLocaleString()} left to unlock Project Listing`
-                )}
-              </p>
-            </section>
-
-            <section className={`${classMap.userCard(3)} flex flex-col justify-center items-center w-full`}>
-              <h3 className="font-semibold text-lg mb-2">Quick Actions</h3>
-              <div className="grid grid-cols-3 items-center justify-between gap-2">
-                <button title="Unlock Listing" className={`${classMap.tempBtn}`}>
-                  <FaLock className="inline" />
-                </button>
-                <button title="Buy Glass" className={`${classMap.tempBtn}`}>
-                  <FaShoppingCart className="inline" />
-                </button>
-                <button title="Buy Lens" className={`${classMap.tempBtn}`}>
-                  <FaCoins className="inline" />
-                </button>
-              </div>
+                      <section className={`${classMap.dehtaCard()} flex flex-col justify-center text-start col-span-3`}>
+                        <h3 className="font-semibold text-lg mb-2">Lens Goal Progress</h3>
+                        <div className="w-full bg-muted rounded-full h-3">
+                          <div
+                            className="bg-[var(--owner)] animate-pulse h-3 rounded-full transition-all duration-1000"
+                            style={{ width: `${(lens / 30000) * 100}%` }}
+                          ></div>
+                        </div>
+                        <div className="flex flex-col lg:flex-row justify-between w-full mt-2 text-sm text-gray-400">
+                          <span>{lens.toLocaleString()} / 30,000 Lens {" "}</span>
+                          {lens >= 30000 ? (
+                            <span className="text-green-400">✅ Ready to Unlock Project Listing!</span>
+                          ) : (
+                            <span>{(30000 - lens).toLocaleString()} left to unlock Project Listing</span>
+                          )}
+                        </div>
+                      </section>
+            </div>
+        
+            {/* Check-in Calendar */}
+            <section className={`grid grid-cols-1 lg:grid-cols-3 items-center justify-center mb-4 gap-4`}>
+                    <CheckInCalendar
+                    lens={() => {}}
+                    streak={() => {}}
+                    checkins={user?.checkins[0]}
+                    transactions={() => {}}
+                    history={user?.checkinhistory}
+                    />
+                    <TrendingTokens/>
+                    <TrendBetDB/>
             </section>
           </div>
-
-          {/* Check-in Calendar */}
-          <section className={`grid grid-cols-1 lg:grid-cols-3 items-center justify-center mb-4 gap-4`}>
-          <CheckInCalendar
-          lens={() => {}}
-          streak={() => {}}
-          checkins={user?.checkins[0]}
-          transactions={() => {}}
-          />
-          <AchievementPanel
-          userAchievements={user?.achievements}
-          />
-          <LensActivity
-          userTransact={user?.lens_transactions}
-          />
-          </section>
-          
-
-          {/* Achievements */}
-          
         </DashboardLayout>
       )}
     </>

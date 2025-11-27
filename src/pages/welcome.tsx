@@ -2,17 +2,7 @@
 import React from 'react';
 import Layout from './components/Layout';
 import HeroSection from './components/HeroSection';
-import AboutFaeces from './components/AboutFaeces';
-import AiTools from './components/AiTools';
-import Roadmap from './components/Roadmap';
-import Tokenomics from './components/Tokenomics';
-import Community from './components/Community';
-import Partners from './components/Partners';
-import ContactSection from './components/ContactSection';
-import PrivateSell from './components/PrivateSell';
-import DemoSection from './components/DemoSection';
 import WhyFaecesAI from './components/WhyFaecesAI';
-import ParticleBackground from '@/components/ParticleBackground';
 import { Helmet } from 'react-helmet-async';
 import { appName } from '@/app';
 import SaleTimer from './components/PrivateSalePage/SaleTimer';
@@ -20,6 +10,8 @@ import FAQ from './components/Faq';
 import LensSection from './components/LensSection';
 import GlassSection from './components/GlassSection';
 import TrendBetSection from './components/TrendBetSection';
+import ProjectSection from './components/ProjectSection';
+import TeamSection from './components/TeamSection';
 
 
 
@@ -39,16 +31,9 @@ const Home: React.FC = () => {
         <LensSection/>
         <GlassSection/>
         <TrendBetSection/>
+        <ProjectSection/>
+        <TeamSection/>
         <FAQ/>
-        {/* <AboutFaeces /> */}
-        {/* <DemoSection/> */}
-        {/* <AiTools /> */}
-        {/* <Roadmap /> */}
-        {/* <Tokenomics /> */}
-        {/* <PrivateSell/> */}
-        {/* <Community /> */}
-        {/* <Partners /> */}
-        {/* <ContactSection /> */}
     </Layout>
     </>
   );

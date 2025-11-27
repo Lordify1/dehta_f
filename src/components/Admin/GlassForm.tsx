@@ -6,13 +6,14 @@ import { Button, Select } from "antd";
 import { appUrl } from "@/app";
 import { FaTrashRestore } from "react-icons/fa";
 import { IoTrashOutline } from "react-icons/io5";
+import { apiUrl } from "../../App";
 
 const fields = [
   { name: "name", label: "Name", type: "text", model:"input",placeholder: "Glass name" },
   { name: "description", label: "Description", type: "text", model:"input",placeholder: "Glass description" },
-  { name: "lens_cost", label: "Lens cost", type: "number", model:"input",placeholder: "Lens cost" },
-  { name: "rarity", label: "Rarity", type: "text", model:"input",placeholder: "Common or Special" },
-  { name: "icon", label: "Icon", type: "text", model:"input",placeholder: "Use emoji for now" },
+  { name: "cost", label: "Cost", type: "number", model:"input",placeholder: "Cost in USD" },
+  { name: "color", label: "Color", type: "text", model:"input",placeholder: "Input: owner or blue or purple" },
+  { name: "icon", label: "Icon", type: "file", model:"input",placeholder: "Image" },
 ];
 
 export default function GlassForm({ onClose, onResponse, EditData  }) {
@@ -22,8 +23,8 @@ export default function GlassForm({ onClose, onResponse, EditData  }) {
   const [formData, setFormData] = useState({ 
     name: "",
     description: "",
-    lens_cost: "",
-    rarity: "",
+    cost: "",
+    color: "",
     icon: "",
     slug: ""
   });
@@ -36,12 +37,25 @@ export default function GlassForm({ onClose, onResponse, EditData  }) {
 
   // console.log(formData)
   
-  const handleChange = (e) => {
-    const { name, value, type, files } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "file" ? files : value,
-    }));
+  const handleChange = (key: string, value: any, index?: number, subKey?: string) => {
+    setFormData((prev: any) => {
+      let updated = { ...prev };
+
+      if (index !== undefined && subKey) {
+        // For nested array fields like team_members
+        if (!updated[key]) updated[key] = [];
+        if (!updated[key][index]) updated[key][index] = {};
+        updated[key][index][subKey] = value;
+      } else if (index !== undefined) {
+        const arr = updated[key] ? [...updated[key]] : [];
+        arr[index] = value;
+        updated[key] = arr;
+      } else {
+        updated[key] = value;
+      }
+
+      return updated;
+    });
   };
 
 
@@ -53,8 +67,8 @@ export default function GlassForm({ onClose, onResponse, EditData  }) {
         id: EditData?.id || "",
         name: EditData?.name || "",
         description: EditData?.description || "",
-        lens_cost: EditData?.lens_cost || "",
-        rarity: EditData?.rarity || "",
+        cost: EditData?.cost || "",
+        color: EditData?.color || "",
         icon: EditData?.icon || "",
         slug: EditData?.slug || ""
       }));
@@ -64,8 +78,9 @@ export default function GlassForm({ onClose, onResponse, EditData  }) {
   return (
     <form className="space-y-4" encType="multipart/form-data">
       {fields.map(({ name, label, type, placeholder }) => (
+        (type === 'text' || type === 'number') && (
         <div key={name} className="flex flex-col">
-          <label htmlFor={name} className={`${classMap.label}`}>
+          <label htmlFor={name} className={`${classMap.label()}`}>
             {label}
           </label>
           <input
@@ -74,10 +89,27 @@ export default function GlassForm({ onClose, onResponse, EditData  }) {
             type={type}
             placeholder={placeholder}
             value={formData[name] || ""}
-            onChange={handleChange}
-            className={`${classMap.input}`}
+            onChange={(e) => handleChange(name, e.target.value)}
+            className={`${classMap.input()}`}
           />
-        </div>
+        </div>)
+      ))}
+
+
+      {fields.map(({ name, label, type, placeholder }) => (
+        type === 'file' && (
+        <div key={name} className="flex flex-col">
+          <label htmlFor={name} className={`${classMap.label()}`}>
+            {label}
+          </label>
+          <ImageUploadDiv
+          value={formData.icon || ""}
+          onChange={(fileUrl) => handleChange('icon', fileUrl)}
+          uploadUrl={`${apiUrl}/api/upload-file`}
+          deleteUrl={`${apiUrl}/api/delete-file`}
+          path="/files/glasses/"
+          />
+        </div>)
       ))}
 
       {/* <ImageUploader
@@ -90,7 +122,7 @@ export default function GlassForm({ onClose, onResponse, EditData  }) {
       <div className="pt-2 flex items-center gap-4">
         <SendRequest
           text="Save Glass"
-          url="/admin/glass/save"
+          url="/api/admin/glass/save"
           data={formData}
           onResponse={() => {onResponse(true)}}
         />

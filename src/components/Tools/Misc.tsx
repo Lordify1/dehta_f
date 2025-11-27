@@ -1,9 +1,9 @@
 import { advisorUrl, appUrl } from "@/app";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Empty } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { FaBatteryEmpty, FaCircle, FaCircleNotch, FaGgCircle, FaPen, FaRegStar, FaSearchDollar, FaStar } from "react-icons/fa";
+import { FaBatteryEmpty, FaCircle, FaCircleNotch, FaGgCircle, FaPen, FaRegStar, FaSalesforce, FaSearchDollar, FaStar, FaTools } from "react-icons/fa";
 import { IoStar, IoStarOutline } from "react-icons/io5";
 import { toast } from "react-toastify";
 import { useRef } from "react";
@@ -13,7 +13,9 @@ import { Sparkles } from "lucide-react";
 import { OffCanvasContext } from "@/context/OffCanvasContext";
 import Offcanvas from "../ui/Offcanvas";
 import TrendBetCreatorForm from "../Advisor/Forms/TrendBetCreatorForm";
-
+import { apiUrl } from "../../App";
+import useEmblaCarousel from "embla-carousel-react";
+import TrendCard from "../ui/Advisor/TrendCard";
 
 
 // tailwind components end
@@ -247,7 +249,7 @@ export const colorMap = {
 
 export const emptyResult = (text:string) => {
     return(
-        <div className="flex col-span-3 flex-col items-center justify-center w-full">
+        <div className="flex flex-col col-span-3 items-center justify-center w-full">
             <Empty 
             description={<span className="text-primary">{text}</span>} 
             image={Empty.PRESENTED_IMAGE_SIMPLE} 
@@ -259,7 +261,7 @@ export const emptyResult = (text:string) => {
 
 export const emptyData = (text:string) => {
     return(
-        <div className="flex col-span-3 flex-col items-center justify-center w-full">
+        <div className="flex flex-col col-span-3 items-center justify-center w-full">
             <Empty 
             description={<span className="text-primary">{text}</span>} 
             image={Empty.PRESENTED_IMAGE_SIMPLE} 
@@ -294,10 +296,28 @@ const roundedCondition = (direction:string) => {
 
 export const classMap = {
 
-  // index styling
-  indexCard: (minH = 30, maxH = 50) => `border-t-3 border-l-2 border-r-2 border-[var(--owner)] text-primary rounded-md min-h-${minH} h-${maxH} w-90 p-4 bg-gradient-to-b hover:bg-gradient-to-t from-[var(--tbg)] via-[var(--tbg)] to-[var(--background)] hover:to-[var(--tbg)] transition-colors duration-300`,
+  subText: "text-white/80 text-lg sm:text-xl max-w-xl text-center",
 
-  indexFaqCard: () => `flex flex-col border-t-3 border-l-2 border-r-2 border-[var(--owner)] text-primary rounded-md w-full p-4` ,
+  heroText: "text-white font-black text-5xl sm:text-6xl tracking-tight drop-shadow-xl",
+
+  glassCard: (padding = "p-5") =>
+    `backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl shadow-[0_0_30px_rgba(255,255,255,0.05)] text-white ${padding}`,
+
+  label: () => "text-white text-sm font-semibold mb-1",
+
+  input: (width = 'w-full') => `${width} bg-white/10 backdrop-blur-sm border border-white/20
+    rounded-xl p-3 text-white placeholder-white/40 focus:outline-none
+    focus:border-[var(--owner)] transition-all`,
+
+
+  dehtaBorder: (color = 'whiteBorder') => `border-t-3 border-l-2 border-r-2 border-[var(--${color})] border-b-0 border-b-transparent`,
+
+  // index styling
+  indexCard: (minH = 30, maxH = 50) => `${classMap.dehtaBorder()} text-primary rounded-md min-h-${minH} h-${maxH} w-80 p-4 bg-gradient-to-b from-[var(--tbg)] via-(--transparent) to-[var(--transparent)] hover:from-[var(--ceo)] transition-colors duration-300`,
+
+  dehtaCard: () => `flex flex-col ${classMap.dehtaBorder('whiteBorder')} backdrop-blur-sm rounded-t-3xl rounded-b-md p-4 my-2 bg-gradient-to-b from-(--tbg) via-(--transparent) to-(--transparent)`,
+
+  indexFaqCard: () => `${classMap.dehtaBorder()} flex flex-col text-primary rounded-md w-full p-4` ,
 
   form: "bg-[var(--accent)] border border-[var(--border)] text-[var(--primary)] p-3 rounded-md",
 
@@ -310,7 +330,7 @@ export const classMap = {
     textsize?: string,
     direction: string = "left"
   ) =>
-    `rounded-md bg-[var(--owner)] text-black p-2 px-3 py-3`,
+    `rounded-md bg-(--owner) text-black p-2 px-3 py-3 hover:bg-transparent hover:text-primary hover:border-2 hover:border-(--owner) hover:border-b-transparent`,
 
   buttonJsx: ({bg, hover, text, textsize, direction = 'down'} : {
     bg?: string,
@@ -327,10 +347,9 @@ export const classMap = {
     ${direction && roundedCondition(direction)} 
     hover:rounded-none transition duration-500`,
 
-  input: (width = "w-full") =>
-    `${width} px-4 py-2 mb-2 mt-2 w-full rounded-md bg-[var(--accent-foreground)] text-[var(--accent)] placeholder-[var(--placeholder)] border border-[var(--input)] focus:outline-none focus:ring-1 focus:ring-[var(--ceo)] transition-all duration-200`,
+  // input: (width = "w-full") => `${width} ${classMap.dehtaBorder('white')} rounded-2xl p-2 transition-all focus:outline-none bg-gradient-to-b placeholder-muted from-[var(--tbg)] via-[var(--tbg)] to-[var()]`,
 
-  label: () => "block text-sm font-medium text-[var(--primary)] mb-2",
+  // label: () => "block text-(--primary) mb-2",
 
   card: (col?: number | string) =>
     `bg-[var(--card)] flex border border-[var(--border)] rounded-lg shadow-md p-4${col ? ` col-span-${col}` : ""} text-center m-1 min-h-50 items-center text-[var(--card-foreground)]`,
@@ -486,8 +505,8 @@ export const random = (max:any) => {
 
 export const getData = async (url, id, method = 'post') => {
     const data = await (method == 'get' ? 
-    axios.get(`${advisorUrl}/${url}/${id ? id : ''}`) : 
-    axios.post(`${advisorUrl}/${url}/${id ? id : ''}`))
+    axios.get(`${apiUrl}/api/${url}/${id ? id : ''}`) : 
+    axios.post(`${apiUrl}/api/${url}/${id ? id : ''}`))
 
     return data
 }
@@ -495,8 +514,8 @@ export const getData = async (url, id, method = 'post') => {
 
 export const postData = async (url, id = '', method = 'post') => {
     const data = await (method == 'get' ? 
-    axios.get(`${appUrl}/${url}${id ? '/' + id : ''}`) : 
-    axios.post(`${appUrl}/${url}${id ? '/' + id : ''}`))
+    axios.get(`${apiUrl}/api/${url}${id ? '/' + id : ''}`) : 
+    axios.post(`${apiUrl}/api/${url}${id ? '/' + id : ''}`))
 
     return data
 }
@@ -842,14 +861,65 @@ export const TrendCreateBtn = () => {
     <button
       onClick={() => {setOffId('CreateTrend'); setShowOffCanvas(true); SetOfftitle('Create Trend')}}
       onMouseOver={() => {setHide(false), setOpacity(false)}}
-      className={`fixed bottom-6 mb-10 right-6 flex items-center gap-2 bg-[var(--owner)] text-white px-4 py-3 rounded-full shadow-lg hover:scale-105 transition-all duration-500 z-[10000] ${opacity && 'opacity-50'}`}
+      className={`flex lg:hidden fixed bottom-6 mb-10 right-6 items-center gap-2 bg-(--owner) text-white px-4 py-3 rounded-full shadow-lg hover:scale-105 transition-all duration-500 z-10000 ${opacity && 'opacity-100'}`}
     >
       <FaPen className="w-5 h-5" />
-      {!hide && <span className="font-medium">Create Project</span>}
+      {!hide && <span className="font-medium">Create Trend</span>}
     </button>
     </>
   )
 }
+
+
+export const PresaleIcon = () => {
+  return (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="text-black animate-ping repeat-infinite delay-1000 hover:animate-none"
+    >
+      <path d="M12 2v20M2 12h20" />
+      <path d="M7 7h10v10H7z" />
+    </svg>
+  );
+};
+
+
+export const PresaleBtn = () => {
+  const [showText, setShowText] = useState(true);
+  const locator = useLocation();
+
+  // hide text after 10s
+  useEffect(() => {
+    const timer = setTimeout(() => setShowText(false), 10000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <Link
+      to="/og/private_sale"
+      onMouseEnter={() => setShowText(true)}
+      className={`${locator.pathname === '/og/private_sale' ? 'hidden' : 'flex'} fixed mb-12 bottom-3 right-3 lg:bottom-6 lg:right-6 lg:mb-0 flex items-center gap-2 
+        px-4 py-3 rounded-xl bg-(--owner) text-black font-medium
+        shadow-xl hover:scale-105 hover:shadow-2xl transition-all duration-300 
+        backdrop-blur-md z-9999`}
+    >
+      <PresaleIcon />
+
+      {showText && (
+        <span className="whitespace-nowrap">
+          Private Sale is On!!!
+        </span>
+      )}
+    </Link>
+  );
+};
 
 
 // --- Utility to clean and parse AI response safely ---
@@ -894,3 +964,275 @@ export const ProgressBar =({current, destination}:{current:number,destination:nu
 // export const TrendData = {
 //   id: id
 // }
+
+
+
+
+
+// animations
+
+// Improved fade/slide animations + reusable AnimatedReveal component
+// Replaces the previous FadeInAnim selection
+
+type RevealDirection = "up" | "down" | "left" | "right" | "none";
+
+interface AnimatedRevealProps {
+  children: React.ReactNode;
+  delay?: number; // ms
+  duration?: number; // ms
+  distance?: number; // px
+  direction?: RevealDirection;
+  threshold?: number; // intersection threshold
+  rootMargin?: string;
+  once?: boolean; // if true, will not hide after leaving viewport
+  className?: string;
+  style?: React.CSSProperties;
+}
+
+/**
+ * Generic AnimatedReveal - fade + slide from any direction
+ */
+export const AnimatedReveal = ({
+  children,
+  delay = 0,
+  duration = 700,
+  distance = 16,
+  direction = "up",
+  threshold = 0.12,
+  rootMargin = "0px",
+  once = true,
+  className = "",
+  style = {},
+}: AnimatedRevealProps) => {
+  const ref = useRef<HTMLDivElement | null>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          if (once && node) observer.unobserve(node);
+        } else {
+          if (!once) setVisible(false);
+        }
+      },
+      { threshold, rootMargin }
+    );
+
+    observer.observe(node);
+    return () => {
+      try {
+        observer.unobserve(node);
+        observer.disconnect();
+      } catch (e) {
+        /* noop */
+      }
+    };
+  }, [threshold, rootMargin, once]);
+
+  // compute initial transform based on direction
+  let initialTransform = "translate3d(0, 0, 0)";
+  switch (direction) {
+    case "up":
+      initialTransform = `translate3d(0, ${distance}px, 0)`;
+      break;
+    case "down":
+      initialTransform = `translate3d(0, -${distance}px, 0)`;
+      break;
+    case "left":
+      initialTransform = `translate3d(${distance}px, 0, 0)`;
+      break;
+    case "right":
+      initialTransform = `translate3d(-${distance}px, 0, 0)`;
+      break;
+    case "none":
+    default:
+      initialTransform = `translate3d(0, ${Math.max(4, Math.floor(distance / 2))}px, 0)`;
+      break;
+  }
+
+  const combinedStyle: React.CSSProperties = {
+    transitionProperty: "opacity, transform",
+    transitionDuration: `${duration}ms`,
+    transitionTimingFunction: "cubic-bezier(.2,.8,.2,1)",
+    transitionDelay: `${delay}ms`,
+    opacity: visible ? 1 : 0,
+    transform: visible ? "translate3d(0,0,0)" : initialTransform,
+    willChange: "transform, opacity",
+    ...style,
+  };
+
+  return (
+    <div ref={ref} className={className} style={combinedStyle}>
+      {children}
+    </div>
+  );
+};
+
+/**
+ * Backwards-compatible 'FadeInAnim with small default distance and parameters
+ */
+export const FadeInAnim = ({
+  children,
+  delay = 0,
+  duration = 700,
+  className = "",
+  threshold = 0.12,
+  once = true,
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  duration?: number;
+  className?: string;
+  threshold?: number;
+  once?: boolean;
+}) => {
+  return (
+    <AnimatedReveal
+      direction="none"
+      delay={delay}
+      duration={duration}
+      distance={8}
+      threshold={threshold}
+      once={once}
+      className={className}
+    >
+      {children}
+    </AnimatedReveal>
+  );
+};
+
+/**
+ * Convenience slide components
+ */
+export const SlideUp = (props: Omit<AnimatedRevealProps, "direction">) => (
+  <AnimatedReveal {...props} direction="up" />
+);
+
+export const SlideDown = (props: Omit<AnimatedRevealProps, "direction">) => (
+  <AnimatedReveal {...props} direction="down" />
+);
+
+export const SlideLeft = (props: Omit<AnimatedRevealProps, "direction">) => (
+  <AnimatedReveal {...props} direction="left" />
+);
+
+export const SlideRight = (props: Omit<AnimatedRevealProps, "direction">) => (
+  <AnimatedReveal {...props} direction="right" />
+);
+
+/**
+ * Staggered container for animating lists with a waterfall delay
+ * children should be an array of React elements
+ */
+export const StaggeredList = ({
+  children,
+  baseDelay = 40,
+  direction = "up",
+  duration = 700,
+  distance = 16,
+  threshold = 0.12,
+  once = true,
+  className = "",
+}: {
+  children: React.ReactNode[] | React.ReactNode;
+  baseDelay?: number; // ms added per index
+  direction?: RevealDirection;
+  duration?: number;
+  distance?: number;
+  threshold?: number;
+  once?: boolean;
+  className?: string;
+}) => {
+  const items = Array.isArray(children) ? children : [children];
+  return (
+    <div className={className}>
+      {items.map((child, i) => (
+        <AnimatedReveal
+          key={i}
+          direction={direction}
+          delay={i * baseDelay}
+          duration={duration}
+          distance={distance}
+          threshold={threshold}
+          once={once}
+          style={{ display: "block" }}
+        >
+          {child}
+        </AnimatedReveal>
+      ))}
+    </div>
+  );
+};
+
+
+
+export const DehtaConstruct = ({height, classy}:{height:any, classy:any}) => {
+  return(
+    <div className={`${classMap.dehtaBorder()} flex flex-col items-center justify-center bg-accent text-white w-full opacity-50 rounded-2xl ${height} ${classy}`}>
+      <FaTools className="text-3xl lg:text-4xl"/>
+      <p className="text-3xl lg:text-4xl">Under Construction</p>
+    </div>
+  )
+}
+
+
+export const bgClass = (position:any) => {
+  switch(position){
+    case 'dashboard':
+      return 'herobg'
+      break
+    default:
+      break
+  }
+}
+
+export const Lens = () => {
+  return(
+    <img src={'/logo.svg'} className="w-7 p-0 m-0" alt="" />
+  )
+}
+
+
+export const ComingSoonIcon = () => {
+  return (
+    <Sparkles className="w-6 h-6 text-[var(--owner)] animate-pulse" />
+  );
+};
+
+
+export const ComingSoon = () => {
+  return (
+    <div className="flex flex-col items-center justify-center p-6 mt-4 bg-black backdrop-blur-3xl rounded-md w-full opacity-70">
+      <ComingSoonIcon/>
+      <p className="text-xl font-semibold text-white">Coming Soon</p>
+    </div>
+  );
+};
+
+
+
+
+
+export default function TrendCarousel({ trends }) {
+  const [emblaRef] = useEmblaCarousel({
+    loop: false,
+    align: "start"
+  });
+
+  return (
+    <div className="overflow-hidden" ref={emblaRef}>
+      <div className="flex">
+        {trends.map((trend, i) => (
+          <div key={i} className="min-w-[95%] md:min-w-[50%] lg:min-w-[25%] p-2">
+            <TrendCard {...trend} data={trend} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}

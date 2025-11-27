@@ -17,7 +17,8 @@ const LensActivity = ({userTransact}: Props) => {
     }, 1000);
 
     return(
-        <section className={`${classMap.userCard(1)} h-[70vh] overflow-y-scroll`}>
+        <section className={`${classMap.dehtaCard()} border-(--owner) max-h-[60vh]`}>
+          <div className="overflow-y-scroll">
             <h3 className="font-bold text-lg mb-3 flex items-center gap-2">
               <FaMoneyCheck/> Recent Lens Activity
             </h3>
@@ -34,6 +35,7 @@ const LensActivity = ({userTransact}: Props) => {
                 </div>
               ))) : (emptyData('No Lens Activity Yet')))}
             </div>
+          </div>
         </section>
     )
 }

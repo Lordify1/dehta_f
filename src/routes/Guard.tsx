@@ -8,9 +8,9 @@ type Props = {
 }
 
 export const ProtectedRoute = ({ user, loading, children }: Props) => {
-    // if (loading) {
-    //     return <Loading/>
-    // }
+    if (loading) {
+        return <Loading/>
+    }
     if (!user) {
         return <Navigate to="/login" replace />;
     }
@@ -22,9 +22,9 @@ export const ProtectedRoute = ({ user, loading, children }: Props) => {
 };
 
 export const GuestRoute = ({ user, loading, children }: Props) => {
-    // if (loading) {
-    //     return <Loading/>
-    // }
+    if (loading) {
+        return <Loading/>
+    }
     if (user) {
         return <Navigate to="/dashboard" replace />;
     }
@@ -32,17 +32,17 @@ export const GuestRoute = ({ user, loading, children }: Props) => {
 };
 
 export const AnyRoute = ({ user, loading, children }: Props) => {
-    // if (loading) {
-    //     return <Loading/>
-    // }
+    if (loading) {
+        return <Loading/>
+    }
     return children;
 };
 
 
 export const AdminGuestRoute = ({user, loading, children}: Props) => {
-    // if (loading) {
-    //     return <Loading/>
-    // }
+    if (loading) {
+        return <Loading/>
+    }
 
     if(user){
         return <Navigate to="/admin/dashboard" replace />;
@@ -53,11 +53,15 @@ export const AdminGuestRoute = ({user, loading, children}: Props) => {
 
 
 export const AdminAuthRoute = ({user, loading, children}: Props) => {
-    // if (loading) {
-    //     return <Loading/>
-    // }
+    if (loading) {
+        return <Loading/>
+    }
     if (!user) {
         return <Navigate to="/admin/login" replace />;
+    }
+
+    if(user?.role !== 'admin') {
+        return <Navigate to="/dashboard" replace />
     }
     return children;    
 }

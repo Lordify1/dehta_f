@@ -16,6 +16,8 @@ import { Link, useParams } from 'react-router-dom';
 import AiAnalysis from './AiAnalysis';
 import AiLensOffcanvas from '@/components/Advisor/AiLensOffcanvas';
 import Projects from './Projects';
+import { apiUrl } from '../../App';
+import Layout from '../components/Layout';
 
 
 const ProjectDetail = () => {
@@ -64,7 +66,7 @@ const ProjectDetail = () => {
     ]
 
   const fetchProject = async () => {
-    const data = await axios.post(`${appUrl}/project/get/${id}/${slug}`);
+    const data = await axios.post(`${apiUrl}/api/project/get/${id}/${slug}`);
     setProject(data.data.project);
     // console.log(data.data?.project?.aiAnalysis);
     setIsLoading(false)
@@ -101,23 +103,14 @@ const ProjectDetail = () => {
   };
 
   return (
-    <LandingLayout>
+    <Layout>
       <Helmet>
         <title>{`${project?.name || ""} -`} {appName}</title>
       </Helmet>
-      {isDraft && (<div className={`w-full min:h-10 p-2 text-center bg-[var(--warning)] flex items-center text-secondary justify-center mb-2`}>
+      {isDraft && (<div className={`w-full min:h-10 p-2 text-center bg-(--warning) flex items-center text-secondary justify-center mb-2`}>
           <h6 className='text-sm'>Viewing as <b>Draft</b>. Your project is not visible to others. Toggle the button on your project card on your dashboard to publish it</h6>
         </div>)}
-      <div className={`w-full fade-in transition-opacity duration-500 min-h-screen bg-background text-primary px-4 py-2`}>
-        {/* Back Button */}
-        {!isDraft && <div className="mb-4">
-          <Link 
-          className={`text-sm ${classMap.button('','','','','left')}`}
-          to={`${appUrl}/projects`}>
-            ←
-          </Link>
-        </div>}
-
+      <div className={`w-full fade-in transition-opacity duration-500 min-h-screen bg-background text-primary px-4 py-5 mt-20`}>
         {/* Main Grid Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* 👉 Left Column (Comments & Engagement) */}
@@ -501,7 +494,7 @@ const ProjectDetail = () => {
           </Offcanvas>
         </div>
       </div>
-    </LandingLayout>
+    </Layout>
   );
 };
 

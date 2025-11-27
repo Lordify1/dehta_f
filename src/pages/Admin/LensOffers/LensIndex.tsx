@@ -14,6 +14,7 @@ import NewsletterTrash from "@/components/Admin/NewsletterTrash";
 import GlassForm from "@/components/Admin/GlassForm";
 import { Helmet } from "react-helmet-async";
 import LensForm from "@/components/Admin/LensForm";
+import { apiUrl } from "../../../App";
 
 
 export default function LensIndex() {
@@ -69,7 +70,7 @@ export default function LensIndex() {
             setShowForm(true);
           }} />
           <SendRequest
-          url={`/admin/lensoffer/delete/${record.id}`}
+          url={`/api/admin/lensoffer/delete/${record.id}`}
           method="delete"
           deleteBtn={true}
           data={{ id: record.id }}
@@ -84,7 +85,7 @@ export default function LensIndex() {
   ];
 
   useEffect(()=>{
-    axios.post(appUrl + '/admin/lensoffer/get')
+    axios.post(apiUrl + '/api/admin/lensoffer/get')
     .then((res :any) => {
       console.log(res.data),
       setDataSource(res.data),

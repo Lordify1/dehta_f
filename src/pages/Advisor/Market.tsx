@@ -1,57 +1,38 @@
-import React, { useEffect, useState } from "react";
-import DashboardLayout from "@/layouts/Advisor/DashboardLayout";
-import { founderSidebar } from "@/data/founderSidebarData";
-import { investorSidebar } from "@/data/investorSidebarData";
-import { useUser } from "@/context/UserContext";
 import { Helmet } from "react-helmet-async";
 import { advisorUrl, appName, appUrl } from "@/app";
+import { ComingSoon, DehtaConstruct, emptyData, Loading } from "../../components/Tools/Misc";
+import DashboardLayout from "../../layouts/Advisor/DashboardLayout";
+import { useUser } from "@/context/UserContext";
 import axios from "axios";
-import { Loading, LoadingDiv, classMap, emptyData } from "@/components/Tools/Misc";
-import { FaCoins, FaShoppingCart, FaGlasses, FaFire, FaSearch, FaSearchDollar } from "react-icons/fa";
-import LensOffer from "@/components/ui/Advisor/LensOffer";
-import GlassCard from "@/components/ui/Advisor/GlassCard";
-import Modal from "@/components/ui/Modal";
-import { useUI } from "@/context/UIContext";
-import SendRequest from "@/components/Tools/SendRequest";
+import { apiUrl } from "../../App";
+import { useEffect, useState } from "react";
+import { FaDollarSign, FaSearchDollar } from "react-icons/fa";
 
 const Market = () => {
-    const { user } = useUser();
-  const [isLoading, setIsLoading] = useState(true);
-  const [offers, setOffers] = useState([]);
+  const { user, role, sidebarData } = useUser();
+
   const [glasses, setGlasses] = useState([]);
-  const [userGlasses, setUserGlasses] = useState(user?.glass_purchases || [])
+  const [isLoading, setIsLoading] = useState(true);
+  const [userGlasses, setUserGlasses] = useState([]); // Assuming you want to track user's glasses
+  const [showModal, setShowModal] = useState(false);
+  const [selectedGlass, setSelectedGlass] = useState(null);
 
-  const {setShowModal} = useUI();
-
-  const [selectedGlass, setSelectedGlass] = useState({
-          id: null,
-          rarity: "",
-          name: "",
-          description: "",
-          lens_cost: "",
-          icon: ""
-    })
-
-  const sidebarD =
-    user?.role === "founder" ? founderSidebar : investorSidebar;
-
-  const getData = async () => {
+  const getMarketInfo = async () => {
     try {
-      const res = await axios.post(`${appUrl}/market/all`);
-      setOffers(res.data.offers || []);
-      // console.log(res)
-      setGlasses(res.data.glasses || []);
-    } catch (error) {
-      console.error("Error fetching market data:", error);
+      const res = await axios.post(`${apiUrl}/api/market/all`);
+      if (res.data) {
+        setGlasses(res?.data?.glasses || []);
+        setUserGlasses(res?.data?.userGlasses || []); // If API returns user's glasses
+      }
+    } catch (err) {
+      console.log("Error:", err);
     } finally {
       setIsLoading(false);
     }
   };
 
-
-
   useEffect(() => {
-    getData();
+    getMarketInfo();
   }, []);
 
   return (
@@ -59,142 +40,88 @@ const Market = () => {
       <Helmet>
         <title>Market Place - Buy Lens, Glasses and More - {appName}</title>
       </Helmet>
-      <Modal
-      title="Glass Purchase"
+      <DashboardLayout
+        user={user}
+        sidebarData={sidebarData}
+        sidebarDataType={`${role}`}
       >
-        <GlassCard
-        id={selectedGlass.id}
-        icon={selectedGlass.icon}
-        description={selectedGlass.description}
-        lens_cost={selectedGlass.lens_cost}
-        rarity={selectedGlass.rarity}
-        name={selectedGlass.name}
-        showBtn={false}
-        />
-        <p className={`${classMap.tempBtn}`}><FaSearchDollar className="inline mr-1 text-[var(--owner)]"/> Balance: 
-        <span className={`${selectedGlass.lens_cost > user?.total_lens ? 'text-red-500' : ''}`}>{"  "} {user?.total_lens}</span></p>
+        <section className="flex flex-col space-y-6">
+          {/* Hero Section */}
+          <div className="flex flex-col items-center justify-center min-h-40 text-black w-full bg-[var(--owner)] p-6">
+            <h1 className="text-3xl lg:text-5xl font-bold">Discover and</h1>
+            <h1 className="text-3xl lg:text-5xl font-bold">Collect Dehta NFTs</h1>
+          </div>
 
-        {selectedGlass.lens_cost > user?.total_lens ? (
-            <p>Insufficient Lens Balance.</p>
-        ) : (
-            <SendRequest
-            url={'/glass/buy'}
-            method="post"
-            data={selectedGlass}
-            text={`Pay ${selectedGlass.lens_cost}`}
-            awaitConfirmation={true}
-            confirmationTitle="Buy Glass"
-            onResponse={() => {}}
-            />
-        )}
-      </Modal>
-      {isLoading ? (
-        <DashboardLayout
-          user={user}
-          sidebarData={sidebarD}
-          sidebarDataType={user?.role}
-        >
-          <LoadingDiv layout={[[4], [4], [4]]} height="h-30" />
-        </DashboardLayout>
-      ) : (
-        <>
-        <DashboardLayout
-          user={user}
-          sidebarData={sidebarD}
-          sidebarDataType={user?.role}
-        >
-          <section className={`${classMap.section} flex flex-col md:flex-col lg:flex-row mb-6`}>
-            <h2 className="text-2xl font-bold flex items-center gap-2">
-              <FaShoppingCart className="text-[var(--owner)]" /> Marketplace
-            </h2>
-            <small className="text-[var(--muted-foreground)] text-center">
-              Buy <FaSearch className="inline text-[var(--owner)]"/> or unlock <FaGlasses className="inline text-[var(--owner)]"/> using your <FaSearch className="inline text-[var(--owner)]"/> balance or
-              Web3 wallet.
-            </small>
-          </section>
+          <div className="h-10 w-full"></div>
 
-          {/* LENS OFFERS */}
-          <section className={`${classMap.pageSection()} mb-10`}>
-            <div className={`${classMap.sectionHeaderDiv()}`}>
-              <h3 className={`${classMap.sectionHeader()}`}>
-                <FaSearchDollar className="inline mr-2 text-[var(--owner)]" />
-                Lens Offers
-              </h3>
+          {/* Glass Picks */}
+          <div className="flex flex-col items-center justify-center text-black w-full bg-white p-6 rounded-lg shadow-md">
+            <h1 className="text-2xl lg:text-3xl font-semibold mb-4">Glass Picks</h1>
+
+             {isLoading ? (
+            <Loading/>
+          ) : glasses.length > 0 ? (
+            <div
+              id="glass"
+              className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-10 items-center justify-between"
+            >
+              {glasses.map((glass) => {
+                return (
+                  <div
+                    key={glass.id}
+                    className="shadow-2xl flex flex-col items-center justify-center w-full max-w-6xl mx-auto rounded-2xl bg-white p-2"
+                  >
+                    <div className="flex flex-col items-center text-center w-full">
+                      <div className={`${glass?.color ? `bg-${glass?.color}` : 'bg-(--owner)'} rounded-lg p-3 mb-3 flex items-center justify-center`}>
+                        <img
+                          src={glass.icon}
+                          alt={glass.name}
+                          className="w-50 h-50 object-contain mx-auto"
+                        />
+                      </div>
+
+                      <h4 className="font-semibold text-lg truncate w-full">{glass.name}</h4>
+
+                      <div className="flex items-center gap-2 mb-3 text-sm text-gray-700">
+                        <FaDollarSign className="text-[var(--owner)]" />
+                        <span>{Number(glass.cost).toLocaleString()} $</span>
+                      </div>
+
+                      <button
+                        className="bg-[var(--owner)] text-white px-4 py-2 rounded hover:bg-opacity-90 transition transform hover:scale-105 flex items-center"
+                        onClick={() => {
+                          setShowModal(true);
+                          setSelectedGlass({ ...glass });
+                        }}
+                      >
+                        <FaSearchDollar className="inline mr-2" /> Buy Glass
+                      </button>
+                    </div>
+                  </div>
+                )
+              })}
             </div>
-
-            
-              {isLoading ? (<Loading/>) : offers.length > 0 ? (
-                <div id="#lens" className="grid grid-cols-1 md:grid-cols-3 w-[100%] items-start justify-center lg:grid-cols-5 gap-2 max-h-[100vh] overflow-y-scroll">
-                {offers.map((offer) => (
-                  <LensOffer
-                  {...offer}
-                  />
-                ))}
-                </div>
-              ) : (
-                emptyData("No offers available at the moment")
-              )}
-          </section>
-
-          {/* GLASSES COLLECTION */}
-          <section className={`${classMap.pageSection()} mb-10`}>
-            <div className={`${classMap.sectionHeaderDiv()}`}>
-              <h3 className={`${classMap.sectionHeader()}`}>
-                <FaGlasses className="inline mr-2 text-[var(--owner)]" />
-                Glasses Collection
-              </h3>
+          ) : (
+            <div className="flex flex-col w-full col-span-3">
+              {emptyData('Glasses Coming in Hot! Hold on!!!')}
             </div>
+          )}
+          </div>
 
-            
-              {isLoading ? (<Loading/>) : glasses.length > 0 ? (
-                <div id="#glass" className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-1 max-h-[100vh] overflow-y-scroll">
-                {glasses.map((glass) => {
-                    let userHave = false;
-                    userGlasses.length > 0 && userGlasses.map((item, index) => {
-                        userHave = item.glass_id === glass.id ? true : false 
-                    })
-                    return(
-                        <div
-                            key={glass.id}
-                            className={`${classMap.userCard(1)} ${glass.rarity === 'special' ? 'border-b-4 border-b-red-500' : 'border-b-3 border-b-[var(--owner)]'}`}
-                            >
-                            <div className="flex flex-col items-center justify-center text-center">
-                                <span className="text-4xl mb-2">{glass.icon}</span>
-                                <h4 className="font-semibold text-lg">
-                                {glass.name}
-                                </h4>
-                                <p className="text-sm text-[var(--muted-foreground)] mb-3">
-                                {glass.description}
-                                </p>
-                                <div className="flex items-center gap-2 mb-2">
-                                <FaCoins className="text-[var(--owner)]" />
-                                <span>{glass.lens_cost.toLocaleString()} Lens</span>
-                                </div>
-                                {userHave ? (
-                                    <p className={`${classMap.tempBtn}`}>Glass Purchased</p>
-                                ) : (
-                                    <button
-                                    className={`${classMap.buttonJsx({})}`}
-                                    onClick={() => {
-                                        setShowModal(true);
-                                        setSelectedGlass({...glass})
-                                    }}
-                                    >
-                                    <FaSearchDollar className="inline mr-1" /> Buy Glass
-                                    </button>
-                                )}
-                            </div>
-                        </div>
-                    )
-                })}
-                </div>
-              ) : (
-                emptyData("No glasses available right now.")
-              )}
-          </section>
-        </DashboardLayout>
-        </>
-      )}
+          {/* Top Seller */}
+          <div className="flex flex-col items-center justify-center min-h-40 text-white w-full bg-black p-6 rounded-lg shadow-md">
+            <h1 className="text-2xl lg:text-3xl font-semibold mb-4">Top Seller</h1>
+            <ComingSoon />
+          </div>
+
+          {/* NFT Collection */}
+          <div className="flex flex-col items-center justify-center min-h-40 text-black w-full bg-white p-6 rounded-lg shadow-md">
+            <h1 className="text-2xl lg:text-3xl font-semibold mb-4">NFT Collection</h1>
+            <ComingSoon />
+          </div>
+        </section>
+
+      </DashboardLayout>
     </>
   );
 };

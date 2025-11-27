@@ -1,115 +1,106 @@
-import React, { useContext, useEffect, useState } from 'react';
-import ProjectCard from '@/components/ui/Advisor/ProjectCard';
+import React, { useEffect, useState } from 'react';
 import {
-  headingClass,
   emptyResult,
   Loading,
-  classMap,
-  advisorPostData,
 } from '@/components/Tools/Misc';
-import { FaFilter, FaTimes } from 'react-icons/fa';
-
-import { Header } from '@/components/Main/Header';
 import Filters from '@/components/Tools/ProjectsFilter';
-import LandingLayout from '@/layouts/Advisor/LandingLayout';
-import { Empty } from 'antd';
-import Offcanvas from '@/components/ui/Offcanvas';
-import {RateForm} from '@/components/Advisor/Forms/RateForm';
-import { OffCanvasContext, OffCanvasProvider } from '@/context/OffCanvasContext';
-import { useAuth } from '@/context/AuthContext';
-import { advisorUrl, appName, appUrl } from '@/app';
-import { useUser } from '@/context/UserContext';
-import { Helmet } from 'react-helmet-async';
+import Layout from '../components/Layout';
+import ProjectCard from '../../components/ui/Advisor/ProjectCard';
 import axios from 'axios';
-
+import DashboardLayout from '../../layouts/Advisor/DashboardLayout';
+import { Helmet } from 'react-helmet-async';
+import { apiUrl, appName } from '../../App';
+import { useUser } from '@/context/UserContext';
+import Offcanvas from '@/components/ui/Offcanvas';
+import { RateForm } from '@/components/Advisor/Forms/RateForm';
 
 export default function Projects() {
   const [showFilters, setShowFilters] = useState(false);
-  const [projects, setProjects] = useState();
-  const authUserId = 1; // Replace with actual auth user ID when available
-  const [filteredProjects, setFilteredProjects] = useState();
+  const [projects, setProjects] = useState([]);
+  const [filteredProjects, setFilteredProjects] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showRateForm, setShowRateForm] = useState(false);
-  const {offData} = useContext(OffCanvasContext)
-  const {user} =  useUser();
+  const { user, role, sidebarData } = useUser();
 
-  // useEffect(() => {
-  //   axios.post(`${appUrl}/project/all`)
-  //     .then((data:any) => {
-  //       setProjects(data.data.projects);
-  //       console.log(data)
-  //       setIsLoading(false);
-  //     })
-  //     .catch((err) => console.error(err));
-  // }, []);
+  useEffect(() => {
+    axios
+      .post(`${apiUrl}/api/project/all`)
+      .then((res: any) => {
+        setProjects(res.data.projects);
+        setIsLoading(false);
+      })
+      .catch((err) => console.error(err));
+  }, []);
 
-  return (
-    <>
-    {/* <OffCanvasProvider> */}
-    <Helmet>
-      <title>Listed Projects - {appName}</title>
-    </Helmet>
-    <LandingLayout>
-    <div className="min-h-screen flex flex-col items-center bg-background text-primary px-4 py-6 text-[0.7rem]">
-  {/* Header Section */}
-  <div className="flex justify-between items-center mb-6 w-full max-w-7xl">
-    <h1 className="">Explore Projects</h1>
-    <button
-      onClick={() => setShowFilters(!showFilters)}
-      className={`${classMap.button('bg-transparent', '', 'text-primary', '', '')} lg:hidden flex items-center gap-2 px-3 py-2 rounded-md`}
-    >
-      {showFilters ? <FaTimes className='text-red-500'/> : <FaFilter />}
-    </button>
-  </div>
+  const Content = (
+    <div className={`min-h-screen flex flex-col items-center text-primary px-6 md:px-10 lg:px-16 py-14 ${user ? '' : 'projectsbg py-20'} w-full`}>
 
-  {/* Main Content Grid */}
-  <div className="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-12 gap-6">
-    {/* Filter Sidebar */}
-    <div className={`lg:col-span-3 ${showFilters ? 'block' : 'hidden'} lg:block`}>
-      <Filters
-        showFilters={showFilters}
-        data={projects}
-        filteredData={(e: any) => setFilteredProjects(e)}
-      />
-    </div>
+      {/* Header */}
+      <div className="w-full max-w-7xl flex flex-col items-center mb-10 text-center">
+        <h1 className="text-5xl lg:text-7xl font-semibold">Projects</h1>
+        <p className="lg:text-2xl text-lg mt-3">
+          Explore Verified and AI-Analyzed Projects across the crypto ecosystem
+        </p>
 
-    {/* Project Cards */}
-    <div className="lg:col-span-9 flex flex-col">
+        <Filters
+          showFilters={showFilters}
+          data={projects}
+          filteredData={(e: any) => setFilteredProjects(e)}
+        />
+      </div>
+
+      {/* Content Grid */}
       {isLoading ? (
-        <div className="flex justify-center items-center min-h-[50vh]">
+        <div className="flex flex-col justify-center items-center min-h-[50vh]">
           <Loading />
         </div>
-      ) : (filteredProjects || projects)?.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-          {(filteredProjects || projects)?.map((project) => (
-            // <ProjectCard
-            //   key={project.id}
-            //   {...project}
-            //   authUserId={user?.id}
-            //   userId={project?.user_id}
-            //   more={project.id}
-            // />
-            <></>
+      ) : (filteredProjects.length > 0 || projects.length > 0) ? (
+        <div className={`w-full max-w-7xl grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6`}>
+          {(filteredProjects.length > 0 ? filteredProjects : projects).map((project: any) => (
+            <ProjectCard
+              key={project.id}
+              {...project}
+              authUserId={user?.id}
+              userId={project?.user_id}
+              more={project.id}
+            />
           ))}
         </div>
       ) : (
         emptyResult('No Project Found')
       )}
     </div>
-  </div>
-</div>
+  );
 
-    </LandingLayout>
-    <Offcanvas
-      isOpen={showRateForm}
-      onClose={() => setShowRateForm(false)}
-      title={`Rate Project`}
-    >
-      <RateForm
-      auth={user}
-      />
-    </Offcanvas>
-    {/* </OffCanvasProvider> */}
+  return (
+    <>
+      <Helmet>
+        <title>Listed Projects - {appName}</title>
+      </Helmet>
+
+      {/* If logged in, show Dashboard layout; otherwise the public layout */}
+      {user ? (
+        <DashboardLayout
+          user={user}
+          sidebarData={sidebarData}
+          sidebarDataType={`${role}`}
+          classy="projectsbg"
+        >
+          {Content}
+        </DashboardLayout>
+      ) : (
+        <Layout>
+          {Content}
+        </Layout>
+      )}
+
+      <Offcanvas
+        isOpen={showRateForm}
+        onClose={() => setShowRateForm(false)}
+        title="Rate Project"
+      >
+        <RateForm auth={user} />
+      </Offcanvas>
     </>
   );
 }

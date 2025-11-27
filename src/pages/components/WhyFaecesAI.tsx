@@ -4,6 +4,7 @@ import React from 'react';
 import { Fade, Slide } from 'react-awesome-reveal';
 import { FaAssistiveListeningSystems, FaSearch } from 'react-icons/fa';
 import {indexFeatures} from '@/data/indexData.jsx'
+import { FadeInAnim, SlideDown, SlideUp, StaggeredList } from '../../components/Tools/Misc';
 
 const marketData = [
   {
@@ -41,20 +42,22 @@ const WhyFaecesAI: React.FC = () => {
   return (
     <section
       id="why"
-      className="relative text-[var(--primary)] py-10 px-6 sm:px-16 overflow-hidden"
+      className="text-(--primary) py-10 px-6 sm:px-16 overflow-hidden"
     >
       <div className="mx-auto max-w-7xl items-center">
-        <h1 className="text-3xl lg:text-6xl mb-4">Why Dehta Labs</h1>
-        <div className='grid grid-cols-1 lg:grid-cols-3 gap-3 mb-2'>
+        <h1 className="text-3xl lg:text-6xl mb-10">Why Dehta Labs</h1>
+        <div className='grid grid-cols-1 lg:grid-cols-3 gap-3 mb-2 items-center justify-items-center w-full'>
         {indexFeatures.map((it:any, ind:any) => {
           return(
             <>
-            <section key={ind} className={`${classMap.indexCard()}`}>
-              <div className="flex flex-row items-center justify-start mb-4">
+            <SlideUp delay={3 + ind}>
+            <section key={ind} className={`${classMap.indexCard()} `}>
+              <div className="flex flex-row items-center justify-start sm:mb-5">
                 {it.icon} <h4 className='text-3xl'>{it.label}</h4>
               </div>
               <p className=''>{it.text}</p>
             </section>
+            </SlideUp>
             </>
           )
         })}

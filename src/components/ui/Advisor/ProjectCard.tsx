@@ -1,22 +1,14 @@
 import React, { useContext } from 'react';
 import {
-  badgeClass,
-  buttonClass,
   cardClass,
   classMap,
-  colorMap,
-  projectInfo,
   stringToJson,
   viewProject,
 } from '@/components/Tools/Misc';
 import { OffCanvasContext } from '@/context/OffCanvasContext';
-import {Guard, InlineGuard, navigateTo} from '../../Guard/Guard'
-import { router } from '@inertiajs/react';
 import { useAuth } from '@/context/AuthContext';
 import { advisorUrl } from '@/app';
 import { FaComment, FaEye, FaRegStar, FaSearchDollar, FaStar, FaThumbsUp } from 'react-icons/fa';
-import { getRandomValues } from 'crypto';
-import { IoStarOutline } from 'react-icons/io5';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 
@@ -87,7 +79,7 @@ export default function ProjectCard({
 
   const updateStatus = async (id, stat) => {
     try{
-      const res = await axios.post(`${advisorUrl}/project/set_status/${id}/${stat}`);
+      const res = await axios.post(`${advisorUrl}/api/project/set_status/${id}/${stat}`);
       status = stat;
     }catch(err){
       console.log(err)
@@ -98,7 +90,7 @@ export default function ProjectCard({
     <div
       key={id}
       className={`
-        ${cardClass(1)}
+        ${classMap.dehtaCard()}
         hover:border-border hover:shadow-md transition-all duration-300
         translate-y-4
         animate-fade-in,
@@ -135,11 +127,11 @@ export default function ProjectCard({
           className="w-full h-30 object-cover rounded-md mb-3 transition-all duration-300 hover:rounded-xl"
         />
         </div>
-        <div className={`text-accent-foreground opacity-50 mt-3 border-1 grid grid-cols-2 justify-center ${classMap.projectInfo} rounded-none rounded-r-xl`}>
+        {/*<div className={`text-accent-foreground opacity-50 mt-3 border-1 grid grid-cols-2 justify-center ${classMap.projectInfo} rounded-none rounded-r-xl`}>
           <span>{rating} <FaStar className={`${classMap.inlineIcon()}`}/></span>
           <span>{likes_count} <FaSearchDollar className={`${classMap.inlineIcon()}`}/></span>
-          {/* <span>{views_count} <FaEye className={`${classMap.inlineIcon()}`}/></span> */}
-        </div>
+          {/* <span>{views_count} <FaEye className={`${classMap.inlineIcon()}`}/></span>
+        </div> */}
         {!hideButtons && (
           <div className="grid grid-cols-1 justify-between gap-1 mt-2">
             <Link

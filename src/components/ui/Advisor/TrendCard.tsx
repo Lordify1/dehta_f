@@ -1,8 +1,13 @@
 import { classMap, ProgressBar } from "@/components/Tools/Misc";
 import { useMisc } from "@/context/MiscContext";
 import { useOffCanvas } from "@/context/OffCanvasContext";
-import { dataSlice } from "ethers";
-import { FaCopy, FaEye, FaEyeDropper, FaShare, FaVoteYea } from "react-icons/fa";
+import { FaCopy, FaEye, FaEyeDropper, FaShare, FaTrash, FaVoteYea } from "react-icons/fa";
+import { useUser } from "@/context/UserContext";
+import axios from "axios";
+import { apiUrl } from "../../../App";
+import { toast } from "react-toastify";
+import SendRequest from "../../Tools/SendRequest";
+
 
 type creator = {
     username: string,
@@ -32,6 +37,7 @@ type Props = {
 const TrendCard = ({id,user_id, title,body, target_vote,hash,commission_rate,reward_per_correct,minumum_vote_to_payout,status, creator, votes, data}: Props) => {
     const {setSelectedTrend} = useMisc()
     const {setShowOffCanvas, setOffId, SetOfftitle} = useOffCanvas()
+    const {user, getUser } = useUser();
 
     const trend = {
         id: id,
@@ -48,18 +54,38 @@ const TrendCard = ({id,user_id, title,body, target_vote,hash,commission_rate,rew
         votes: votes
     }
 
+    const deleteTrend = async () => {
+        try{
+            const res = await axios.post(`${apiUrl}/trendbet/delete/${id}`)
+
+            toast.success(res?.message)
+        }catch(err){
+            console.log(err)
+        }
+    }
+
     return(
         <section
         key={id}
-        className={`${classMap.card} flex flex-col p-2`}
+        className={`${classMap.dehtaCard()} flex flex-col p-2`}
         >
             {/* header  */}
-            <div className="flex flex-row items-center justify-end w-full p-1">
+            <div className="flex flex-row items-center justify-between w-full p-1">
                 <h3>{creator.username}</h3>
-                <img src={creator?.avatar !== null ? creator?.avatar : "https://placehold.co/80x80"} className="w-5 border-1 rounded-full ms-1 text-sm overflow-hidden" alt={creator?.username} />
+                {user?.id === user_id && (
+                    <SendRequest
+                    url={`/api/trendbet/delete/${id}`}
+                    method="post"
+                    deleteBtn={true}
+                    onResponse={() => {
+                        localStorage.removeItem("user")
+                        getUser()
+                    }}
+                    />
+                )}
             </div>
             {/* body */}
-            <div className={`flex flex-col items-center justify-center h-20 w-full ${classMap.userCard()} text-center`}>
+            <div className={`flex flex-col items-center justify-center h-30 w-full ${classMap.userCard()} text-center overflow-hidden`}>
                 <p>{body}</p>
             </div>
             {/* footer  */}
@@ -68,7 +94,7 @@ const TrendCard = ({id,user_id, title,body, target_vote,hash,commission_rate,rew
                 current={votes?.length}
                 destination={100}                
                 />
-                <div className="grid grid-cols-4 gap-1 w-full p-1 items-center justify-center">
+                <div className="grid grid-cols-3 gap-1 w-full p-1 items-center justify-center">
                     <button 
                     onClick={() => {
                         setSelectedTrend([data]);
@@ -76,9 +102,8 @@ const TrendCard = ({id,user_id, title,body, target_vote,hash,commission_rate,rew
                         setOffId('viewTrend');
                         SetOfftitle(`Trend View`)
                     }} className={`${classMap.button()}`}><FaEye className={`inline`}/></button>
-                    <button onClick={() => setSelectedTrend([data])} className={`${classMap.button()}`}><FaVoteYea className={`inline`}/></button>
-                    <button className={`${classMap.button()}`}><FaShare className={`inline`}/></button>
-                    <button className={`${classMap.button()}`}><FaCopy className={`inline`}/></button>
+                    <button disabled className={`${classMap.button()} opacity-40`}><FaShare className={`inline`}/></button>
+                    <button disabled className={`${classMap.button()} opacity-40`}><FaCopy className={`inline`}/></button>
                 </div>
             </div>
         </section>

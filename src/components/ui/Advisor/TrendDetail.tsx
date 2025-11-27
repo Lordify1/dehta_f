@@ -1,9 +1,15 @@
 import { useState } from "react";
 import { classMap } from "@/components/Tools/Misc";
+import { ComingSoon, DehtaConstruct } from "../../Tools/Misc";
 
 const TrendDetail = ({ data }: { data: any }) => {
   const trend = data[0];
   const options = trend.options;
+  const [voteInfo, setVoteInfo] = useState({
+    tx_hash: "",
+    wallet: "",
+    amount: ""
+  });
 
   // selected option
   const [selected, setSelected] = useState<any>(null);
@@ -20,14 +26,34 @@ const TrendDetail = ({ data }: { data: any }) => {
     return Math.round((count / totalVotes) * 100);
   };
 
+
+  const fields = [
+    {
+      name: "tx_hash",
+      label: "Tx Hash",
+      placeholder: "The Transaction Hash",
+    },
+    {
+      name: "wallet",
+      label: "Wallet Address",
+      placeholder: "Sender Address"
+    },
+    {
+      name: "amount",
+      label: "Voting amount",
+      placeholder: "Your Vote in USD"
+    }
+  ]
+
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setVoteInfo(prev => ({ ...prev, [name]: value }));
+  };
+
   return (
     <div className="flex flex-col">
     <section className={`w-full p-5 rounded-xl ${classMap.section} flex flex-col gap-5`}>
-      
-      {/* Title */}
-      <h1 className={classMap.heading}>
-        {trend.title}
-      </h1>
 
       {/* Body */}
       <p className="text-[var(--primary)] opacity-80">
@@ -64,26 +90,11 @@ const TrendDetail = ({ data }: { data: any }) => {
       </div>
 
       {/* Voting Amount Input */}
+      
+
       {selected && (
-        <div className="bg-[var(--card)] p-4 rounded-lg border border-[var(--owner)] mt-4 flex flex-col gap-3">
-          <h3 className="font-semibold text-[var(--owner)]">
-            Place Vote On: {selected.option_text}
-          </h3>
-
-          <input
-            type="number"
-            placeholder="Enter amount..."
-            className={classMap.input()}
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-          />
-
-          <button
-            className={classMap.button("bg-[var(--owner)]", "", "text-white")}
-            onClick={() => console.log("Pay with Web3: ", selected.id, amount)}
-          >
-            Vote & Pay
-          </button>
+        <div className="flex flex-col w-full p-2">
+          <ComingSoon/>
         </div>
       )}
     </section>
@@ -92,3 +103,65 @@ const TrendDetail = ({ data }: { data: any }) => {
 };
 
 export default TrendDetail;
+
+
+
+//  {selected && (
+//         <div className="flex flex-col w-full p-2 gap-4">
+//           {/* Web3 Payment Option */}
+//           <div className="bg-[var(--card)] p-4 rounded-lg border border-[var(--owner)] flex flex-col gap-3">
+//             <h3 className="font-semibold text-[var(--owner)]">
+//               Place Vote On: {selected.option_text}
+//             </h3>
+
+//             <input
+//               type="number"
+//               placeholder="Enter amount..."
+//               className={classMap.input()}
+//               value={amount}
+//               onChange={(e) => setAmount(e.target.value)}
+//             />
+
+//             <button
+//               className={classMap.button("bg-[var(--owner)]", "", "text-white")}
+//               onClick={() => console.log("Pay with Web3: ", selected.id, amount)}
+//             >
+//               Vote & Pay with Web3
+//             </button>
+//           </div>
+
+//           {/* Manual Payment Option */}
+//           <div className="bg-[var(--card)] p-4 rounded-lg border border-[var(--border)] flex flex-col gap-3">
+//             <div className="flex flex-col gap-1">
+//               <h3 className="font-semibold text-[var(--primary)]">Manual Payment</h3>
+//               <p className="text-sm text-[var(--primary)] opacity-70">
+//           Send your vote to our wallet and submit the transaction details
+//               </p>
+//             </div>
+
+//             {fields.map((field) => (
+//               <div key={field.name} className="flex flex-col gap-1">
+//           <label htmlFor={field.name} className="text-sm font-medium text-[var(--primary)]">
+//             {field.label}
+//           </label>
+//           <input
+//             type="text"
+//             className={classMap.input()}
+//             name={field.name}
+//             id={field.name}
+//             placeholder={field.placeholder}
+//             value={voteInfo[field.name as keyof typeof voteInfo]}
+//             onChange={handleChange}
+//           />
+//               </div>
+//             ))}
+
+//             <button
+//               className={classMap.button("bg-[var(--border)]", "", "text-[var(--primary)]")}
+//               onClick={() => console.log("Submit manual payment: ", voteInfo)}
+//             >
+//               Submit Payment Info
+//             </button>
+//           </div>
+//         </div>
+//       )}       

@@ -9,7 +9,7 @@ export const founderSidebar = [
     },
     { 
       label: "Projects",
-      path: "/",
+      path: "/projects",
       icon: <FaBriefcase className="text-[var(--accent-foreground)]"/> 
     },
     { 
@@ -29,11 +29,5 @@ export const founderSidebar = [
       path: "/market",
       icon: <FaStore className="text-[var(--accent-foreground)]"/>,
       seperate: true,
-    },
-    {
-      label: "Wallet",
-      path: "/wallet",
-      icon: <FaWallet className="text-[var(--accent-foreground)]"/>,
-      seperate: true,
-    },
+    }
   ];
