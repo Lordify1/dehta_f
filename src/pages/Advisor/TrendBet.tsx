@@ -11,7 +11,7 @@ import DashboardLayout from "@/layouts/Advisor/DashboardLayout";
 import axios from "axios";
 import { useEffect, useState } from "react"
 import { Helmet } from "react-helmet-async"
-import { FaChartLine, FaPen, FaSearch } from "react-icons/fa";
+import { FaChartLine, FaPen, FaPlusCircle, FaRegCalendarPlus, FaSearch } from "react-icons/fa";
 import { apiUrl } from "../../App";
 import TrendCarousel, { DehtaConstruct, emptyResult } from "../../components/Tools/Misc";
 import Carousel from "../../components/ui/Carousel";
@@ -52,6 +52,7 @@ const TrendBet = () => {
                 user={user}
                 sidebarData={sidebarData}
                 sidebarDataType={`${role}`}
+                classy="trendBg"
                 >
                     <LoadingDiv layout={[[3], [2], [1]]} height="h-20"/>
                 </DashboardLayout>
@@ -61,21 +62,27 @@ const TrendBet = () => {
                 user={user}
                 sidebarData={sidebarData}
                 sidebarDataType={`${role}`}
+                classy="trendBg"
                 >
                     
                     
                 <div className="flex flex-col">
-                    {user?.trendbet_role === 'creator' && (
-                    <section className={`flex flex-col p-3 rounded-2xl ${classMap.dehtaCard()}`}>
+                    {/* {user?.trendbet_role === 'participant' && ( */}
+                    <>
+                    <section className="flex flex-col mt-4">
+                    <h1 className="text-4xl lg:text-5xl mb-2">Create Trend</h1>
+                    <button
+                    className={`${classMap.dehtaBorder()} rounded-4xl p-3 text-lg mt-2 mb-2 w-full flex flex-row items-center justify-between bg-linear-to-b from-(--ceo) via-(--tbg) to-(--transparent)`}
+                    onClick={() => {setOffId('CreateTrend'); setShowOffCanvas(true); SetOfftitle('Create Trend')}}
+                    >
+                        <span className="opacity-50">Create your Trend for others to vibe</span>
+                        <FaPlusCircle className="text-2xl"/>
+                    </button>
+                    </section>
+                    <section className={`flex flex-col p-3 rounded-2xl`}>
                         <div className="mb-3">
                             <div className="flex flex-row">
                                 <h1 className="text-3xl lg:text-5xl">Your Trends</h1>
-                                <button
-                                      onClick={() => {setOffId('CreateTrend'); setShowOffCanvas(true); SetOfftitle('Create Trend')}}
-                                      className={`flex ms-2 ${classMap.button()}`}
-                                    >
-                                    <FaPen className="m-0 p-0"/>
-                                </button>
                             </div>
                             <small>View the Progress of Trends you Created</small>
                         </div>
@@ -95,7 +102,8 @@ const TrendBet = () => {
                         )}
                         </div>
                     </section>
-                    )}
+                    </>
+                    {/* )} */}
                 
                     {/* Trendbets  */}
                     <section className={'flex flex-col mt-2'}>
@@ -122,7 +130,10 @@ const TrendBet = () => {
                 {/* {<TrendCreateBtn/>} */}
 
                 {/* Create Trend  */}
-                <Offcanvas title={Offtitle}>
+                <Offcanvas 
+                title={Offtitle}
+                width={`${OffId === 'viewTrend' ? 'md:w-[600px]' : 'md:w-[400px]'}`}
+                >
                     {OffId === 'CreateTrend' && <TrendBetCreatorForm/>}
                     {OffId === 'viewTrend' && (
                         selectedTrend && selectedTrend.length > 0 && (

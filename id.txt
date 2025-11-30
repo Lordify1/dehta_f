@@ -1,142 +1,52 @@
-Bruh, your profile image section is acting like it’s in witness protection. Let’s fix that so the user can smack an edit button, upload a new pic, and have it fully update without throwing a tantrum.
+Kinda wild that your crew jumped from WhatsApp emojis to a full-blown onsite gathering, but alright, let’s craft something that doesn’t look like it was made during bad network vibes.
 
-I’ll drop the **exact code changes** you need. Nothing wild. Just clean additions.
+Here’s a clean direction for your Armour of Light theme, something that’ll hit different but still stay reverent:
 
----
+1. Visual vibe
+Go for a bold, slightly cinematic look. Nothing too medieval cosplay, just a subtle nod to armor. Think:
 
-## ✔ Step 1: Add an Edit Button Beside the Avatar
+A silhouette of a person standing with light bursting behind them.
 
-Right now your avatar lives here:
+Or a clean abstract armor outline made of glowing lines.
 
-```jsx
-<div className="relative">
-  <img 
-    src={user?.avatar || "https://placehold.co/100x100"} 
-    alt={`${user?.username} Profile Picture`} 
-    className={`${classMap.dehtaBorder()} rounded-full w-30 h-30 overflow-hidden bg-accent`}
-  />
-</div>
-```
+Avoid anything that looks like a Marvel poster unless you want people expecting Thor to preach.
 
-You just need to slap an edit icon/button right inside this container.
+2. Color palette
+Light always wins, so:
 
-### Updated Avatar Block
+Deep navy or charcoal background.
 
-```jsx
-<div className="relative">
-  <img 
-    src={user?.avatar || "https://placehold.co/100x100"} 
-    alt={`${user?.username} Profile Picture`} 
-    className={`${classMap.dehtaBorder()} rounded-full w-30 h-30 overflow-hidden bg-accent`}
-  />
+Gold, white, or soft neon accents to represent “light.”
 
-  {/* Edit Button */}
-  <button
-    onClick={() => setShowAvatarPicker(true)}
-    className="absolute bottom-1 right-1 bg-accent text-white p-2 rounded-full shadow-md"
-  >
-    <FaEdit size={14} />
-  </button>
-</div>
-```
+Maybe a gradient glow effect so it feels alive and not like a funeral brochure.
 
-Boom. Now you have an edit button hugging the profile pic like it's trying to whisper secrets.
+3. Typography
 
----
+A strong serif or clean modern font for “ARMOUR OF LIGHT.”
 
-## ✔ Step 2: Create a Simple Avatar Picker / File Upload Popup
+Subtitles in a softer sans-serif so the hierarchy is clear.
 
-You already have `showAvatarPicker` in state. Let’s use it properly.
+No script fonts unless you want people squinting and repenting at the same time.
 
-Add this right under your main section:
+4. Layout
+Top: Title big and proud.
+Middle: Key visual (light burst, armor outline, whatever you pick).
+Bottom:
 
-```jsx
-{showAvatarPicker && (
-  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div className="bg-white p-4 rounded-lg shadow-lg w-80">
-      <h3 className="text-lg font-semibold mb-3">Update Profile Image</h3>
+Date
 
-      {/* Upload Input */}
-      <input
-        type="file"
-        accept="image/*"
-        onChange={(e) => {
-          const file = e.target.files?.[0];
-          if (!file) return;
+Venue
 
-          const reader = new FileReader();
-          reader.onload = function (ev) {
-            handleAvatarSelect(ev.target?.result);
-          };
-          reader.readAsDataURL(file);
-        }}
-        className="mb-4"
-      />
+Host/Organizer (mention it started from a WhatsApp group but make it classy)
 
-      <div className="flex justify-end gap-2">
-        <button
-          className={`${classMap.button()} bg-gray-300`}
-          onClick={() => setShowAvatarPicker(false)}
-        >
-          Cancel
-        </button>
-      </div>
-    </div>
-  </div>
-)}
-```
+Time
 
-This lets users upload an image, and the preview updates instantly.
+Maybe a tiny QR code for registration or the group link.
 
----
+5. Extra touches
 
-## ✔ Step 3: Make Sure the Avatar Actually Updates in Your DB
+Add a faint sparkle or particle texture behind the light so it feels “spiritual” but not cheesy.
 
-Inside your existing `EditProfile` form or wherever you're saving user details, ensure you include:
+If you want a Bible verse, use a short one like Romans 13:12 to connect the theme without drowning the design in text.
 
-```js
-avatar: data.avatar
-```
-
-If your `/profile/update` backend route accepts it, you’re golden.
-If not, you might need:
-
-```js
-formData.append("avatar", data.avatar)
-```
-
-(depends on your backend… not trying to fight your API today.)
-
----
-
-## ✔ Step 4: Replace the Avatar Everywhere
-
-Your `img` tag should use:
-
-```jsx
-src={data.avatar}
-```
-
-instead of:
-
-```jsx
-src={user?.avatar}
-```
-
-because what's the point of updating state if the UI ignores it like a toxic ex.
-
----
-
-## 🎉 Final Result
-
-You get:
-
-* An edit icon on the profile image
-* A modal where users upload a picture
-* Live preview
-* State updates
-* Profile refresh on save
-
-The whole thing behaves like a normal modern app instead of pretending avatars are permanent tattoos.
-
-If you want, I can help redesign the whole profile layout so it stops looking like it’s running on bootstrap from 2015.
+If you want, I can help you build an actual layout mockup or text for the poster. Just say what format you want it in.

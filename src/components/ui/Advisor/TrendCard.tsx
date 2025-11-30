@@ -77,8 +77,8 @@ const TrendCard = ({id,user_id, title,body, target_vote,hash,commission_rate,rew
                     url={`/api/trendbet/delete/${id}`}
                     method="post"
                     deleteBtn={true}
+                    awaitConfirmation={true}
                     onResponse={() => {
-                        localStorage.removeItem("user")
                         getUser()
                     }}
                     />

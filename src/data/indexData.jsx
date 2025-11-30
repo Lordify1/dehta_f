@@ -55,7 +55,7 @@ export const faq = [
     },
     {
         label: 'How do I start?',
-        text: 'Just click Get Started → connect wallet → explore the dashboard.',
+        text: 'Just click Get Started → explore the dashboard.',
         key: 'seven'
     },
 ]
@@ -168,5 +168,11 @@ export const TeamData = [
         position: "Advisor",
         image: "/assets/images/team/peter.jpeg",
         link: "https://www.linkedin.com/in/pete-donaldson"
+    },
+    {
+        name: "Big Dennis",
+        position: "Marketing Advisor",
+        image: "/assets/images/team/dennis.jpg",
+        link: "https://x.com/offdutydennis?s=21"
     },
 ]

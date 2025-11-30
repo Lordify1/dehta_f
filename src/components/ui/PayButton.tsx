@@ -1,89 +1,70 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { apiUrl } from "../../App";
+import { classMap } from "../Tools/Misc";
 
-declare global {
-  interface Window {
-    DePayWidgets: any;
-  }
-}
-
-const PayWithDePay = ({ amount }: { amount: number }) => {
+export default function PayButton() {
+  const [amount, setAmount] = useState("");
+  const [invoiceUrl, setInvoiceUrl] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const startPayment = async () => {
+  const handlePay = async () => {
+    if (!amount) return toast.error('Please provide an amount!');
+
     try {
       setLoading(true);
+      const res = await axios.post(
+        `${apiUrl}/api/payment/create-invoice`,
+        { amount }
+      );
 
-      // 1. Create trace using Laravel backend
-      const traceRes = await fetch("/api/depay/trace", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          amount,
-          blockchain: "base",
-          token: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
-        }),
-      });
+      const url = res.data?.invoice_url;
+      if (!url) {
+        toast.error("No invoice URL returned.");
+        return;
+      }
 
-      const trace = await traceRes.json();
-
-      console.log("Trace created:", trace);
-
-      // 2. Open DePay Widget
-      window.DePayWidgets.Payment({
-        trace: trace.id,
-
-        accept: [{
-          blockchain: "base",
-          amount,
-          token: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
-          receiver: "0x1cf1b22dafe0d2c3e10979054b7154a6cd81ba3b"
-        }],
-
-        succeeded: async (transaction) => {
-          console.log("Payment succeeded:", transaction);
-
-          await fetch("/api/depay/track", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              trace: trace.id,
-              status: "succeeded",
-              transaction
-            }),
-          });
-
-          alert("Payment successful!");
-        },
-
-        failed: async (transaction) => {
-          console.log("Payment failed:", transaction);
-
-          await fetch("/api/depay/track", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              trace: trace.id,
-              status: "failed",
-              transaction
-            }),
-          });
-
-          alert("Payment failed!");
-        }
-      });
-
+      setInvoiceUrl(url);
     } catch (err) {
-      console.error(err);
+      console.log(err);
+      toast.error("Payment failed to initialize.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <button onClick={startPayment} disabled={loading}>
-      {loading ? "Processing..." : `Pay ${amount} ETH`}
-    </button>
-  );
-};
+    <div className="flex flex-col gap-1 overflow-hidden">
+      <input
+        type="number"
+        value={amount}
+        onChange={(e) => setAmount(e.target.value)}
+        placeholder="Enter amount"
+        className={`${classMap.input()}`}
+      />
 
-export default PayWithDePay;
+      <button
+        onClick={handlePay}
+        disabled={loading}
+        className={`${classMap.button()}`}
+      >
+        {loading ? "Loading..." : "Pay"}
+      </button>
+
+      {invoiceUrl && (
+        <iframe
+          src={invoiceUrl}
+          width="400"
+          height="740"
+          frameBorder="0"
+          scrolling="no"
+          style={{ overflowY: "scroll", marginTop: "20px" }}
+        >
+          Can't load payment widget
+        </iframe>
+      )}
+
+    </div>
+  );
+}

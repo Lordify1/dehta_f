@@ -310,12 +310,12 @@ export const classMap = {
     focus:border-[var(--owner)] transition-all`,
 
 
-  dehtaBorder: (color = 'whiteBorder') => `border-t-3 border-l-2 border-r-2 border-[var(--${color})] border-b-0 border-b-transparent`,
+  dehtaBorder: (color = 'whiteBorder') => `border-t-2 border-l-2 border-r-2 border-[var(--${color})] border-b-0 border-b-transparent`,
 
   // index styling
-  indexCard: (minH = 30, maxH = 50) => `${classMap.dehtaBorder()} text-primary rounded-md min-h-${minH} h-${maxH} w-80 p-4 bg-gradient-to-b from-[var(--tbg)] via-(--transparent) to-[var(--transparent)] hover:from-[var(--ceo)] transition-colors duration-300`,
+  indexCard: (minH = 30, maxH = 50) => `${classMap.dehtaBorder()} text-primary rounded-md min-h-${minH} h-${maxH} w-80 p-4 bg-gradient-to-b from-[var(--ceo)] via-(--tbg) to-[var(--transparent)] hover:from-[var(--ceo)] transition-colors duration-300`,
 
-  dehtaCard: () => `flex flex-col ${classMap.dehtaBorder('whiteBorder')} backdrop-blur-sm rounded-t-3xl rounded-b-md p-4 my-2 bg-gradient-to-b from-(--tbg) via-(--transparent) to-(--transparent)`,
+  dehtaCard: () => `flex flex-col ${classMap.dehtaBorder('whiteBorder')} backdrop-blur-sm rounded-t-3xl rounded-b-md p-4 my-2 bg-gradient-to-b from-(--ceo) via-(--tbg) to-(--transparent)`,
 
   indexFaqCard: () => `${classMap.dehtaBorder()} flex flex-col text-primary rounded-md w-full p-4` ,
 
@@ -330,7 +330,7 @@ export const classMap = {
     textsize?: string,
     direction: string = "left"
   ) =>
-    `rounded-md bg-(--owner) text-black p-2 px-3 py-3 hover:bg-transparent hover:text-primary hover:border-2 hover:border-(--owner) hover:border-b-transparent`,
+    `rounded-md bg-(--owner) text-black p-2 px-3 py-3 hover:bg-transparent hover:text-primary hover:border-1 hover:border-(--owner) hover:bg-(--tbg)`,
 
   buttonJsx: ({bg, hover, text, textsize, direction = 'down'} : {
     bg?: string,

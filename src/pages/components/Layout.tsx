@@ -11,13 +11,6 @@ interface LayoutProps {
   showNavs: boolean;
 }
 
-const navLinks = [
-  // { href: '#allPages', label: 'All Pages', dropDown: true },
-  { href: `${appUrl}/projects`, label: 'Projects' },
-  { href: `${appUrl}/trendbet`, label: 'TrendBet' },
-  { href: `${appUrl}/login`, label: 'Login' },
-];
-
   // { href: `${appUrl}/about`, label: 'About' },
 
 const socials = [/* unchanged socials here */];
@@ -27,6 +20,18 @@ const Layout: React.FC<LayoutProps> = ({ children, showNavs = true }) => {
   const [activeSection, setActiveSection] = useState('');
   const [dropdownOpen, setDropdownOpen] = useState('');
   const { user } = useUser();
+
+  const authStatus = (auth:string, guest:string) => {
+    const status = user ? auth : guest;
+    return status;
+  }
+
+  const navLinks = [
+    // { href: '#allPages', label: 'All Pages', dropDown: true },
+    { href: `${appUrl}/projects`, label: 'Projects' },
+    { href: `${appUrl}/trendbet`, label: 'TrendBet' },
+    { href: `${appUrl}/${authStatus('dashboard','login')}`, label: `${authStatus('Dashboard','Login')}` },
+  ];
 
   useEffect(() => {
     const sectionIds = navLinks

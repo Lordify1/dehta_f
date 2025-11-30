@@ -8,7 +8,7 @@ export default function Offcanvas({ title, children, width = "w-full md:w-[400px
 
   return (
     <div
-      className={`fixed inset-0 z-[99999999999999] transition-all duration-50 ${
+      className={`fixed inset-0 z-99999999999999 transition-all duration-50 ${
         showOffCanvas ? "visible opacity-100" : "invisible opacity-0"
       }`}
     >

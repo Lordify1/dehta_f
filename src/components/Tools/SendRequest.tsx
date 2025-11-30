@@ -162,7 +162,7 @@ export default function SendRequest({
           disabled={isProcessing || disabled}
           title={title}
         >
-          {isProcessing ? <div className="flex items-center w-full justify-center"><FaCircleNotch className="text-1xl h-6 text-center opacity-60 text-[var(--primary)] animate-spin transitions duration-500 "/></div> : text}
+          {isProcessing ? <div className="flex items-center w-full justify-center"><FaCircleNotch className="text-1xl h-6 text-center opacity-60 text-(--primary) animate-spin transitions duration-500 "/></div> : text}
         </button>
       ) : (
         <FaTrash 
@@ -179,10 +179,10 @@ export default function SendRequest({
         title={confirmationTitle}
         confirmLoading={isProcessing}
         maskClosable={false}
-        className="z-[99999] bg-accent"
+        className="z-99999 bg-accent"
         style={{ zIndex: 99999 }}
         modalRender={modal => (
-          <div className="z-[99999]" style={{ zIndex: 99999 }}>
+          <div className="z-99999" style={{ zIndex: 99999 }}>
         {modal}
           </div>
         )}

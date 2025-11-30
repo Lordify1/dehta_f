@@ -486,19 +486,21 @@ html {
 }
 
 
-.dbBg{
+
+.trendBg {
+  position: relative; /* make sure positioning context is set */
+  overflow: hidden;   /* to keep pseudo-element inside */
+  z-index: 0;
+}
+
+.trendBg::before {
   content: '';
-  inset: 0;
-  background-image: url('/images/bgs/hero.png');
+  position: absolute;
+  inset: 0; /* shorthand for top:0; right:0; bottom:0; left:0 */
+  background-image: url('/images/bgs/trendbg.webp');
   background-size: cover;
   background-position: center;
-  opacity: 1;
-  z-index: -1;
-
-  /* fade edges */
-  /* mask-image: radial-gradient(circle, black 50%, transparent 100%); */
-  mask-image: linear-gradient(to bottom, transparent, black 40%, black 60%, transparent);
-  
+  z-index: -1; /* behind the content */
 }
 
 
@@ -512,7 +514,7 @@ html {
   content: '';
   position: absolute;
   inset: 0;
-  background-image: url('/images/bgs/hero.png');
+  background-image: url('/images/bgs/hero.webp');
   background-size: cover;
   background-position: center;
   opacity: 1;
@@ -525,6 +527,26 @@ html {
 }
 
 
+.dbBg {
+  position: relative; /* make sure positioning context is set */
+  overflow: hidden;   /* to keep pseudo-element inside */
+  z-index: 0;
+}
+
+.dbBg::before {
+  content: '';
+  position: absolute;
+  inset: 0; /* shorthand for top:0; right:0; bottom:0; left:0 */
+  background-image: url('/images/bgs/hero.webp');
+  background-size: cover;
+  background-position: center;
+  z-index: -1; /* behind the content */
+  mask-image: linear-gradient(to bottom, transparent, black 10%, transparent 50%, transparent);
+
+}
+
+
+
 .projectsbg {
   position: relative; /* make sure positioning context is set */
   overflow: hidden;   /* to keep pseudo-element inside */
@@ -535,7 +557,7 @@ html {
   content: '';
   position: absolute;
   inset: 0; /* shorthand for top:0; right:0; bottom:0; left:0 */
-  background-image: url('/images/bgs/projects.png');
+  background-image: url('/images/bgs/projects.webp');
   background-size: cover;
   background-position: center;
   z-index: -1; /* behind the content */
@@ -554,7 +576,7 @@ html {
   content: '';
   position: absolute;
   inset: 0; /* shorthand for top:0; right:0; bottom:0; left:0 */
-  background-image: url('/assets/images/ogbg.jpg');
+  background-image: url('/assets/images/ogbg.webp');
   background-size: cover;
   background-position: center;
   filter: grayscale(100%);
@@ -572,7 +594,7 @@ html {
   content: '';
   position: absolute;
   inset: 0; /* shorthand for top:0; right:0; bottom:0; left:0 */
-  background-image: url('/images/bgs/communitybg.jpg');
+  background-image: url('/images/bgs/communitybg.webp');
   background-size: cover;
   background-position: center;
   filter: grayscale(100%);
@@ -590,7 +612,7 @@ html {
   content: '';
   position: absolute;
   inset: 0; /* shorthand for top:0; right:0; bottom:0; left:0 */
-  background-image: url('/images/bgs/aboutbg.jpg');
+  background-image: url('/images/bgs/aboutbg.webp');
   background-size: cover;
   background-position: center;
   filter: grayscale(100%);

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { classMap } from "@/components/Tools/Misc";
 import { ComingSoon, DehtaConstruct } from "../../Tools/Misc";
+import PayButton from "../PayButton";
 
 const TrendDetail = ({ data }: { data: any }) => {
   const trend = data[0];
@@ -53,10 +54,10 @@ const TrendDetail = ({ data }: { data: any }) => {
 
   return (
     <div className="flex flex-col">
-    <section className={`w-full p-5 rounded-xl ${classMap.section} flex flex-col gap-5`}>
+    <section className={`w-full p-2 rounded-xl ${classMap.section} flex flex-col gap-2`}>
 
       {/* Body */}
-      <p className="text-[var(--primary)] opacity-80">
+      <p className="text-(--primary) opacity-80">
         {trend.body}
       </p>
 
@@ -69,18 +70,18 @@ const TrendDetail = ({ data }: { data: any }) => {
             <div
               key={opt.id}
               onClick={() => setSelected(opt)}
-              className={`cursor-pointer p-4 rounded-lg border border-[var(--border)] bg-[var(--card)] hover:border-[var(--owner)] transition 
-              ${selected?.id === opt.id ? "border-[var(--owner)] shadow-md" : ""}`}
+              className={`cursor-pointer p-3 rounded-lg border border-(--border) bg-(--card) hover:border-(--owner) transition 
+              ${selected?.id === opt.id ? "border-(--owner) shadow-md" : ""}`}
             >
               <div className="flex justify-between items-center">
-                <span className="font-semibold text-[var(--primary)]">{opt.option_text}</span>
-                <span className="text-[var(--owner)] text-sm">{percent}%</span>
+                <span className="font-semibold text-(--primary)">{opt.option_text}</span>
+                <span className="text-(--owner) text-sm">{percent}%</span>
               </div>
 
               {/* Percentage Bar */}
-              <div className="w-full h-2 bg-[var(--muted)] rounded-full mt-2">
+              <div className="w-full h-2 bg-(--muted) rounded-full mt-2">
                 <div
-                  className="h-full bg-[var(--owner)] rounded-full transition-all duration-500"
+                  className="h-full bg-(--owner) rounded-full transition-all duration-500"
                   style={{ width: `${percent}%` }}
                 ></div>
               </div>
@@ -92,9 +93,22 @@ const TrendDetail = ({ data }: { data: any }) => {
       {/* Voting Amount Input */}
       
 
-      {selected && (
+      {/* {selected && (
         <div className="flex flex-col w-full p-2">
           <ComingSoon/>
+        </div>
+      )} */}
+
+        {selected && (
+        <div className="flex flex-col w-full p-2 gap-4">
+          {/* Web3 Payment Option */}
+          <div className="bg-[var(--card)] p-4 rounded-lg border border-[var(--owner)] flex flex-col gap-3">
+            <h3 className="font-semibold text-[var(--owner)]">
+              Place Vote On: {selected.option_text}
+            </h3>
+
+            <PayButton/>
+          </div>
         </div>
       )}
     </section>
@@ -103,65 +117,3 @@ const TrendDetail = ({ data }: { data: any }) => {
 };
 
 export default TrendDetail;
-
-
-
-//  {selected && (
-//         <div className="flex flex-col w-full p-2 gap-4">
-//           {/* Web3 Payment Option */}
-//           <div className="bg-[var(--card)] p-4 rounded-lg border border-[var(--owner)] flex flex-col gap-3">
-//             <h3 className="font-semibold text-[var(--owner)]">
-//               Place Vote On: {selected.option_text}
-//             </h3>
-
-//             <input
-//               type="number"
-//               placeholder="Enter amount..."
-//               className={classMap.input()}
-//               value={amount}
-//               onChange={(e) => setAmount(e.target.value)}
-//             />
-
-//             <button
-//               className={classMap.button("bg-[var(--owner)]", "", "text-white")}
-//               onClick={() => console.log("Pay with Web3: ", selected.id, amount)}
-//             >
-//               Vote & Pay with Web3
-//             </button>
-//           </div>
-
-//           {/* Manual Payment Option */}
-//           <div className="bg-[var(--card)] p-4 rounded-lg border border-[var(--border)] flex flex-col gap-3">
-//             <div className="flex flex-col gap-1">
-//               <h3 className="font-semibold text-[var(--primary)]">Manual Payment</h3>
-//               <p className="text-sm text-[var(--primary)] opacity-70">
-//           Send your vote to our wallet and submit the transaction details
-//               </p>
-//             </div>
-
-//             {fields.map((field) => (
-//               <div key={field.name} className="flex flex-col gap-1">
-//           <label htmlFor={field.name} className="text-sm font-medium text-[var(--primary)]">
-//             {field.label}
-//           </label>
-//           <input
-//             type="text"
-//             className={classMap.input()}
-//             name={field.name}
-//             id={field.name}
-//             placeholder={field.placeholder}
-//             value={voteInfo[field.name as keyof typeof voteInfo]}
-//             onChange={handleChange}
-//           />
-//               </div>
-//             ))}
-
-//             <button
-//               className={classMap.button("bg-[var(--border)]", "", "text-[var(--primary)]")}
-//               onClick={() => console.log("Submit manual payment: ", voteInfo)}
-//             >
-//               Submit Payment Info
-//             </button>
-//           </div>
-//         </div>
-//       )}       

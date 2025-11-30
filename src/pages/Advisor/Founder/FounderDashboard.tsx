@@ -39,7 +39,9 @@ const FounderDashboard = () => {
           <LoadingDiv layout={[[1],[1],[1],[3,3,3]]} height="h-40" />
         </DashboardLayout>
       ) : (
-        <DashboardLayout sidebarDataType="founder" sidebarData={founderSidebar}>
+        <DashboardLayout sidebarDataType="founder" sidebarData={founderSidebar}
+        
+        >
           <div className="">
           {/* Welcome Banner */}
           <h1 className="text-2xl lg:text-4xl mb-3">GM, {user?.username} 👋</h1>

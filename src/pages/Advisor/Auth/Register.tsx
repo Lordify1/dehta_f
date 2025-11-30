@@ -51,7 +51,7 @@ export default function Register() {
         <title>Register - {appName}</title>
       </Helmet>
       <Layout showNavs={false}>
-      <div className={`${centerFocus()} bg-background herobg mt-20 lg:mt-0`}>
+      <div className={`${centerFocus()} bg-background herobg ${role &&  `mt-20 lg:mt-10`}`}>
         <h1 className="text-2xl md:text-3xl text-center font-bold mb-6">Join {!role ? ' as ...' : (role === 'investor' ? ' as an Investor' : ' as a Founder')}</h1>
         <div className="flex space-x-4 mb-6">
           <button

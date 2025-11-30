@@ -66,7 +66,7 @@ const DashboardLayout = ({ children, sidebarData, classy }: Props) => {
 
   return (
     <>
-      <div className={`flex flex-row min-h-screen bg-background text-primary ${classy}`}>
+      <div className={`flex flex-row min-h-screen text-primary ${classy ? classy : 'dbBg'}`}>
         
         {/* SIDEBAR */}
         <aside
@@ -131,7 +131,7 @@ const DashboardLayout = ({ children, sidebarData, classy }: Props) => {
               to={`/`}
               className="w-15"
             >
-              <img src={`/logo.svg`} alt="Dehta+Logo" />
+              <img src={`/logo.svg`} alt="Dehta+Logo" loading="lazy"/>
             </Link>
 
             <div className="flex items-center gap-4">

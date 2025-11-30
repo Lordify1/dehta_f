@@ -79,6 +79,7 @@ const Profile = () => {
               <img
                 src={data.avatar || "https://placehold.co/100x100"}
                 alt={`${user?.username || "User"} avatar`}
+                loading="lazy"
                 className={`${classMap.dehtaBorder()} rounded-full w-24 h-24 object-cover bg-accent`}
               />
 
@@ -132,7 +133,7 @@ const Profile = () => {
               >
                 {Lens()}
                 <span className="font-medium">
-                {(user?.total_lens ?? 0).toLocaleString()} Lens {(user?.total_lens ?? 0) === 1 ? "" : "Owned"}
+                {(user?.total_lens ?? 0).toLocaleString()} Lens
                 </span>
               </p>
 
