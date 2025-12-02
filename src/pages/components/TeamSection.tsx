@@ -20,14 +20,14 @@ const TeamSection: React.FC = () => {
     >
       <div className="mx-auto max-w-7xl items-center">
         <h1 className="text-3xl lg:text-6xl mb-10">Dehta Team</h1>
-        <div className='grid grid-cols-1 lg:grid-cols-4 gap-3 mb-2 items-center justify-items-center'>
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mb-2 items-center justify-items-center'>
         {TeamData.map((it:any, ind:any) => {
           return(
             <>
             <FadeInAnim delay={5}>
             <section key={ind} className={`${classMap.indexCard('','60')}`}>
               <div className="flex flex-col items-center justify-start sm:mb-5 space-y-2">
-                <img src={`${it.image}`} className='rounded-full w-40' alt="" />
+                <img src={`${it.image}`} className='rounded-full w-30' alt="" />
                 <h4 className='text-2xl'>{it.name}</h4>
                 <p className=''>{it.position}</p>
                 <Link

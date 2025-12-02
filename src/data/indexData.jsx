@@ -170,6 +170,12 @@ export const TeamData = [
         link: "https://www.linkedin.com/in/pete-donaldson"
     },
     {
+        name: "Ashish Kumar",
+        position: "COO",
+        image: "/assets/images/team/ashish.jpg",
+        link: "https://www.linkedin.com/in/c2ashish"
+    },
+    {
         name: "Big Dennis",
         position: "Marketing Advisor",
         image: "/assets/images/team/dennis.jpg",

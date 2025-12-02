@@ -16,6 +16,7 @@ const FaecesRouter = () => {
     const Profile = lazy(() => import('@/pages/Advisor/Auth/Profile'));
     const ForgotPassword = lazy(() => import('@/pages/Advisor/Auth/ForgotPassword'));
     const Market = lazy(() => import('@/pages/Advisor/Market'));
+    const MarketPurchase = lazy(() => import('@/pages/Advisor/MarketPurchase'));
     const NotFound = lazy(() => import('@/pages/Error/404'));
     const Wallet = lazy(() => import('@/pages/Advisor/Wallet'));
 
@@ -45,7 +46,12 @@ const FaecesRouter = () => {
 
         { path: '/dashboard', element: <Dashboard />, type: 'auth' },
         { path: '/profile', element: <Profile />, type: 'auth' },
+
+        // Market 
         { path: '/market', element: <Market />, type: 'auth' },
+        { path: '/market/purchase/:item/:slug', element: <MarketPurchase />, type: 'auth' },
+
+
         { path: '/wallet', element: <Wallet />, type: 'auth' },
 
         { path: '/admin/login', element: <AdminLogin />, type: 'any', admin: true },

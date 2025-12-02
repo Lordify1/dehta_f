@@ -13,34 +13,42 @@ import { useEffect, useState } from "react"
 import { Helmet } from "react-helmet-async"
 import { FaChartLine, FaPen, FaPlusCircle, FaRegCalendarPlus, FaSearch } from "react-icons/fa";
 import { apiUrl } from "../../App";
-import TrendCarousel, { DehtaConstruct, emptyResult } from "../../components/Tools/Misc";
+import { DehtaConstruct, emptyResult, TrendCarousel } from "../../components/Tools/Misc";
 import Carousel from "../../components/ui/Carousel";
 import useEmblaCarousel from "embla-carousel-react";
+import { Link } from "react-router-dom";
 
 
 const TrendBet = () => {
-    const [isLoading, setIsLoading] = useState(true);
     const {user, role, sidebarData} = useUser();
-    const {selectedTrend} = useMisc();
-    const [trends, setTrends] = useState([]);
+    const {selectedTrend, setSelectedTrend, trends, isLoading} = useMisc();
     const [userTrends, setUserTrends] = useState([]);
     const {setShowOffCanvas, OffId, Offtitle, setOffId, SetOfftitle} = useOffCanvas();
+    const [search, setSearch] = useState("");
+    const [displayedTrends, setDisplayedTrends] = useState([]);
+    const [limit, setLimit] = useState(20); // how many items to show initially
 
-    const getTrendBets = async () => {
-        try{
-            const res = await axios.post(`${apiUrl}/api/trendbet/get`);
-            setTrends(res.data)
-            setIsLoading(false)
-        }catch(err){
-            setIsLoading(false)
-            console.log(err)
-        }
-    }
 
     useEffect(() => {
-        getTrendBets();
         setUserTrends(user?.trends)
-    },[selectedTrend])
+
+        if (!trends) return;
+
+        const filtered = trends.filter(item =>
+            item.title.toLowerCase().includes(search.toLowerCase()) ||
+            item.body.toLowerCase().includes(search.toLowerCase())
+        );
+
+        setDisplayedTrends(filtered.slice(0, limit));
+    
+        const handleScroll = () => {
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 300) {
+                setLimit(prev => prev + 10);
+            }
+        };
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, [search, limit, trends, selectedTrend]);
 
     return(
         <>
@@ -65,14 +73,13 @@ const TrendBet = () => {
                 classy="trendBg"
                 >
                     
-                    
                 <div className="flex flex-col">
-                    {/* {user?.trendbet_role === 'participant' && ( */}
+                    {user?.trendbet_role === 'creator' ? (
                     <>
                     <section className="flex flex-col mt-4">
                     <h1 className="text-4xl lg:text-5xl mb-2">Create Trend</h1>
                     <button
-                    className={`${classMap.dehtaBorder()} rounded-4xl p-3 text-lg mt-2 mb-2 w-full flex flex-row items-center justify-between bg-linear-to-b from-(--ceo) via-(--tbg) to-(--transparent)`}
+                    className={`${classMap.dehtaCard()} rounded-lg p-3 text-sm lg:text-lg mt-2 mb-2 w-full flex flex-row items-center justify-between bg-linear-to-b from-(--ceo) via-(--tbg) to-(--transparent)`}
                     onClick={() => {setOffId('CreateTrend'); setShowOffCanvas(true); SetOfftitle('Create Trend')}}
                     >
                         <span className="opacity-50">Create your Trend for others to vibe</span>
@@ -86,7 +93,7 @@ const TrendBet = () => {
                             </div>
                             <small>View the Progress of Trends you Created</small>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 w-full p-3">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 w-full p-3">
                         {userTrends && userTrends.length > 0 ? (
                         userTrends.length === 1 ? (
                             <TrendCard {...userTrends[0]} data={userTrends[0]} />
@@ -103,7 +110,17 @@ const TrendBet = () => {
                         </div>
                     </section>
                     </>
-                    {/* )} */}
+                    ) : (
+                        <section className={`${classMap.indexCard(10, 20)} w-full flex flex-col lg:flex-row items-center lg:justify-between`}>
+                            <p className="lg:text-2xl">Purchase NFT to Create Trend</p>
+                            <Link
+                            to={'/market'}
+                            className="underline text-(--owner) hover:text-white"
+                            >
+                                Buy NFT
+                            </Link>
+                        </section>
+                    )}
                 
                     {/* Trendbets  */}
                     <section className={'flex flex-col mt-2'}>
@@ -111,12 +128,25 @@ const TrendBet = () => {
                             <h1 className="text-4xl lg:text-5xl">Vote Trend</h1>
                             <small>Participate in active Trends created by Others</small>
                         </div>
+                        <div className="w-full flex items-center gap-2 bg-white/10 p-3 rounded-xl mb-4">
+                            <FaSearch className="text-xl opacity-50" />
+                            <input 
+                                type="text"
+                                placeholder="Search Trends..."
+                                className="bg-transparent outline-none flex-1"
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                            />
+                        </div>
                         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5 w-full p-3">
-                        {trends && trends.length > 0 ? ( trends.map((trend, key) => {
+                        {displayedTrends && displayedTrends.length > 0 ? (displayedTrends.map((trend, key) => {
                             return(
                                 <TrendCard
                                 {...trend}
                                 data={trend}
+                                clickFunction={() => {
+                                    setSelectedTrend([])    
+                                }}
                                 />
                             )
                         }) ) : (
@@ -130,9 +160,9 @@ const TrendBet = () => {
                 {/* {<TrendCreateBtn/>} */}
 
                 {/* Create Trend  */}
-                <Offcanvas 
+                <Offcanvas
                 title={Offtitle}
-                width={`${OffId === 'viewTrend' ? 'md:w-[600px]' : 'md:w-[400px]'}`}
+                width={`${OffId === 'viewTrend' && 'lg:w-[500px] w-full'}`}
                 >
                     {OffId === 'CreateTrend' && <TrendBetCreatorForm/>}
                     {OffId === 'viewTrend' && (

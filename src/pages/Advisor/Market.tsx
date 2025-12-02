@@ -1,15 +1,20 @@
 import { Helmet } from "react-helmet-async";
 import { advisorUrl, appName, appUrl } from "@/app";
-import { ComingSoon, DehtaConstruct, emptyData, Loading } from "../../components/Tools/Misc";
+import { classMap, ComingSoon, DehtaConstruct, emptyData, Loading } from "../../components/Tools/Misc";
 import DashboardLayout from "../../layouts/Advisor/DashboardLayout";
 import { useUser } from "@/context/UserContext";
 import axios from "axios";
 import { apiUrl } from "../../App";
 import { useEffect, useState } from "react";
 import { FaDollarSign, FaSearchDollar } from "react-icons/fa";
+import { useOffCanvas } from "@/context/OffCanvasContext";
+import Offcanvas from "../../components/ui/Offcanvas";
+import GlassPurchase from "../../components/Advisor/Forms/GlassPurchase";
+
 
 const Market = () => {
   const { user, role, sidebarData } = useUser();
+  const {setShowOffCanvas, OffId, Offtitle, setOffId, SetOfftitle} = useOffCanvas();
 
   const [glasses, setGlasses] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -44,10 +49,11 @@ const Market = () => {
         user={user}
         sidebarData={sidebarData}
         sidebarDataType={`${role}`}
+        classy={'bg-background'}
       >
         <section className="flex flex-col space-y-6">
           {/* Hero Section */}
-          <div className="flex flex-col items-center justify-center min-h-40 text-black w-full bg-[var(--owner)] p-6">
+          <div className="flex flex-col items-center justify-center min-h-40 text-black w-full bg-(--owner) p-6 rounded-lg">
             <h1 className="text-3xl lg:text-5xl font-bold">Discover and</h1>
             <h1 className="text-3xl lg:text-5xl font-bold">Collect Dehta NFTs</h1>
           </div>
@@ -83,18 +89,19 @@ const Market = () => {
                       <h4 className="font-semibold text-lg truncate w-full">{glass.name}</h4>
 
                       <div className="flex items-center gap-2 mb-3 text-sm text-gray-700">
-                        <FaDollarSign className="text-[var(--owner)]" />
-                        <span>{Number(glass.cost).toLocaleString()} $</span>
+                        <span>$ {Number(glass.cost).toLocaleString()}</span>
                       </div>
 
                       <button
-                        className="bg-[var(--owner)] text-white px-4 py-2 rounded hover:bg-opacity-90 transition transform hover:scale-105 flex items-center"
+                        className={`${classMap.button()}`}
                         onClick={() => {
-                          setShowModal(true);
+                          setOffId("buyGlass");
+                          SetOfftitle("Glass Purchase");
+                          setShowOffCanvas(true);
                           setSelectedGlass({ ...glass });
                         }}
                       >
-                        <FaSearchDollar className="inline mr-2" /> Buy Glass
+                        Buy Glass
                       </button>
                     </div>
                   </div>
@@ -120,6 +127,20 @@ const Market = () => {
             <ComingSoon />
           </div>
         </section>
+
+
+        <Offcanvas
+        title={Offtitle}
+        >
+          {OffId === 'buyGlass' && (
+            <GlassPurchase
+            key={selectedGlass?.id}
+            price={selectedGlass?.cost}
+            glass_id={selectedGlass?.id}
+            data={selectedGlass}
+            />
+          )}
+        </Offcanvas>
 
       </DashboardLayout>
     </>

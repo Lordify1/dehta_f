@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SendRequest from "@/components/Tools/SendRequest";
 import { advisorName, advisorUrl, appName } from "@/app";
 import { centerFocus, guestCheck, inputClass, classMap } from "@/components/Tools/Misc";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useUser } from "@/context/UserContext";
 import Layout from "../../components/Layout";
@@ -19,6 +19,10 @@ const inputFields = [
 ];
 
 export default function Register() {
+  const { search } = useLocation();
+  const params = new URLSearchParams(search);
+  const referralFromQuery = params.get("ref") || "";
+
   const [role, setRole] = useState<"founder" | "investor" | null>(null);
   const [form, setForm] = useState({
     name: "",
@@ -44,6 +48,10 @@ export default function Register() {
     setRole(selectedRole);
     setForm((prev) => ({ ...prev, role: selectedRole }));
   };
+
+  useEffect(() => {
+    setForm((prev) => ({...prev, referral: referralFromQuery}))
+  },[role])
 
   return (
     <>

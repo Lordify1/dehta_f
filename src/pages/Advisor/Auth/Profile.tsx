@@ -4,21 +4,22 @@ import { useUser } from "@/context/UserContext";
 import { founderSidebar } from "@/data/founderSidebarData";
 import { investorSidebar } from "@/data/investorSidebarData";
 import DashboardLayout from "@/layouts/Advisor/DashboardLayout";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { FaCopy, FaEdit } from "react-icons/fa";
-import { emptyResult, Lens } from "../../../components/Tools/Misc";
+import { emptyResult, Lens, Loading, LoadingDiv, postData } from "../../../components/Tools/Misc";
 import AchievementPanel from "../../../components/Advisor/Achievements";
 import LensActivity from "../../../components/Advisor/LensActivity";
 import CheckInCalendar from "../../../components/Advisor/CheckInCalendar";
 import { useOffCanvas } from "../../../context/OffCanvasContext";
 import Offcanvas from "../../../components/ui/Offcanvas";
 import EditProfile from "../../../components/Advisor/Forms/EditProfile";
-import { apiUrl } from "../../../App";
+import { apiUrl, appUrl } from "../../../App";
 import axios from "axios";
 
 const Profile = () => {
   const { user, setUser } = useUser();
+  const [isLoading, setIsLoading] = useState(true)
 
   const [data, setData] = useState({
     name: user?.name || "",
@@ -29,7 +30,7 @@ const Profile = () => {
   });
 
   const fileInputRef = useRef(null);
-  const [userGlasses, setUserGlasses] = useState([]);
+  const [userGlasses, setUserGlasses] = useState<Array<{ id: string; icon: string; [key: string]: any }>>([]);
   const { setShowOffCanvas, OffId, Offtitle, setOffId, SetOfftitle } = useOffCanvas();
 
   const sidebarData = data.role === "founder" ? founderSidebar : investorSidebar;
@@ -42,7 +43,6 @@ const Profile = () => {
     try {
       const res = await axios.post(`${apiUrl}/api/profile/avatar_upload`, formData);
 
-      console.log(res)
 
       // Update UI avatar
       setData((prev) => ({ ...prev, avatar: res.data.avatar_url }));
@@ -54,6 +54,39 @@ const Profile = () => {
       console.error("Error uploading avatar:", err);
     }
   };
+
+  const getUserGlasses =  async () => {
+    try{
+      const res = await axios.post(`${apiUrl}/api/glass/user_glasses`);
+      setUserGlasses(res.data)
+      setIsLoading(false)
+    }catch(err){
+      console.log(err)
+    }
+  }
+
+  useEffect(() => {
+    getUserGlasses()
+  }, [])
+
+
+  const groupedGlasses = userGlasses.reduce((acc, item) => {
+    if (!item?.id) return acc;
+
+    const key = item.id;
+    if (!acc[key]) {
+      acc[key] = {
+        id: item.id,
+        icon: item.icon,
+        count: 1,
+      };
+    } else {
+      acc[key].count += 1;
+    }
+
+    return acc;
+  }, {} as Record<string, { id: string; icon: string; count: number }>);
+
 
   return (
     <>
@@ -143,7 +176,7 @@ const Profile = () => {
                 <button
                   type="button"
                   onClick={() => {
-                  const txt = user.ref_id;
+                  const txt = `${appUrl}/register?ref=${user.ref_id}`;
                   if (navigator.clipboard?.writeText) {
                     navigator.clipboard.writeText(txt).catch(() => window.prompt("Copy referral id:", txt));
                   } else {
@@ -176,15 +209,26 @@ const Profile = () => {
 
             {/* Glass NFTs */}
             <div className="flex flex-col mt-3">
-              <div className="flex flex-row min-h-80 w-full items-center justify-center">
-                {userGlasses.length > 0 ? (
-                  userGlasses.map((it, ind) => (
-                    <div key={ind} className={`${classMap.dehtaCard()} flex flex-col items-center`}>
-                      <img src={it?.icon} alt="" className="w-30" />
+              <div className="flex flex-col lg:flex-row min-h-80 w-full items-center justify-center">
+               {isLoading ? (
+                  <Loading />
+                ) : userGlasses.length > 0 ? (
+                  userGlasses.map(glass => (
+                    <div
+                      key={glass.id}
+                      className={`${classMap.dehtaBorder()} rounded-2xl flex flex-col items-center relative mx-1 my-1`}
+                    >
+                      <img src={glass.icon} alt="" loading="lazy" className="w-30" />
+
+                      {glass.count > 1 && (
+                        <span className="absolute top-1 right-1 bg-accent text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
+                          x{glass.count}
+                        </span>
+                      )}
                     </div>
                   ))
                 ) : (
-                  <div className="opacity-50">{emptyResult("Your Glass NFTs will appear here")}</div>
+                  <div className="opacity-50">{emptyResult("Your Glasses will appear here")}</div>
                 )}
               </div>
             </div>

@@ -330,7 +330,7 @@ export const classMap = {
     textsize?: string,
     direction: string = "left"
   ) =>
-    `rounded-md bg-(--owner) text-black p-2 px-3 py-3 hover:bg-transparent hover:text-primary hover:border-1 hover:border-(--owner) hover:bg-(--tbg)`,
+    `rounded-md bg-(--owner) text-black p-2 px-3 py-3 hover:text-primary hover:border-1 hover:border-(--owner) ${hover ? hover : 'hover:bg-(--tbg)'}`,
 
   buttonJsx: ({bg, hover, text, textsize, direction = 'down'} : {
     bg?: string,
@@ -781,7 +781,7 @@ export const ImageUploadDiv = ({
       />
 
       {isUploading ? (
-        <span className="text-[var(--ceo)] text-sm animate-pulse">Uploading...</span>
+        <LoadingBar/>
       ) : preview && value ? (
         <img
           src={value}
@@ -790,7 +790,7 @@ export const ImageUploadDiv = ({
           style={{ maxWidth: "90%" }}
         />
       ) : (
-        <span className="text-[var(--placeholder)] text-sm flex flex-col items-center">
+        <span className="text-(--placeholder) text-sm flex flex-col items-center">
           <svg width="32" height="32" fill="none" className="mb-1 text-[var(--ceo)]" viewBox="0 0 24 24">
             <path
               fill="currentColor"
@@ -950,11 +950,25 @@ export const parseAIResponse = (responseData:any) => {
 
 
 
-export const ProgressBar =({current, destination}:{current:number,destination:number})=>{
-  return(
+export const ProgressBar = ({
+  current,
+  destination
+}: {
+  current: number,
+  destination: number
+}) => {
+
+  // Handle weird values
+  const safeCurrent = Number(current) || 0
+  const safeDest = Number(destination) || 1   // avoid divide-by-zero
+
+  const percent = Math.min((safeCurrent / safeDest) * 100, 100)
+
+  return (
     <div className="w-full bg-muted rounded-md h-5">
-      <div className="bg-[var(--owner)] animate-pulse h-5 rounded-md transition-all duration-1000"
-      style={{ width: `${current}%` }}
+      <div
+        className="bg-[var(--owner)] animate-pulse h-5 rounded-md transition-all duration-1000"
+        style={{ width: `${percent}%` }}
       ></div>
     </div>
   )
@@ -1218,7 +1232,7 @@ export const ComingSoon = () => {
 
 
 
-export default function TrendCarousel({ trends }) {
+export function TrendCarousel({ trends }) {
   const [emblaRef] = useEmblaCarousel({
     loop: false,
     align: "start"
@@ -1235,4 +1249,49 @@ export default function TrendCarousel({ trends }) {
       </div>
     </div>
   );
+}
+
+
+export const LoadingBar = () => {
+  return(
+    <div className="flex items-center w-full justify-center"><FaCircleNotch className="text-1xl h-6 text-center opacity-60 text-(--primary) animate-spin transitions duration-500 "/></div>
+  )
+}
+
+
+
+export const EllipsisDropdown = ({children}) => {
+  const [open, setOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if(dropdownRef.current && !dropdownRef.current.contains(e.target)){
+        setOpen(false)
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+  },[])
+
+
+  return(
+    <div className="relative inline-block text-ref" ref={dropdownRef}>
+      <button
+      onClick={() => setOpen(!open)}
+      className="text-white hover:text-gray-800 px-2 py-1"
+      >
+        &#x22EE;
+      </button>
+
+      {open && (
+        <div className={`${classMap.dehtaBorder()} absolute right-0 mt-2 w-40 bg-black text-white backdrop-blur-md bg-opacity-80 border rounded-md shadow-md z-50 p-3 transition-all duration-200`}>
+          {children}
+        </div>
+      )}
+    </div>
+  )
 }

@@ -2,24 +2,27 @@ import { useState } from "react";
 import { classMap } from "@/components/Tools/Misc";
 import { ComingSoon, DehtaConstruct } from "../../Tools/Misc";
 import PayButton from "../PayButton";
+import { useUser } from "@/context/UserContext";
+
 
 const TrendDetail = ({ data }: { data: any }) => {
   const trend = data[0];
   const options = trend.options;
   const [voteInfo, setVoteInfo] = useState({
-    tx_hash: "",
-    wallet: "",
-    amount: ""
+    amount: "",
+    trend_id: "",
+    option_id: ""
   });
+  const {user} = useUser();
 
   // selected option
   const [selected, setSelected] = useState<any>(null);
 
-  // amount input
-  const [amount, setAmount] = useState("");
-
   // calculate percentages if votes exist
   const totalVotes = trend.votes?.length || 0;
+  const trendDone = trend.votes?.length === trend?.target_vote ? true : false
+  const isOwner = trend?.user_id === user?.id
+  const hasVoted = trend.votes?.some((vote: any) => vote.user_id === user?.id) || false;
 
   const getPercentage = (optionId: number) => {
     if (totalVotes === 0) return 0;
@@ -28,32 +31,13 @@ const TrendDetail = ({ data }: { data: any }) => {
   };
 
 
-  const fields = [
-    {
-      name: "tx_hash",
-      label: "Tx Hash",
-      placeholder: "The Transaction Hash",
-    },
-    {
-      name: "wallet",
-      label: "Wallet Address",
-      placeholder: "Sender Address"
-    },
-    {
-      name: "amount",
-      label: "Voting amount",
-      placeholder: "Your Vote in USD"
-    }
-  ]
-
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setVoteInfo(prev => ({ ...prev, [name]: value }));
   };
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col" key={trend.id}>
     <section className={`w-full p-2 rounded-xl ${classMap.section} flex flex-col gap-2`}>
 
       {/* Body */}
@@ -69,8 +53,13 @@ const TrendDetail = ({ data }: { data: any }) => {
           return (
             <div
               key={opt.id}
-              onClick={() => setSelected(opt)}
-              className={`cursor-pointer p-3 rounded-lg border border-(--border) bg-(--card) hover:border-(--owner) transition 
+              onClick={() => {
+                if(!trendDone && !isOwner && !hasVoted){
+                  setVoteInfo((prev) => ({...prev, option_id: opt.id, trend_id: trend.id}))
+                  setSelected(opt);
+                }
+              }}
+              className={`${(!trendDone) ? 'cursor-pointer p-3 rounded-lg border border-(--border) bg-(--card) hover:border-(--owner) transition' : `cursor-not-allowed p-3 rounded-lg border border-(--border) ${opt.is_correct === 1 ? 'bg-(--ceo)' : 'bg-(--card)'}`} 
               ${selected?.id === opt.id ? "border-(--owner) shadow-md" : ""}`}
             >
               <div className="flex justify-between items-center">
@@ -99,16 +88,26 @@ const TrendDetail = ({ data }: { data: any }) => {
         </div>
       )} */}
 
-        {selected && (
-        <div className="flex flex-col w-full p-2 gap-4">
-          {/* Web3 Payment Option */}
-          <div className="bg-[var(--card)] p-4 rounded-lg border border-[var(--owner)] flex flex-col gap-3">
-            <h3 className="font-semibold text-[var(--owner)]">
-              Place Vote On: {selected.option_text}
-            </h3>
+      {(isOwner && !trendDone) ? (
+        <div className="flex flex-col w-full p-2 items-center justify-center">
+          <p>You can't vote your Trend Mate</p>
+        </div>
+      ) : hasVoted ? (
+        <div className="flex flex-col w-full p-2 items-center justify-center">
+          <p>You voted {trend.votes?.find((vote: any) => vote.user_id === user?.id)?.option_id === selected?.id ? selected?.option_text : trend.options.find((opt: any) => opt.id === trend.votes?.find((vote: any) => vote.user_id === user?.id)?.option_id)?.option_text}. Wait for the Results</p>
+        </div>
+      ) : selected && (
+        <div className="flex flex-col w-full p-2 gap-2">
+        <div className="bg-(--card) rounded-lg border p-2 border-(--owner) flex flex-col">
+          <h3 className="font-semibold text-(--owner)">
+            Place Vote On: {selected.option_text}
+          </h3>
 
-            <PayButton/>
-          </div>
+          <PayButton
+          key={selected.id}
+          data={voteInfo}
+          />
+        </div>
         </div>
       )}
     </section>
