@@ -7,7 +7,7 @@ import DashboardLayout from "@/layouts/Advisor/DashboardLayout";
 import { useState, useRef, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { FaCopy, FaEdit } from "react-icons/fa";
-import { emptyResult, Lens, Loading, LoadingDiv, postData } from "../../../components/Tools/Misc";
+import { emptyResult, Lens, Loading, LoadingDiv, postData, UpperCase } from "../../../components/Tools/Misc";
 import AchievementPanel from "../../../components/Advisor/Achievements";
 import LensActivity from "../../../components/Advisor/LensActivity";
 import CheckInCalendar from "../../../components/Advisor/CheckInCalendar";
@@ -110,7 +110,7 @@ const Profile = () => {
               {/* Avatar */}
               <div className="relative" role="group" aria-roledescription="avatar upload">
               <img
-                src={data.avatar || "https://placehold.co/100x100"}
+                src={data.avatar || "/logo.svg"}
                 alt={`${user?.username || "User"} avatar`}
                 loading="lazy"
                 className={`${classMap.dehtaBorder()} rounded-full w-24 h-24 object-cover bg-accent`}
@@ -155,7 +155,7 @@ const Profile = () => {
               <p className="font-semibold">{data.name || user?.username}</p>
               {/* {user?.email && <p className="text-xs text-muted-foreground">{user.email}</p>} */}
               <small className="inline-block mt-1 px-2 py-0.5 text-xs rounded bg-muted text-muted-foreground">
-                {user?.role}
+                {UpperCase(user?.role)}
               </small>
               </div>
 

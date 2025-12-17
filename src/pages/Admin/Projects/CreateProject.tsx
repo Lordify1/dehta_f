@@ -10,7 +10,7 @@ export default function CreateProject(){
     return(
         <AdminLayout>
             <Helmet>
-                <title>Create Project(s) - {appName}</title>
+                <title>Create Project - {appName}</title>
             </Helmet>
 
             

@@ -64,7 +64,7 @@ const Layout: React.FC<LayoutProps> = ({ children, showNavs = true }) => {
       <div className="min-h-screen flex flex-col bg-(--background) text-(--primary)">
         
         {/* HEADER */}
-        <header className="absolute top-0 left-0 w-full z-50 bg-gradient-to-b from-[var(--tbg)] via-[] to-[] backdrop-blur-sm">
+        <header className="absolute top-0 left-0 w-full z-50 bg-linear-to-b from-(--tbg) via-[] to-[] backdrop-blur-sm">
           <div className="max-w-7xl mx-auto flex items-center justify-between px-6 sm:px-12 py-4">
 
             {/* Logo */}

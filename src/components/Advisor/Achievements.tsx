@@ -87,7 +87,7 @@ const AchievementPanel = ({userAchievements, achievementTypes} : {userAchievemen
               <div className="text-start">
                 <h4
                   className={`font-medium ${
-                    unlocked ? "text-primary" : "text-muted"
+                    unlocked ? "text-primary" : "text-white"
                   }`}
                 >
                   {a.name}

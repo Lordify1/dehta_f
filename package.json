@@ -18,6 +18,7 @@
     },
     "dependencies": {
         "@depay/widgets": "^13.0.39",
+        "@hello-pangea/dnd": "^18.0.1",
         "@reown/appkit": "^1.8.13",
         "@reown/appkit-adapter-wagmi": "^1.8.13",
         "@reown/appkit-pay": "^1.8.14",
@@ -28,6 +29,7 @@
         "@vitejs/plugin-react": "^4.3.4",
         "antd": "^5.26.0",
         "axios": "^1.9.0",
+        "buffer": "^6.0.3",
         "chart.js": "^4.4.9",
         "clsx": "^2.1.1",
         "dotenv": "^17.2.3",

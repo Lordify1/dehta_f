@@ -7,6 +7,7 @@ import SendRequest from "@/components/Tools/SendRequest";
 import { advisorUrl, appName, appUrl } from "@/app";
 import { OffCanvasContext } from "@/context/OffCanvasContext";
 import axios from "axios";
+import { apiUrl } from "../../../App";
 
 export const RateForm = ({showComment = true, projectID = null, auth = null, showBtn = false}) => {
     const {offData} = useContext(OffCanvasContext)
@@ -39,7 +40,7 @@ export const RateForm = ({showComment = true, projectID = null, auth = null, sho
                             {showComment && (
                                 <textarea 
                                     rows={5}
-                                    className={`${classMap.input()}`} name="comment"
+                                    className={`${classMap.input()} mb-2 mt-2`} name="comment"
                                     onChange={(e) => setData(prev => ({
                                         ...prev,
                                         comment: e.target.value
@@ -47,7 +48,7 @@ export const RateForm = ({showComment = true, projectID = null, auth = null, sho
                             )}
                         </div>
                         <SendRequest
-                            url={`/project/rate`}
+                            url={`/api/project/rate`}
                             method="post"
                             data={data}
                             className="w-full"
@@ -70,7 +71,7 @@ export const RatesDiv = ({id}: {id: number}) => {
     const [ratings, setRatings] = useState<any[]>([]);
 
     useEffect(() => {
-        axios.post(`${appUrl}/project/ratings/${id}`)
+        axios.post(`${apiUrl}/api/project/ratings/${id}`)
             .then((res:any) => {
                 setRatings(res.data);
                 // console.log(res);

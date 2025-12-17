@@ -50,7 +50,7 @@ const WhyFaecesAI: React.FC = () => {
         {indexFeatures.map((it:any, ind:any) => {
           return(
             <>
-            <SlideUp delay={3 + ind}>
+            <SlideUp delay={3 + ind} key={ind}>
             <section key={ind} className={`${classMap.indexCard()} `}>
               <div className="flex flex-row items-center justify-start sm:mb-5">
                 {it.icon} <h4 className='text-3xl'>{it.label}</h4>

@@ -2,7 +2,8 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { FaHeart } from 'react-icons/fa';
 import { likeProject } from '@/components/Tools/Misc';
 import { useFetch } from '@/context/FetchContext';
-import { appUrl } from '@/app';
+import { apiUrl } from '@/app';
+import axios from 'axios';
 
 interface ProjectLikeProps {
     likes: number;
@@ -40,7 +41,7 @@ const ProjectLike: React.FC<ProjectLikeProps> = ({
         const fetchLikes = async () => {
             try {
                 const response = await fetch(
-                    `${appUrl}/project/get/${project_id}/${slug}`,
+                    `${apiUrl}/api/project/get/${project_id}/${slug}`,
                     {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -77,15 +78,10 @@ const ProjectLike: React.FC<ProjectLikeProps> = ({
             await likeProject(project_id, user_id, guest);
             // refresh server count after action
             try {
-                const r = await fetch(`${appUrl}/project/get/${project_id}/${slug}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ guestId }),
-                });
-                if (r.ok) {
-                    const json = await r.json();
-                    setLikeCount(json?.data?.project?.likes_count ?? optimistic);
-                }
+
+                const r = await axios.post(`${apiUrl}/api/project/get/${project_id}/${slug}`, guestId)
+                    
+                setLikeCount(r?.data?.project?.likes_count ?? optimistic);
             } catch {
                 // ignore refresh errors; keep optimistic value
             }
@@ -119,7 +115,7 @@ const ProjectLike: React.FC<ProjectLikeProps> = ({
             className="inline-flex items-center gap-2 cursor-pointer transition-colors disabled:opacity-60"
         >
             <FaHeart
-                className={`transition-colors ${hasLiked ? 'text-[var(--owner)]' : 'hover:text-gray-500'}`}
+                className={`transition-colors ${hasLiked ? 'text(--owner)' : 'hover:text-gray-500'}`}
                 aria-hidden="true"
             />
             <span>{displayedCount} Lens</span>

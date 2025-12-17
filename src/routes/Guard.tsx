@@ -1,5 +1,6 @@
 import { Loading } from "@/components/Tools/Misc";
 import { Navigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 type Props = {
     user: any,
@@ -9,7 +10,7 @@ type Props = {
 
 export const ProtectedRoute = ({ user, loading, children }: Props) => {
     if (loading) {
-        return <Loading/>
+        return <div className="flex flex-col items-center justify-center w-full h-full"><Loading/></div>
     }
     if (!user) {
         return <Navigate to="/login" replace />;
@@ -23,7 +24,7 @@ export const ProtectedRoute = ({ user, loading, children }: Props) => {
 
 export const GuestRoute = ({ user, loading, children }: Props) => {
     if (loading) {
-        return <Loading/>
+        return <div className="flex flex-col items-center justify-center w-full h-full"><Loading/></div>
     }
     if (user) {
         return <Navigate to="/dashboard" replace />;
@@ -33,7 +34,7 @@ export const GuestRoute = ({ user, loading, children }: Props) => {
 
 export const AnyRoute = ({ user, loading, children }: Props) => {
     if (loading) {
-        return <Loading/>
+        return <div className="flex flex-col items-center justify-center w-full h-full"><Loading/></div>
     }
     return children;
 };
@@ -41,7 +42,7 @@ export const AnyRoute = ({ user, loading, children }: Props) => {
 
 export const AdminGuestRoute = ({user, loading, children}: Props) => {
     if (loading) {
-        return <Loading/>
+        return <div className="flex flex-col items-center justify-items-center w-full h-full"><Loading/></div>
     }
 
     if(user){
@@ -54,13 +55,27 @@ export const AdminGuestRoute = ({user, loading, children}: Props) => {
 
 export const AdminAuthRoute = ({user, loading, children}: Props) => {
     if (loading) {
-        return <Loading/>
+        return <div className="flex flex-col items-center justify-items-center w-full h-full"><Loading/></div>
     }
     if (!user) {
         return <Navigate to="/admin/login" replace />;
     }
 
     if(user?.role !== 'admin') {
+        return <Navigate to="/dashboard" replace />
+    }
+    return children;    
+}
+
+export const FounderRoute = ({user, loading, children}: Props) => {
+    if (loading) {
+        return <div className="flex flex-col items-center justify-items-center w-full h-full"><Loading/></div>
+    }
+    if (!user) {
+        return <Navigate to="/login" replace />;
+    }
+
+    if(user?.role !== 'founder') {
         return <Navigate to="/dashboard" replace />
     }
     return children;    

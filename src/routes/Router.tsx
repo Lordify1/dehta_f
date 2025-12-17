@@ -3,8 +3,9 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { ToastContainer } from 'react-toastify';
 import { useUser } from '@/context/UserContext';
-import { ProtectedRoute, GuestRoute, AnyRoute, AdminAuthRoute, AdminGuestRoute } from './Guard';
+import { ProtectedRoute, GuestRoute, AnyRoute, AdminAuthRoute, AdminGuestRoute, FounderRoute } from './Guard';
 import { Loading } from '@/components/Tools/Misc';
+import 'react-toastify/dist/ReactToastify.css'
 
 const FaecesRouter = () => {
     const Home = lazy(() => import('@/pages/Advisor/Projects'));
@@ -20,6 +21,10 @@ const FaecesRouter = () => {
     const NotFound = lazy(() => import('@/pages/Error/404'));
     const Wallet = lazy(() => import('@/pages/Advisor/Wallet'));
 
+
+    // Founder
+    const EditProject = lazy(() => import('@/pages/Advisor/Founder/EditProject'));
+
     // Admin
     const AdminLogin = lazy(() => import('@/pages/Admin/Auth/Login'));
     const AdminDashboard = lazy(() => import('@/pages/Admin/Dashboard'));
@@ -27,6 +32,7 @@ const FaecesRouter = () => {
     const AdminLens = lazy(() => import('@/pages/Admin/LensOffers/LensIndex'))
     const AdminProjects = lazy(() => import('@/pages/Admin/Projects/ProjectIndex'))
     const AdminProjectsCreate = lazy(() => import('@/pages/Admin/Projects/CreateProject'))
+    const AdminQuest = lazy(() => import('@/pages/Admin/Quest/QuestIndex'));
     const ProjectDetail = lazy(() => import('@/pages/Advisor/ProjectDetail'))
     const TrendBet = lazy(() => import('@/pages/Advisor/TrendBet'));
 
@@ -47,6 +53,8 @@ const FaecesRouter = () => {
         { path: '/dashboard', element: <Dashboard />, type: 'auth' },
         { path: '/profile', element: <Profile />, type: 'auth' },
 
+        { path: '/edit-project', element: <EditProject />, type: 'auth', userType: 'founder'},
+
         // Market 
         { path: '/market', element: <Market />, type: 'auth' },
         { path: '/market/purchase/:item/:slug', element: <MarketPurchase />, type: 'auth' },
@@ -54,13 +62,14 @@ const FaecesRouter = () => {
 
         { path: '/wallet', element: <Wallet />, type: 'auth' },
 
-        { path: '/admin/login', element: <AdminLogin />, type: 'any', admin: true },
-        { path: '/admin/dashboard', element: <AdminDashboard />, type: 'auth', admin: true },
-        { path: '/admin/glasses', element: <AdminGlasses/>, type: "auth", admin: true},
-        { path: '/admin/lens', element: <AdminLens/>, type: "auth", admin: true},
-        { path: '/admin/projects', element: <AdminProjects/>, type: "auth", admin: true},
-        { path: '/admin/projects/create', element: <AdminProjectsCreate/>, type: "auth", admin: true},
-
+        { path: '/admin/login', element: <AdminLogin />, type: 'any', userType: 'admin' },
+        { path: '/admin/dashboard', element: <AdminDashboard />, type: 'auth', userType: 'admin' },
+        { path: '/admin/glasses', element: <AdminGlasses/>, type: "auth", userType: 'admin'},
+        { path: '/admin/lens', element: <AdminLens/>, type: "auth", userType: 'admin'},
+        { path: '/admin/lens', element: <AdminLens/>, type: "auth", userType: 'admin'},
+        { path: '/admin/projects', element: <AdminProjects/>, type: "auth", userType: 'admin'},
+        { path: '/admin/projects/create', element: <AdminProjectsCreate/>, type: "auth", userType: 'admin'},
+        { path: '/admin/quests', element: <AdminQuest/>, type: "auth", userType: 'admin'},
         // catch-all 404 route (must be last)
         { path: '*', element: <NotFound />, type: 'any' },
     ];
@@ -71,16 +80,27 @@ const FaecesRouter = () => {
                 <Suspense fallback={<Loading />}>
                 {/* <Suspense> */}
                     <Routes>
-                        {urls.map(({ path, element, type, admin }) => {
-                            const Guard = admin
-                                ? type === 'auth'
+                        {urls.map(({ path, element, type, userType }) => {
+                            let Guard = null
+                            switch(userType){
+                                case 'admin':
+                                    Guard = type === 'auth'
                                     ? AdminAuthRoute
                                     : AdminGuestRoute
-                                : type === 'auth'
+                                    break
+                                case 'founder':
+                                    Guard = FounderRoute
+                                    break
+                                case 'investor':
+                                    break
+                                default:
+                                Guard = type === 'auth'
                                 ? ProtectedRoute
                                 : type === 'guest'
                                 ? GuestRoute
                                 : AnyRoute;
+                                break
+                            }
                             return (
                                 <Route
                                     key={path}
@@ -96,8 +116,15 @@ const FaecesRouter = () => {
                     </Routes>
                 </Suspense>
                 <ToastContainer
-                position='top-right'
-                style={{zIndex: 999999999999999}}
+                position="top-right"
+                autoClose={3000}
+                newestOnTop={true}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                className={`rounded-3xl mt-2`}
                 />
             </Router>
         </HelmetProvider>

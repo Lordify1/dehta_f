@@ -1,16 +1,13 @@
 import React, { useContext } from 'react';
 import {
-  cardClass,
   classMap,
   stringToJson,
-  viewProject,
 } from '@/components/Tools/Misc';
 import { OffCanvasContext } from '@/context/OffCanvasContext';
 import { useAuth } from '@/context/AuthContext';
-import { advisorUrl } from '@/app';
-import { FaComment, FaEye, FaRegStar, FaSearchDollar, FaStar, FaThumbsUp } from 'react-icons/fa';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { apiUrl } from '../../../App';
 
 type Props = {
   id: number;
@@ -79,8 +76,8 @@ export default function ProjectCard({
 
   const updateStatus = async (id, stat) => {
     try{
-      const res = await axios.post(`${advisorUrl}/api/project/set_status/${id}/${stat}`);
-      status = stat;
+      const res = await axios.post(`${apiUrl}/api/project/set_status/${id}/${stat}`);
+      if(res.status === 200) status = stat;
     }catch(err){
       console.log(err)
     }
@@ -100,7 +97,7 @@ export default function ProjectCard({
     >
       <div className="w-full">
         <div className="flex justify-between items-center mb-2 ">
-          <h3 className="text-primary font-bold text-lg">{name}</h3>
+          <h3 className="text-primary font-bold text-lg text-nowrap text-ellipsis">{name}</h3>
             {(isOwner && isDB) && (
             <button 
               title='Toggle Project Status'
@@ -108,11 +105,6 @@ export default function ProjectCard({
               onClick={async () => {
               const newStatus = localStatus === 'draft' ? 'published' : 'draft';
               await updateStatus(id, newStatus);
-              // Force re-render by updating local state
-              // Add a local state for status at the top of the component:
-              // const [localStatus, setLocalStatus] = React.useState(status);
-              // And use localStatus instead of status everywhere
-              // Here:
               setLocalStatus(newStatus);
               }}
             >
@@ -122,7 +114,7 @@ export default function ProjectCard({
         </div>
         <div className='h-20 overflow-hidden rounded-xl'>
           <img
-          src={logo || 'https://placehold.co/600x400/000000/FFF'}
+          src={logo || '/logo.svg'}
           alt={`Project ${name}`}
           className="w-full h-30 object-cover rounded-md mb-3 transition-all duration-300 hover:rounded-xl"
         />
@@ -135,9 +127,8 @@ export default function ProjectCard({
         {!hideButtons && (
           <div className="grid grid-cols-1 justify-between gap-1 mt-2">
             <Link
-            to={advisorUrl + `/project/${id}/${slug}`}
+            to={`/project/${id}/${slug}`}
             className={classMap.button()}
-            onClick={() => { viewProject(id, user_id) }}
             >
             View
             </Link>

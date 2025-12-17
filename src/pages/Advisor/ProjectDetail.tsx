@@ -107,22 +107,21 @@ const ProjectDetail = () => {
       <Helmet>
         <title>{`${project?.name || ""} -`} {appName}</title>
       </Helmet>
-      {isDraft && (<div className={`w-full min:h-10 p-2 text-center bg-(--warning) flex items-center text-secondary justify-center mb-2`}>
+      <div className={`w-full fade-in transition-opacity duration-500 min-h-screen bg-background text-primary px-4 py-5 mt-20`}>
+        {isDraft && (<div className={`w-full min:h-10 p-2 text-center bg-(--warning) flex items-center text-secondary justify-center mb-2`}>
           <h6 className='text-sm'>Viewing as <b>Draft</b>. Your project is not visible to others. Toggle the button on your project card on your dashboard to publish it</h6>
         </div>)}
-      <div className={`w-full fade-in transition-opacity duration-500 min-h-screen bg-background text-primary px-4 py-5 mt-20`}>
         {/* Main Grid Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* 👉 Left Column (Comments & Engagement) */}
             <div className="lg:col-span-3 order-2 lg:order-1 space-y-4">
 
-              {isLoading ? (
+              {/* {isLoading ? (
                 <div className="w-full">
                   <LoadingDiv/>
                 </div>
               ) : (<div className={`${classMap.pageSection()}`}>
                 <div className="flex items-center justify-center text-sm text-primary">
-                  {user?.user?.role === 'investor' ? (
                     <ProjectLike
                       likes={project?.likes_count}
                       project_id={project?.id}
@@ -131,24 +130,11 @@ const ProjectDetail = () => {
                       auth={user.user}
                       slug={project?.slug}
                     />
-                  ) : (
-                    <span>
-                      <FaSearchDollar 
-                      className={`inline mb-1 text-[var(--owner)]`}/>
-                      {' '}
-                      {project?.likes_count}
-                      {' '}
-                      Lens
-                    </span>
-                  )}
-                  {/* <span>
-                    <FaEye className={`inline ${colorMap.text_primary}`} /> {project.views_count} Views
-                  </span> */}
                 </div>
-              </div>)}
+              </div>)} */}
 
               {/* Rate Form */}
-              {(user?.role === 'investor' && !isOwner) ? (
+              {!isOwner ? (
                 isLoading ? (
                   <div className="w-full">
                     <LoadingDiv
@@ -184,7 +170,7 @@ const ProjectDetail = () => {
             <div className={`${classMap.pageSection()} border border-border transition-all duration-300`}>
               <div className="flex flex-row lg:flex-row lg:items-center space-y-3 lg:space-y-0 space-x-4">
                 <img
-                  src={project.logo || "https://placehold.co/80x80"}
+                  src={project.logo || "/logo.svg"}
                   alt="Project Logo"
                   className="rounded-full w-20 h-20 object-cover border-2 border-accent shadow-md transitions duration-300"
                 />
@@ -273,9 +259,9 @@ const ProjectDetail = () => {
               {project?.founder ? (
                 <div className={`flex items-center space-x-3 mt-3 ${hideOrNot('founder')}`}>
                   <img
-                    src={project.founder.picture ? project.founder.picture : "https://placehold.co/50x50"}
+                    src={project.founder.picture ? project.founder.picture : "/logo.svg"}
                     alt={project.founder.name}
-                    className="rounded-full w-12 h-12 border border-gray-600 hover:border-[#00ffb3] transition"
+                    className="rounded-full w-12 h-12 border border-gray-600 hover:border-[#00ffb3] transition overflow-hidden"
                   />
                   <div>
                     <p className="font-semibold">{project.founder.name}</p>
@@ -484,7 +470,7 @@ const ProjectDetail = () => {
               )}
             </div>)}
           </div>
-          <LensButton projectName={project.name}/>
+          {/* <LensButton projectName={project.name}/> */}
           <Offcanvas title={`Project Analysis`}>
               <AiLensOffcanvas
               projectId={project.id}

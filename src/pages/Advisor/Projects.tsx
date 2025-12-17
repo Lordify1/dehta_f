@@ -11,26 +11,20 @@ import DashboardLayout from '../../layouts/Advisor/DashboardLayout';
 import { Helmet } from 'react-helmet-async';
 import { apiUrl, appName } from '../../App';
 import { useUser } from '@/context/UserContext';
+import { useMisc } from '@/context/MiscContext';
 import Offcanvas from '@/components/ui/Offcanvas';
 import { RateForm } from '@/components/Advisor/Forms/RateForm';
 
 export default function Projects() {
   const [showFilters, setShowFilters] = useState(false);
-  const [projects, setProjects] = useState([]);
   const [filteredProjects, setFilteredProjects] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [showRateForm, setShowRateForm] = useState(false);
   const { user, role, sidebarData } = useUser();
+  const {getProjects, isLoading, projects} = useMisc();
 
   useEffect(() => {
-    axios
-      .post(`${apiUrl}/api/project/all`)
-      .then((res: any) => {
-        setProjects(res.data.projects);
-        setIsLoading(false);
-      })
-      .catch((err) => console.error(err));
-  }, []);
+    getProjects();
+  },[])
 
   const Content = (
     <div className={`min-h-screen flex flex-col items-center text-primary px-6 md:px-10 lg:px-16 py-14 ${user ? '' : 'projectsbg py-20'} w-full`}>

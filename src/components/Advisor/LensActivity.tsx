@@ -26,7 +26,7 @@ const LensActivity = ({userTransact}: Props) => {
               {isLoading ? (<Loading/>) : (transactions ? (transactions.map((tx, index) => (
                 <div
                   key={index}
-                  className={`${classMap.section} text-start`}
+                  className={`${classMap.section} flex flex-col text-start items-start`}
                 >
                   <span>{tx.description}</span>
                   <span className={tx.method === 'minus' ? "text-red-400" : "text-[var(--owner)]"}>

@@ -540,7 +540,7 @@ export const ProjectFormManual = ({ isUpdate = false, project, adminUrl = false}
           description: m.description || "",
           picture: m.picture || null
         })) : [{}],
-        links: project.links.length ? project.links.map((m:any) => ({
+        links: project.links && project.links.length ? project.links.map((m:any) => ({
           platform: m.platform || "",
           link: m.link || ""
         })) : [{}],
@@ -616,7 +616,7 @@ export const ProjectFormManual = ({ isUpdate = false, project, adminUrl = false}
 
 
   const links = [
-    {name: "Twitter", icon: React.createElement(FaTwitter)},
+    {name: "X", icon: React.createElement(FaTwitter)},
     {name: "Instagram", icon: React.createElement(FaInstagram)},
     {name: "Tiktok", icon: React.createElement(FaTiktok)},
     {name: "Facebook", icon: React.createElement(FaFacebook)},
@@ -706,7 +706,7 @@ export const ProjectFormManual = ({ isUpdate = false, project, adminUrl = false}
       <Loading/>
     ):(
       <>
-      <div className={`${isUpdate ? "p-2 mt-5 h-[60vh] overflow-x-scroll" : ""}`}>
+      <div>
         <form className={`grid gap-2 text-start ${classMap.form}`}>
           {fields.map((field) => (
             <div key={field.key}>
@@ -828,6 +828,7 @@ export const ProjectFormManual = ({ isUpdate = false, project, adminUrl = false}
                               value={member[item.key] || ""}
                               placeholder={item.placeholder} 
                               onChange={(e) => handleChange(field.key, e.target.value, index, item.key)}
+                              required
                               className={classMap.input()}
                             />
                           )}
@@ -845,6 +846,7 @@ export const ProjectFormManual = ({ isUpdate = false, project, adminUrl = false}
                             placeholder={item.placeholder}
                             value={member[item.key] || ""}
                             className={classMap.input()}
+                            required
                             onChange={(e) => handleChange(field.key, e.target.value, index, item.key)}
                             id={item.key}/>
                             <datalist id="platform-options">
@@ -941,14 +943,24 @@ export const ProjectFormManual = ({ isUpdate = false, project, adminUrl = false}
                   <ImageUploadDiv
                   value={formData[field.key] || null}
                   onChange={(e) => handleChange(field.key, e)}
-                  uploadUrl={`${appUrl}/upload-file`}
-                  deleteUrl={`${appUrl}/delete-file`}
+                  uploadUrl={`${apiUrl}/api/upload-file`}
+                  deleteUrl={`${apiUrl}/api/delete-file`}
                   path="/files/projects/logo/"
                   />
                 </div>
               )}
             </div>
           ))}
+
+          <div className="flex items-center justify-start mt-4">
+            <SendRequest
+              url={`${adminUrl ? '/admin/projects/create' : '/api/project/create/form'}`}
+              method="post"
+              data={formData}
+              onResponse={() => {}}
+              text={isUpdate ? "Update Project" : "Create Project"}
+            />
+          </div>
         </form>
 
         {/* Collected data preview */}
@@ -958,16 +970,6 @@ export const ProjectFormManual = ({ isUpdate = false, project, adminUrl = false}
             {JSON.stringify(formData, null, 2)}
           </pre>
         </div> */}
-      </div>
-
-      <div className="flex items-center justify-end mt-4">
-        <SendRequest
-          url={`${adminUrl ? '/admin/projects/create' : '/project/create/form'}`}
-          method="post"
-          data={formData}
-          onResponse={() => {}}
-          text={isUpdate ? "Update Project" : "Create Project"}
-        />
       </div>
       </>
       )}

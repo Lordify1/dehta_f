@@ -84,15 +84,15 @@ const CheckInCalendar = ({ lens, streak, transactions, checkins, history, dView 
   };
 
   return (
-    <section className={`${classMap.dehtaCard()} border-(--owner) min-h-[50vh]`}>
+    <section className={`${classMap.dehtaCard()} border-(--owner) min-h-[60vh]`}>
       <div className="flex flex-row items-center justify-between w-full mb-2 transition-normal">
         {view === 'calendar' ?  
         <h3 className="font-bold flex text-start items-center gap-2">
-          <FaCalendar className="inline text-[var(--owner)]"/> 30-Day Check-in Calendar
+          <FaCalendar className="inline"/>Check-in Calendar
         </h3>
         : 
           <h3 className="font-bold flex text-start items-center gap-2">
-          <FaHistory className="inline text-[var(--owner)]"/> Check-in History
+          <FaHistory className="inline"/> Check-in History
         </h3>
       }
       </div>
@@ -107,7 +107,7 @@ const CheckInCalendar = ({ lens, streak, transactions, checkins, history, dView 
             <div
               key={index}
               onClick={() => handleCheckin(index + 1)}
-              className={`w-full flex items-center justify-center  transition-normal p-2 h-15 ${classMap.dehtaBorder('owner')} ${
+              className={`w-full flex items-center justify-center  transition-normal p-2 h-15 rounded-sm mx-1 border-transparent ${
                 claimed
                   ? "bg-green-600 text-primary cursor-not-allowed"
                   : isClaimable
@@ -132,7 +132,7 @@ const CheckInCalendar = ({ lens, streak, transactions, checkins, history, dView 
           {history ? (history.map((tx:any, index:any) => (
             <div
               key={index}
-              className={`${classMap.section} text-start`}
+              className={`${classMap.section} flex flex-col text-start items-start`}
             >
               <span>{tx.streak} Streak Count</span>
               <span className={"text-[var(--owner)]"}>

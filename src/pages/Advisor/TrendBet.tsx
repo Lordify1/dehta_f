@@ -12,16 +12,13 @@ import axios from "axios";
 import { useEffect, useState } from "react"
 import { Helmet } from "react-helmet-async"
 import { FaChartLine, FaPen, FaPlusCircle, FaRegCalendarPlus, FaSearch } from "react-icons/fa";
-import { apiUrl } from "../../App";
 import { DehtaConstruct, emptyResult, TrendCarousel } from "../../components/Tools/Misc";
-import Carousel from "../../components/ui/Carousel";
-import useEmblaCarousel from "embla-carousel-react";
 import { Link } from "react-router-dom";
 
 
 const TrendBet = () => {
     const {user, role, sidebarData} = useUser();
-    const {selectedTrend, setSelectedTrend, trends, isLoading} = useMisc();
+    const {selectedTrend, setSelectedTrend, trends, isLoading, setIsLoading, getTrends} = useMisc();
     const [userTrends, setUserTrends] = useState([]);
     const {setShowOffCanvas, OffId, Offtitle, setOffId, SetOfftitle} = useOffCanvas();
     const [search, setSearch] = useState("");
@@ -32,7 +29,10 @@ const TrendBet = () => {
     useEffect(() => {
         setUserTrends(user?.trends)
 
+        getTrends();
+
         if (!trends) return;
+        setIsLoading(false)
 
         const filtered = trends.filter(item =>
             item.title.toLowerCase().includes(search.toLowerCase()) ||

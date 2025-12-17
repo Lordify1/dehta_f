@@ -8,6 +8,7 @@ import { useUser } from "@/context/UserContext";
 import TrendingTokens from "../../../components/Advisor/TrendingTokens";
 import TrendBetDB from "../../../components/Advisor/TrendBetDB";
 import { investorSidebar } from "@/data/investorSidebarData";
+import QuestDB from "../../../components/Advisor/QuestDB";
 
 const InvestorDashboard = () => {
   const {user} = useUser()
@@ -38,27 +39,8 @@ const InvestorDashboard = () => {
               <h1 className="text-2xl lg:text-4xl mb-3">GM, {user?.username} 👋</h1>
             
         
-            {/* User Info & Lens Summary */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
-          
-                      <section className={`${classMap.dehtaCard()} flex flex-col justify-center text-start col-span-3`}>
-                        <h3 className="font-semibold text-lg mb-2">Lens Goal Progress</h3>
-                        <div className="w-full bg-muted rounded-full h-3">
-                          <div
-                            className="bg-[var(--owner)] animate-pulse h-3 rounded-full transition-all duration-1000"
-                            style={{ width: `${(lens / 30000) * 100}%` }}
-                          ></div>
-                        </div>
-                        <div className="flex flex-col lg:flex-row justify-between w-full mt-2 text-sm text-gray-400">
-                          <span>{lens.toLocaleString()} / 30,000 Lens {" "}</span>
-                          {lens >= 30000 ? (
-                            <span className="text-green-400">✅ Ready to Unlock Project Listing!</span>
-                          ) : (
-                            <span>{(30000 - lens).toLocaleString()} left to unlock Project Listing</span>
-                          )}
-                        </div>
-                      </section>
-            </div>
+            {/* DB Quests  */}
+            <QuestDB/>
         
             {/* Check-in Calendar */}
             <section className={`grid grid-cols-1 lg:grid-cols-3 items-center justify-center mb-4 gap-4`}>

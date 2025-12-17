@@ -7,11 +7,7 @@ import { investorSidebar } from "@/data/investorSidebarData";
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState(() => {
-    // Grab cached user on first render
-    const cached = localStorage.getItem("user");
-    return cached ? JSON.parse(cached) : null;
-  });
+  const [user, setUser] = useState(() => {null});
 
   const [loading, setLoading] = useState(!user); 
   const [sidebarData, setSidebarData] = useState(() => {
@@ -19,6 +15,7 @@ export const UserProvider = ({ children }) => {
     return user.role === "founder" ? founderSidebar : investorSidebar;
   });
   const [role, setRole] = useState(user?.role || null);
+  const [project, setProject] = useState([]);
 
   const syncSidebar = (role) => {
     setSidebarData(role === "founder" ? founderSidebar : investorSidebar);
@@ -36,14 +33,11 @@ export const UserProvider = ({ children }) => {
       const res = await axios.post(`${apiUrl}/api/user`);
       if (res?.data) {
         setUser(res.data);
-        setRole(res.data.role || null);
-        syncSidebar(res.data.role);
-        localStorage.setItem("user", JSON.stringify(res.data));
+        setRole(res.data?.role || null);
+        syncSidebar(res.data?.role);
       }
     } catch (error) {
-      // console.error("Error fetching user:", error);
       setUser(null);
-      localStorage.removeItem("user");
     } finally {
       setLoading(false);
     }
@@ -64,7 +58,7 @@ export const UserProvider = ({ children }) => {
 
   return (
     <UserContext.Provider 
-      value={{ user, setUser, loading, role, setRole, sidebarData, setSidebarData, logout, getUser }}
+      value={{ user, setUser, loading, role, setRole, sidebarData, setSidebarData, logout, getUser, syncSidebar }}
     >
       {children}
     </UserContext.Provider>

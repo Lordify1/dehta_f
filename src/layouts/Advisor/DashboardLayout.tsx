@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FaBars, FaSearchDollar, FaSignOutAlt, FaTimes } from "react-icons/fa";
+import { FaBars, FaConnectdevelop, FaSearchDollar, FaSignOutAlt, FaTimes, FaWallet } from "react-icons/fa";
 import { advisorName, advisorUrl, appName, appUrl } from "@/app";
 import { LoadingDiv, classMap, buttonClass } from "@/components/Tools/Misc";
 import { FaGlasses } from "react-icons/fa";
@@ -10,7 +10,9 @@ import { useUser } from "@/context/UserContext";
 import axios from "axios";
 import { apiUrl } from "../../App";
 import { Lens, PresaleBtn } from "../../components/Tools/Misc";
-import PayWithDePay from "../../components/ui/PayButton";
+import { useAppKit, useAppKitAccount } from '@reown/appkit/react'
+
+
 
 type Props = {
   children: React.ReactNode;
@@ -25,6 +27,8 @@ const DashboardLayout = ({ children, sidebarData, classy }: Props) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [sidebar, setSidebar] = useState(sidebarData);
   const location = useLocation();
+  const { open } = useAppKit();
+  const { isConnected, address } = useAppKitAccount()
 
   const currentPage = (path:string) => {
     const classes = location.pathname === path ? 'text-(--owner) bg-black rounded-md p-1' : ''
@@ -48,6 +52,8 @@ const DashboardLayout = ({ children, sidebarData, classy }: Props) => {
     }
   };
 
+
+
   useEffect(() => {
     if (user?.role === "founder") {
       setSidebar(founderSidebar);
@@ -67,7 +73,6 @@ const DashboardLayout = ({ children, sidebarData, classy }: Props) => {
   return (
     <>
       <div className={`flex flex-row min-h-screen text-primary ${classy ? classy : 'dbBg'}`}>
-        
         {/* SIDEBAR */}
         <aside
           className={`fixed md:static top-0 left-0 z-50 w-56 bg-accent border-r border-border p-6 transform transition-transform duration-200 
@@ -104,7 +109,7 @@ const DashboardLayout = ({ children, sidebarData, classy }: Props) => {
             {/* Avatar + Username */}
             <div className="flex items-center gap-3">
               <img
-                src={user?.avatar || "https://placehold.co/100x100"}
+                src={user?.avatar || "/logo.svg"}
                 className="w-10 h-10 rounded-full object-cover shadow-lg"
               />
               <div className="text-sm font-medium">
@@ -115,7 +120,7 @@ const DashboardLayout = ({ children, sidebarData, classy }: Props) => {
             {/* Logout */}
             <button
               onClick={Logout}
-              className="mt-4 flex items-center gap-3 text-red-600 hover:opacity-70 transition ms-2"
+              className="mt-4 sm:hidden flex items-center gap-3 text-red-600 hover:opacity-70 transition ms-2"
             >
               <FaSignOutAlt /> Logout
             </button>
@@ -135,11 +140,20 @@ const DashboardLayout = ({ children, sidebarData, classy }: Props) => {
             </Link>
 
             <div className="flex items-center gap-4">
-              <appkit-button/>
               <button
-                onClick={Logout}
-                className="flex items-center text-red-600 hover:opacity-70 transition"
+                id="apTrigger"
+                title={isConnected ? "Wallet connected" : "Connect wallet"}
+                onClick={() =>
+                  open({ view: isConnected ? "Account" : "Connect" })
+                }
+                className={`
+                  transition
+                  ${isConnected ? "text-green-400" : "hover:text-(--owner)"}
+                `}
               >
+                <FaWallet />
+              </button>
+              <button onClick={Logout} className="hidden lg:flex items-center text-red-600 hover:opacity-70 transition"> 
                 <FaSignOutAlt />
               </button>
             </div>

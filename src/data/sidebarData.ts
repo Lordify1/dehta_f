@@ -1,6 +1,6 @@
 import React from "react";
 import { appUrl } from "@/app";
-import { FaBriefcase, FaEdit, FaGlasses, FaHome, FaSearchDollar } from "react-icons/fa";
+import { FaBriefcase, FaEdit, FaGlasses, FaHome, FaQuestionCircle, FaSearchDollar } from "react-icons/fa";
 
 // sidebarData.ts
 export const sidebarData = [
@@ -28,6 +28,9 @@ export const sidebarData = [
           },
           { name: "Lens Offers", href: "/admin/lens",
             icon: React.createElement(FaSearchDollar)
+          },
+          { name: "Quests", href: "/admin/quests",
+            icon: React.createElement(FaQuestionCircle)
           },
           // {
           //   name: "Newsletter",

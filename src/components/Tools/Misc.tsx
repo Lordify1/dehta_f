@@ -18,6 +18,11 @@ import useEmblaCarousel from "embla-carousel-react";
 import TrendCard from "../ui/Advisor/TrendCard";
 
 
+
+type InfoMessageProps = {
+  message: string
+}
+
 // tailwind components end
 
 export const formClass = "bg-[#1b1b1b] border border-gray-700 text-white p-2 rounded-md"
@@ -360,7 +365,7 @@ export const classMap = {
 
   success: "text-green-500 text-sm mt-1",
 
-  section: "bg-[var(--accent)] flex items-center justify-between p-5 border border-[var(--ceo)] rounded-xl w-full transition-all duration-300 shadow-lg",
+  section: "bg-black/50 flex items-center justify-between p-5 rounded-xl w-full transition-all duration-300 shadow-lg backdrop-blur-sm",
 
   heading: "text-xl font-bold text-[var(--primary)] mb-2",
 
@@ -487,7 +492,7 @@ export const likeProject = async (project_id:any, user_id:any, guest:boolean) =>
         // router.visit(`${advisorUrl}/login`)
 
     }else{
-        const resp = await axios.post(`${advisorUrl}/project/like`, {
+        const resp = await axios.post(`${apiUrl}/api/project/like`, {
             'project_id': project_id,
             'user_id': user_id,
             'guest': guest
@@ -1292,6 +1297,60 @@ export const EllipsisDropdown = ({children}) => {
           {children}
         </div>
       )}
+    </div>
+  )
+}
+
+
+export const UpperCase = (text:any) => {
+  return text ? text.toUpperCase() : 'null'
+}
+
+
+
+
+export const InfoMessage = ({ message }: InfoMessageProps) => {
+  const [open, setOpen] = useState(false)
+  const wrapperRef = useRef<HTMLDivElement>(null)
+
+  // Close on outside click
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(e.target as Node)
+      ) {
+        setOpen(false)
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
+
+  return (
+    <div ref={wrapperRef} className="relative inline-flex">
+      {open && (
+        <div
+          role="tooltip"
+          className="absolute top-[calc(100%+8px)] left-1/2 -translate-x-1/2 z-9999 rounded-md bg-neutral-900 px-3 py-2 text-xs text-white shadow-lg w-50"
+        >
+          <span>{message}</span>
+        </div>
+      )}
+
+      <button
+        type="button"
+        aria-label="Info"
+        aria-expanded={open}
+        onClick={() => setOpen(prev => !prev)}
+        className="flex h-5 w-5 items-center justify-center
+                   rounded-full border border-neutral-500
+                   text-xs font-semibold text-white
+                   transition hover:bg-neutral-800"
+      >
+        i
+      </button>
     </div>
   )
 }

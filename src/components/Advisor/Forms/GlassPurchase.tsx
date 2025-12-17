@@ -3,7 +3,6 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { apiUrl } from "@/App";
 import { classMap, LoadingBar } from "@/components/Tools/Misc";
-import { useMisc } from "@/context/MiscContext";
 import { FaDollarSign } from "react-icons/fa";
 import { useUser } from "@/context/UserContext";
 import { Loading } from "../../Tools/Misc";
@@ -12,8 +11,7 @@ import { Loading } from "../../Tools/Misc";
 
 export default function GlassPurchase({price, glass_id, data}:{data?:object,glass_id?:any, price:any}) {
   const [invoiceUrl, setInvoiceUrl] = useState(null);
-  const {getTrends} = useMisc();
-  const { getUser } = useUser();
+  const { getUser, role, syncSidebar } = useUser();
     
   const [loading, setLoading] = useState(false);
   const [payInfo, setPayInfo] = useState({
@@ -25,9 +23,9 @@ export default function GlassPurchase({price, glass_id, data}:{data?:object,glas
   const startPolling = (orderId: string) => {
     const poll = setInterval(async () => {
       try {
-        await axios.get(`${apiUrl}/api/payment/status/${orderId}`);
+        const res = await axios.get(`${apiUrl}/api/payment/status/${orderId}`);
 
-        // if (res.data.status === "confirmed" || res.data.status === "finished") {
+        if (res.data.status === "confirmed" || res.data.status === "finished" || res.data.status === 'Partially_paid') {
           clearInterval(poll);
 
           // close iframe
@@ -42,11 +40,11 @@ export default function GlassPurchase({price, glass_id, data}:{data?:object,glas
           });
 
           getUser();
-
+          syncSidebar(role)
           setLoading(false);
 
           toast.success("Glass Purchased Successfully!");
-        // }
+        }
 
       } catch (e) {
         console.log("Polling error", e);

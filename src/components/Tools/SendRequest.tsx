@@ -90,9 +90,10 @@ export default function SendRequest({
         url: mainUrl,
         data: requestData,
         headers,
+        withCredentials: true
       });
 
-      // console.log(response)
+      console.log(response)
 
       const user = await axios.get(`${apiUrl}/api/user`, {
         withCredentials: true
