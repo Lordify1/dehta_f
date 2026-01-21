@@ -1,6 +1,6 @@
 import React from "react";
 import { appUrl } from "@/app";
-import { FaBriefcase, FaEdit, FaGlasses, FaHome, FaQuestionCircle, FaSearchDollar } from "react-icons/fa";
+import { FaBriefcase, FaEdit, FaGlasses, FaHome, FaQuestionCircle, FaSearchDollar, FaUsers } from "react-icons/fa";
 
 // sidebarData.ts
 export const sidebarData = [
@@ -15,6 +15,11 @@ export const sidebarData = [
             name: "Dashboard",
             href: "/admin/dashboard",
             icon: React.createElement(FaHome)
+          },
+          { 
+            name: "Users",
+            href: "/admin/users",
+            icon: React.createElement(FaUsers)
           },
           { name: "Projects", href: "/admin/projects", 
             icon: React.createElement(FaBriefcase),

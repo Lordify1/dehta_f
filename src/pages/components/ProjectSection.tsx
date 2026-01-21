@@ -42,21 +42,21 @@ const marketData = [
 const ProjectSection: React.FC = () => {
   return (
     <section
-      id="why"
-      className="relative text-[var(--primary)] py-10 px-6 sm:px-16 overflow-hidden"
+      id="projects"
+      className="relative text-[--primary] py-20 px-6 sm:px-10 overflow-hidden"
     >
-      <div className="mx-auto max-w-7xl items-center">
-        <h1 className="text-3xl lg:text-6xl mb-10">Projects</h1>
-        <div className='grid grid-cols-1 lg:grid-cols-3 gap-3 mb-2 items-center justify-items-center'>
+      <div className="mx-auto items-center text-center w-full">
+        <h1 className="text-3xl lg:text-6xl mb-1">Project Creation and Growth</h1>
+        <span className='mb-2'>Create, List, and grow your project at Dehta</span>
+        <div className='grid grid-cols-1 lg:grid-cols-3 gap-5 space-y-5 mt-5 mb-5 items-center justify-items-center'>
         {ProjectsData.map((it:any, ind:any) => {
           return(
             <>
             <SlideUp delay={4}>
-            <section key={ind} className={`${classMap.indexCard()}`}>
-              <div className="flex flex-row items-center justify-start sm:mb-5">
-                {it.icon} <h4 className='text-3xl'>{it.label}</h4>
-              </div>
-              <p className=''>{it.text}</p>
+            <section key={ind} className={`flex flex-col items-start justify-center text-start`}>
+              <object data={`${it.icon}`} className="w-10" type="image/svg+xml"></object> 
+              <h4 className='text-2xl'>{it.label}</h4>
+              <span className='w-70 text-white opacity-50'>{it.text}</span>
             </section>
             </SlideUp>
             </>

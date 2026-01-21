@@ -12,6 +12,7 @@ import GlassSection from './components/GlassSection';
 import TrendBetSection from './components/TrendBetSection';
 import ProjectSection from './components/ProjectSection';
 import TeamSection from './components/TeamSection';
+import SocialsSection from './components/SocialsSection';
 
 
 
@@ -33,6 +34,7 @@ const Home: React.FC = () => {
         <TrendBetSection/>
         <ProjectSection/>
         <TeamSection/>
+        <SocialsSection/>
         <FAQ/>
     </Layout>
     </>

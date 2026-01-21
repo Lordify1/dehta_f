@@ -116,22 +116,21 @@ const ProjectDetail = () => {
           {/* 👉 Left Column (Comments & Engagement) */}
             <div className="lg:col-span-3 order-2 lg:order-1 space-y-4">
 
-              {/* {isLoading ? (
+              {isLoading ? (
                 <div className="w-full">
                   <LoadingDiv/>
                 </div>
-              ) : (<div className={`${classMap.pageSection()}`}>
-                <div className="flex items-center justify-center text-sm text-primary">
+              ) : (
                     <ProjectLike
                       likes={project?.likes_count}
                       project_id={project?.id}
                       user_id={user_id}
                       guest={guest}
-                      auth={user.user}
+                      user={user}
+                      auth={user?.user}
                       slug={project?.slug}
                     />
-                </div>
-              </div>)} */}
+            )}
 
               {/* Rate Form */}
               {!isOwner ? (

@@ -14,6 +14,9 @@ export const MiscProvider = ({children}) => {
     const [projects, setProjects] = useState([]);
     const [quests, setQuests] = useState([]);
     const [userAns, setUserAns] = useState([]);
+    const [earnfiTasks, setEarnfiTasks] = useState([]);
+    const [earnfiJobs, setEarnfiJobs] = useState([]);
+    const [earnfiStats, setEarnFiStats] = useState([]);
     const [isLoading, setIsLoading] = useState(true)
 
     const getTrends = async () => {
@@ -23,7 +26,7 @@ export const MiscProvider = ({children}) => {
                 setIsLoading(false)
             }catch(err){
                 setIsLoading(false)
-                toast.error('Error fetching Data. Refresh')
+                
             }
     }
 
@@ -34,7 +37,7 @@ export const MiscProvider = ({children}) => {
             setIsLoading(false)
         }catch(err){
             setIsLoading(false)
-            toast.error('Error fetching Data. Refresh')
+            
         }
     }
 
@@ -42,11 +45,12 @@ export const MiscProvider = ({children}) => {
         try{
             const res = await axios.post(`${apiUrl}/api/quest/get`);
             setQuests(res.data.quests)
+            // console.log(res.data.quests)
             setUserAns(res.data.userAnswers)
             setIsLoading(false)
         }catch(err){
             setIsLoading(false)
-            toast.error('Error fetching Data. Refresh')
+            
         }
     }
 
@@ -57,12 +61,29 @@ export const MiscProvider = ({children}) => {
             setIsLoading(false)
         }catch(err){
             setIsLoading(false)
-            toast.error('Error fetching Data. Refresh')
+            
+        }
+    }
+
+    const getEarnFiOffers = async () => {
+        try {
+            const offers = await axios.post(`${apiUrl}/api/earnfi`);
+
+            console.log(offers);
+
+            setEarnfiJobs(offers.data?.jobs);
+            setEarnfiTasks(offers.data?.tasks);
+            setEarnFiStats(offers.data?.stats)
+
+            setIsLoading(false);
+        } catch (error) {
+            console.log(error)
+            setIsLoading(false)
         }
     }
     
     return(
-        <MiscContext.Provider value={{ trends ,selectedTrend, setSelectedTrend, getTrends, isLoading, setIsLoading, getUserProject, userProject, projects, setProjects, getProjects, quests, getQuests, userAns, setUserAns }}>
+        <MiscContext.Provider value={{ trends ,selectedTrend, setSelectedTrend, getTrends, isLoading, setIsLoading, getUserProject, userProject, projects, setProjects, getProjects, quests, getQuests, userAns, setUserAns, getEarnFiOffers, earnfiJobs, setEarnfiJobs, earnfiTasks, setEarnfiTasks, earnfiStats, setEarnFiStats }}>
             {children}
         </MiscContext.Provider>
     )

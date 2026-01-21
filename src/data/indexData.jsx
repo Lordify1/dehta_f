@@ -1,4 +1,4 @@
-import { FaChartBar, FaComment, FaSearch, FaCoins, FaCartPlus, FaMoneyBillWave, FaBolt, FaUserPlus, FaVoteYea, FaTrophy, FaSlidersH, FaPlusCircle, FaGlobe, FaUsers, FaRobot, FaHandshake, FaChartLine } from 'react-icons/fa';
+import { FaChartBar, FaComment, FaSearch, FaCoins, FaCartPlus, FaMoneyBillWave, FaBolt, FaUserPlus, FaVoteYea, FaTrophy, FaSlidersH, FaPlusCircle, FaGlobe, FaUsers, FaRobot, FaHandshake, FaChartLine, FaTwitterSquare, FaBrain, FaTelegramPlane } from 'react-icons/fa';
 
 export const indexFeatures = [
     {
@@ -118,34 +118,56 @@ export const ProjectsData = [
     {
         label: "Create your project",
         text: "Start a new project in minutes with clean tools built for builders.",
-        icon: <FaPlusCircle className='text-7xl text-[var(--owner)] p-2'/>
+        icon: '/assets/ui/add_p.svg'
     },
     {
         label: "List it publicly",
         text: "Show your project to the entire community and start getting eyes on it.",
-        icon: <FaGlobe className='text-7xl text-[var(--owner)] p-2'/>
+        icon: '/assets/ui/public_p.svg'
     },
     {
         label: "Get community insights",
         text: "See what people think through reactions, comments and engagement signals.",
-        icon: <FaUsers className='text-7xl text-[var(--owner)] p-2'/>
+        icon: '/assets/ui/community_p.svg'
     },
     {
         label: "Receive AI analysis",
         text: "Get smart, data-backed evaluations to guide your next moves.",
-        icon: <FaRobot className='text-7xl text-[var(--owner)] p-2'/>
+        icon: '/assets/ui/ai_p.svg'
     },
     {
         label: "Attract collaborators",
         text: "Connect with people who want to build with you or support your vision.",
-        icon: <FaHandshake className='text-7xl text-[var(--owner)] p-2'/>
+        icon: '/assets/ui/collab_p.svg'
     },
     {
         label: "Track performance",
         text: "Watch your growth with clear metrics and activity tracking.",
-        icon: <FaChartLine className='text-7xl text-[var(--owner)] p-2'/>
+        icon: '/assets/ui/track_p.svg'
     },
     
+]
+
+
+export const SocialsData = [
+    {
+        label: "Our X Official",
+        text: "Follow us on X so you don't miss any update",
+        icon: <object data="/assets/ui/x.svg" type="image/svg+xml"/>,
+        link: "https://x.com/dehta_ai"
+    },
+    {
+        label: "Our IQWiki Official",
+        text: "Follow us on X so you don't miss any update",
+        icon: <object data="/assets/ui/iq_wiki.svg" type="image/svg+xml"/>,
+        link: "https://iq.wiki/wiki/dehta-ai"
+    },
+    {
+        label: "Our Telegram Official",
+        text: "Join our TG Official so you don't miss any update",
+        icon: <object data="/assets/ui/tg.svg" type="image/svg+xml"/>,
+        link: "https://t.me/+kYQPMrSwtbwxMjl0"
+    },
 ]
 
 
@@ -153,25 +175,25 @@ export const ProjectsData = [
 export const TeamData = [
     {
         name: "Glick Fortune",
-        position: "Founder",
+        position: "Executive Director",
         image: "/assets/images/team/phi.jpg",
         link: "https://x.com/jon_thebull?s=21"
     },
     {
         name: "Jeremy Ford",
-        position: "Co-Founder",
+        position: "Head of Growth",
         image: "/assets/images/team/jeremy.jpeg",
         link: "https://x.com/jon_thebull?s=21"
     },
     {
         name: "Peter Donaldson",
-        position: "Advisor",
+        position: "COO",
         image: "/assets/images/team/peter.jpeg",
         link: "https://www.linkedin.com/in/pete-donaldson"
     },
     {
         name: "Ashish Kumar",
-        position: "COO",
+        position: "Advisor",
         image: "/assets/images/team/ashish.jpg",
         link: "https://www.linkedin.com/in/c2ashish"
     },

@@ -39,7 +39,7 @@ const EditProfile = () => {
     const fields = [
         { name: "name", label: "Name", type: "text" },
         { name: "username", label: "Username", type: "text" },
-        { name: "base_address", label: "Base Address", type: "text" },
+        { name: "base_address", label: "USDC Address", type: "text" },
     ] as const;
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

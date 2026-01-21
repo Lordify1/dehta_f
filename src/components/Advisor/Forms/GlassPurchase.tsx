@@ -32,7 +32,6 @@ export default function GlassPurchase({price, glass_id, data}:{data?:object,glas
           setInvoiceUrl(null);
           setLoading(true);
 
-
           // register vote
           await axios.post(`${apiUrl}/api/glass/buy`, {
             glass_id: glass_id,

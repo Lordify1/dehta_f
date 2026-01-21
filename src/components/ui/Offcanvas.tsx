@@ -1,14 +1,15 @@
 import React, { useContext, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { OffCanvasContext } from "@/context/OffCanvasContext";
+import { classMap } from "../Tools/Misc";
 
-export default function Offcanvas({ title, children, width = "w-full md:w-[400px]" }: {title:any, children:any, width?:string}) {
+export default function Offcanvas({ title, children, width = "w-full md:w-[400px]" }: {title:string, children:any, width?:string}) {
   const { showOffCanvas, setShowOffCanvas } = useContext(OffCanvasContext);
   const [fullView, setFullView] = useState(false);
 
   return (
     <div
-      className={`fixed inset-0 z-99999999999999 transition-all duration-50 ${
+      className={`${classMap.dehtaBorder()} fixed inset-0 z-9999999999999 transition-all duration-50 ${
         showOffCanvas ? "visible opacity-100" : "invisible opacity-0"
       }`}
     >

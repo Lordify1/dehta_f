@@ -9,9 +9,6 @@ type Props = {
 }
 
 export const ProtectedRoute = ({ user, loading, children }: Props) => {
-    if (loading) {
-        return <div className="flex flex-col items-center justify-center w-full h-full"><Loading/></div>
-    }
     if (!user) {
         return <Navigate to="/login" replace />;
     }
@@ -23,9 +20,6 @@ export const ProtectedRoute = ({ user, loading, children }: Props) => {
 };
 
 export const GuestRoute = ({ user, loading, children }: Props) => {
-    if (loading) {
-        return <div className="flex flex-col items-center justify-center w-full h-full"><Loading/></div>
-    }
     if (user) {
         return <Navigate to="/dashboard" replace />;
     }
@@ -33,18 +27,11 @@ export const GuestRoute = ({ user, loading, children }: Props) => {
 };
 
 export const AnyRoute = ({ user, loading, children }: Props) => {
-    if (loading) {
-        return <div className="flex flex-col items-center justify-center w-full h-full"><Loading/></div>
-    }
     return children;
 };
 
 
 export const AdminGuestRoute = ({user, loading, children}: Props) => {
-    if (loading) {
-        return <div className="flex flex-col items-center justify-items-center w-full h-full"><Loading/></div>
-    }
-
     if(user){
         return <Navigate to="/admin/dashboard" replace />;
     }
@@ -54,9 +41,6 @@ export const AdminGuestRoute = ({user, loading, children}: Props) => {
 
 
 export const AdminAuthRoute = ({user, loading, children}: Props) => {
-    if (loading) {
-        return <div className="flex flex-col items-center justify-items-center w-full h-full"><Loading/></div>
-    }
     if (!user) {
         return <Navigate to="/admin/login" replace />;
     }
@@ -68,9 +52,6 @@ export const AdminAuthRoute = ({user, loading, children}: Props) => {
 }
 
 export const FounderRoute = ({user, loading, children}: Props) => {
-    if (loading) {
-        return <div className="flex flex-col items-center justify-items-center w-full h-full"><Loading/></div>
-    }
     if (!user) {
         return <Navigate to="/login" replace />;
     }

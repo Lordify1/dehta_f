@@ -194,14 +194,14 @@ const Profile = () => {
               </div>
 
               <button
-              className={`${classMap.button()} mt-4 flex items-center justify-center`}
-              onClick={() => {
-                SetOfftitle("Edit Profile");
-                setOffId("editProfile");
-                setShowOffCanvas(true);
-              }}
-              aria-haspopup="dialog"
-              aria-controls="editProfile"
+                className={`${classMap.button()} mt-4 flex items-center justify-center`}
+                onClick={() => {
+                  SetOfftitle("Edit Profile");
+                  setOffId("editProfile");
+                  setShowOffCanvas(true);
+                }}
+                aria-haspopup="dialog"
+                aria-controls="editProfile"
               >
               Edit Profile
               </button>

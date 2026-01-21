@@ -30,9 +30,9 @@ export default function ForgotPassword() {
         <meta name="description" content="Forgot Password" />
       </Helmet>
       <Layout showNavs={false}>
-      <div className="min-h-screen bg-background text-primary flex flex-col items-center justify-center px-4 py-8 herobg">
+      <div className="min-h-screen bg-background text-primary flex flex-col items-center text-center justify-center px-4 py-8 herobg">
         <h1 className="text-3xl font-bold mb-3">Forgot Password</h1>
-        <p className="text-primary mb-2">Provide your Email to get a verification Code</p>
+        <p className="text-primary mb-2">Enter your Email to get a verification Code</p>
 
         <form className="w-full max-w-md space-y-3">
           <input

@@ -308,17 +308,42 @@ export const classMap = {
   glassCard: (padding = "p-5") =>
     `backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl shadow-[0_0_30px_rgba(255,255,255,0.05)] text-white ${padding}`,
 
-  label: () => "text-white text-sm font-semibold mb-1",
+  glassEffect: (padding = 'p-3', rounded = 'rounded-4xl') => `col-span-1 backdrop-blur-xl bg-white/5 border border-white/10 ${rounded} text-white ${padding}`,
+
+  label: () => "flex text-white text-sm font-semibold mb-1 items-center",
 
   input: (width = 'w-full') => `${width} bg-white/10 backdrop-blur-sm border border-white/20
     rounded-xl p-3 text-white placeholder-white/40 focus:outline-none
     focus:border-[var(--owner)] transition-all`,
 
+  select: (width = 'w-full') => `
+  ${width}
+  bg-white/10 backdrop-blur-sm
+  border border-white/20
+  rounded-xl p-3 pr-10
+  text-white
+  focus:outline-none focus:border-[var(--owner)]
+  transition-all
 
-  dehtaBorder: (color = 'whiteBorder') => `border-t-2 border-l-2 border-r-2 border-[var(--${color})] border-b-0 border-b-transparent`,
+  appearance-none
+  cursor-pointer
+
+  bg-[url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='white'%3E%3Cpath d='M5.25 7.5L10 12.25L14.75 7.5' /%3E%3C/svg%3E")]
+  bg-no-repeat bg-[right_0.75rem_center]
+  bg-[length:1rem]
+`,
+
 
   // index styling
-  indexCard: (minH = 30, maxH = 50) => `${classMap.dehtaBorder()} text-primary rounded-md min-h-${minH} h-${maxH} w-80 p-4 bg-gradient-to-b from-[var(--ceo)] via-(--tbg) to-[var(--transparent)] hover:from-[var(--ceo)] transition-colors duration-300`,
+  dehtaBorder: () =>
+    'border-2 border-[#616161]',
+
+  // glassEffect: () => 'px-4 py-1 rounded-full bg-white/10 backdrop-blur-md',
+
+  indexCard: () =>
+    `${classMap.dehtaBorder()} text-primary rounded-3xl p-4 bg-gradient-to-b from-[#333333] via-[#000000] to-[#000000] duration-300 w-full`,
+
+  iconBigPadding: () => `backdrop-blur-xl bg-white/5 border border-white/10 p-3 rounded-md text-white`,
 
   dehtaCard: () => `flex flex-col ${classMap.dehtaBorder('whiteBorder')} backdrop-blur-sm rounded-t-3xl rounded-b-md p-4 my-2 bg-gradient-to-b from-(--ceo) via-(--tbg) to-(--transparent)`,
 
@@ -335,7 +360,7 @@ export const classMap = {
     textsize?: string,
     direction: string = "left"
   ) =>
-    `rounded-md bg-(--owner) text-black p-2 px-3 py-3 hover:text-primary hover:border-1 hover:border-(--owner) ${hover ? hover : 'hover:bg-(--tbg)'}`,
+    `rounded-md bg-[var(--owner)] text-black px-2 py-2 hover:text-primary font-extrabold ${hover ? hover : ''}`,
 
   buttonJsx: ({bg, hover, text, textsize, direction = 'down'} : {
     bg?: string,
@@ -373,9 +398,6 @@ export const classMap = {
     "bg-[var(--accent-foreground)] border border-[var(--border)] text-[var(--accent)] p-2 rounded-md w-full min-h-[80px] focus:outline-none focus:border-[var(--accent-foreground)]",
 
   list: () => "",
-
-  select:
-    "bg-[var(--accent-foreground)] border border-[var(--border)] text-[var(--accent)] p-2 rounded-md focus:outline-none focus:border-[var(--owner)]",
 
   iconButton:
     "p-2 rounded-full hover:bg-[var(--muted)] transition duration-200 text-[var(--muted-foreground)]",
@@ -528,9 +550,9 @@ export const postData = async (url, id = '', method = 'post') => {
 
 export const NotAuth = ({action = 'Continue'}) => {
     return(
-        <div className={classMap.pageSection()}>
-            <h1 
-            className="text-gray-400"
+        <div className={`${classMap.pageSection()}`}>
+            <small
+            className="text-gray-400 text-sm"
             >
                 <Link 
             to={`${advisorUrl}/login`}
@@ -539,7 +561,7 @@ export const NotAuth = ({action = 'Continue'}) => {
             to={`${advisorUrl}/login`}
             className={classMap.link}
             >Login</Link> to {action}
-            </h1>
+            </small>
         </div>
     )
 }
@@ -970,7 +992,7 @@ export const ProgressBar = ({
   const percent = Math.min((safeCurrent / safeDest) * 100, 100)
 
   return (
-    <div className="w-full bg-muted rounded-md h-5">
+    <div className="w-full bg-white/10 rounded-md h-7 p-1">
       <div
         className="bg-[var(--owner)] animate-pulse h-5 rounded-md transition-all duration-1000"
         style={{ width: `${percent}%` }}
@@ -1226,9 +1248,38 @@ export const ComingSoonIcon = () => {
 
 export const ComingSoon = () => {
   return (
-    <div className="flex flex-col items-center justify-center p-6 mt-4 bg-black backdrop-blur-3xl rounded-md w-full opacity-70">
-      <ComingSoonIcon/>
-      <p className="text-xl font-semibold text-white">Coming Soon</p>
+    <div className="flex flex-col items-center justify-center gap-3 p-8 mt-6 w-full rounded-xl 
+                    bg-black/60 backdrop-blur-2xl border border-white/10">
+      <ComingSoonIcon />
+      <p className="text-lg font-semibold text-white tracking-wide">
+        Coming Soon
+      </p>
+      <span className="text-xs text-gray-400">
+        Something worth the wait
+      </span>
+    </div>
+  );
+};
+
+
+
+
+export const UnderConstruction = () => {
+  return (
+    <div className="flex flex-col items-center justify-center gap-3 p-6 text-center">
+      <FaTools className="w-8 h-8 text-[var(--owner)] animate-pulse" />
+
+      <h2 className="text-lg font-semibold">
+        Page under construction
+      </h2>
+
+      <p className="text-sm opacity-80">
+        We’re cooking something nice behind the scenes.
+      </p>
+
+      <p className="text-xs opacity-60">
+        Check back soon. Future you will approve.
+      </p>
     </div>
   );
 };
@@ -1354,3 +1405,81 @@ export const InfoMessage = ({ message }: InfoMessageProps) => {
     </div>
   )
 }
+
+export const showAlert = (
+  payload: any,
+  forcedType?: "success" | "error" | "info"
+) => {
+  const send = (t: "success" | "error" | "info", msg: string) => {
+    if (!msg) return;
+    if (t === "success") toast.success(msg);
+    else if (t === "info") toast.info(msg);
+    else toast.error(msg);
+  };
+
+  // Normalize simple string
+  if (typeof payload === "string") {
+    return send(forcedType ?? "success", payload);
+  }
+
+  // If an array of strings, show each
+  if (Array.isArray(payload) && payload.every((p) => typeof p === "string")) {
+    const t = forcedType ?? "error";
+    payload.forEach((m: string) => send(t, m));
+    return;
+  }
+
+  // Try to extract useful info from various response shapes
+  const resp =
+    payload?.response?.data ?? // axios error shape
+    payload?.data ?? // fetch/other libs
+    payload; // fallback
+
+  // If resp is plain string
+  if (typeof resp === "string") {
+    return send(forcedType ?? "error", resp);
+  }
+
+  // If resp is an array of messages
+  if (Array.isArray(resp)) {
+    const t = forcedType ?? "error";
+    resp.forEach((m: any) => send(t, String(m)));
+    return;
+  }
+
+  // If resp contains structured errors object (e.g. validation)
+  if (resp && typeof resp === "object") {
+    // If explicit errors object with arrays
+    if (resp.errors && typeof resp.errors === "object") {
+      Object.values(resp.errors).forEach((val) => {
+        if (Array.isArray(val)) {
+          val.forEach((m) => send(forcedType ?? "error", String(m)));
+        } else {
+          send(forcedType ?? "error", String(val));
+        }
+      });
+      return;
+    }
+
+    // If a message field exists
+    const message =
+      resp.message ?? resp.msg ?? resp.error ?? resp.detail ?? null;
+    if (message) {
+      // decide type: forcedType > success flag > http status > default error
+      const inferredType =
+        forcedType ??
+        (resp.success === true ? "success" : undefined) ??
+        (Number(resp.status) && Number(resp.status) < 300 ? "success" : undefined) ??
+        "error";
+      return send(inferredType, String(message));
+    }
+  }
+
+  // Fallback: if payload itself has message (Error, etc.)
+  if (payload?.message && typeof payload.message === "string") {
+    return send(forcedType ?? "error", payload.message);
+  }
+
+  // final generic fallback
+  send(forcedType ?? "error", "Something went wrong, please try again.");
+};

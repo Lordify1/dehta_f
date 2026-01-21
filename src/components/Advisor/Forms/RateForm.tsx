@@ -60,7 +60,7 @@ export const RateForm = ({showComment = true, projectID = null, auth = null, sho
             </>
         ) : (
             <NotAuth
-                action="Rate Project"
+                action="Rate"
             />
         )
     )

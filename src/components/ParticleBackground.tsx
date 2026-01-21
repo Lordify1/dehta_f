@@ -1,49 +1,49 @@
 import React, { useEffect } from 'react';
 
-// const particlesOptions: ISourceOptions = {
-  // fullScreen: { enable: false },
-  // particles: {
-  //   number: { value: 50, density: { enable: true, area: 800 } },
-  //   color: { value: '#00bfff' },
-  //   shape: { type: 'circle' },
-  //   opacity: {
-  //     value: 0.3,
-  //     random: { enable: true, minimumValue: 0.1 },
-  //     anim: { enable: true, speed: 1, minimumValue: 0.1, sync: false }
-  //   },
-  //   size: {
-  //     value: 3,
-  //     random: { enable: true, minimumValue: 1 },
-  //     anim: { enable: false }
-  //   },
-  //   move: {
-  //     enable: true,
-  //     speed: 0.6,
-  //     direction: 'none',
-  //     random: false,
-  //     straight: false,
-  //     outModes: { default: 'out' }
-  //   },
-  //   links: {
-  //     enable: true,
-  //     distance: 150,
-  //     color: '#00bfff',
-  //     opacity: 0.15,
-  //     width: 1
-  //   }
-  // },
-  // interactivity: {
-  //   events: {
-  //     onHover: { enable: true, mode: 'repulse' },
-  //     onClick: { enable: true, mode: 'push' }
-  //   },
-  //   modes: {
-  //     repulse: { distance: 100 },
-  //     push: { quantity: 4 }
-  //   }
-  // },
-  // detectRetina: true
-// };
+const particlesOptions: ISourceOptions = {
+  fullScreen: { enable: false },
+  particles: {
+    number: { value: 50, density: { enable: true, area: 800 } },
+    color: { value: '#00bfff' },
+    shape: { type: 'circle' },
+    opacity: {
+      value: 0.3,
+      random: { enable: true, minimumValue: 0.1 },
+      anim: { enable: true, speed: 1, minimumValue: 0.1, sync: false }
+    },
+    size: {
+      value: 3,
+      random: { enable: true, minimumValue: 1 },
+      anim: { enable: false }
+    },
+    move: {
+      enable: true,
+      speed: 0.6,
+      direction: 'none',
+      random: false,
+      straight: false,
+      outModes: { default: 'out' }
+    },
+    links: {
+      enable: true,
+      distance: 150,
+      color: '#00bfff',
+      opacity: 0.15,
+      width: 1
+    }
+  },
+  interactivity: {
+    events: {
+      onHover: { enable: true, mode: 'repulse' },
+      onClick: { enable: true, mode: 'push' }
+    },
+    modes: {
+      repulse: { distance: 100 },
+      push: { quantity: 4 }
+    }
+  },
+  detectRetina: true
+};
 
 const ParticleBackground: React.FC = () => {
 

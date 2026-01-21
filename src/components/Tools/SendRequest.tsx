@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { Button, Modal } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import { appUrl } from "@/app";
-import { classMap } from "./Misc";
+import { classMap, showAlert } from "./Misc";
 import { FaCircle, FaCircleNotch, FaTrash, FaTruckLoading } from "react-icons/fa";
 import { apiUrl } from "../../App";
 import axiosClient from "../../axiosClient";
@@ -73,7 +73,7 @@ export default function SendRequest({
 
     if (requestData instanceof FormData) {
       for (let pair of requestData.entries()) {
-        console.log(pair[0]+ ':', pair[1]);
+        // console.log(pair[0]+ ':', pair[1]);
       }
     } else {
       // console.log(requestData);
@@ -93,13 +93,10 @@ export default function SendRequest({
         withCredentials: true
       });
 
-      console.log(response)
+      // console.log(response)
 
-      const user = await axios.get(`${apiUrl}/api/user`, {
-        withCredentials: true
-      })
-
-      toast.success(response?.data?.message || "Success!");
+      // toast.success(response?.data?.message || "Success!");
+      showAlert(response, 'success')
       onResponse?.(response);
 
       if (typeof isSuccess === "function") {
@@ -116,18 +113,19 @@ export default function SendRequest({
       }
     } catch (error) {
       setIsProcessing(false);
-      console.log(error)
-      const responseData = error?.response?.data;
-      if (responseData?.errors && typeof responseData.errors === "object") {
-        Object.values(responseData.errors).forEach((errArr) => {
-          if (Array.isArray(errArr)) {
-            errArr.forEach((msg) => toast.error(msg));
-          }
-        });
-      } else {
-        const message = responseData?.message || "Something went wrong, try again";
-        toast.error(message);
-      }
+      showAlert(error, 'error')
+      // console.log(error)
+      // const responseData = error?.response?.data;
+      // if (responseData?.errors && typeof responseData.errors === "object") {
+      //   Object.values(responseData.errors).forEach((errArr) => {
+      //     if (Array.isArray(errArr)) {
+      //       errArr.forEach((msg) => toast.error(msg));
+      //     }
+      //   });
+      // } else {
+      //   const message = responseData?.message || "Something went wrong, try again";
+      //   toast.error(message);
+      // }
       onResponse?.(error.response || error);
     } finally {
       setIsProcessing(false);

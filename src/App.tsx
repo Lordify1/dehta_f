@@ -3,6 +3,7 @@ import { UserProvider } from '@/context/UserContext';
 import { UIProvider } from '@/context/UIContext';
 import { FetchProvider } from '@/context/FetchContext';
 import { MiscProvider } from '@/context/MiscContext';
+import { AdminProvider } from '@/context/AdminContext';
 import FaecesRouter from '@/routes/router';
 import {WebProviders} from '@/lib/WebProviders.jsx';
 
@@ -31,6 +32,7 @@ export const npIpnKey = 'wk6ZY2zrG0xNCbKd8jgE+GTBUQspvgVL'
 const App = () => {
 
   return (
+      <AdminProvider>
       <MiscProvider>
       <WebProviders>
       <UserProvider>
@@ -44,6 +46,7 @@ const App = () => {
       </UserProvider>
       </WebProviders>
       </MiscProvider>
+      </AdminProvider>
   );
 };
 

@@ -23,7 +23,7 @@ type Props = {
 };
 
 const DashboardLayout = ({ children, sidebarData, classy }: Props) => {
-  const { user, setRole, setSidebarData } = useUser();
+  const { user, setRole, setSidebarData, Logout } = useUser();
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [sidebar, setSidebar] = useState(sidebarData);
   const location = useLocation();
@@ -40,18 +40,6 @@ const DashboardLayout = ({ children, sidebarData, classy }: Props) => {
   const [glasses, setGlasses] = useState(user?.total_glasses || 0);
 
   const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
-
-  const Logout = async () => {
-    try {
-      const res = await axios.post(`${apiUrl}/api/logout`);
-      console.log(res);
-      localStorage.removeItem('user')
-      window.location.href = appUrl;
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
 
 
   useEffect(() => {
@@ -120,7 +108,7 @@ const DashboardLayout = ({ children, sidebarData, classy }: Props) => {
             {/* Logout */}
             <button
               onClick={Logout}
-              className="mt-4 sm:hidden flex items-center gap-3 text-red-600 hover:opacity-70 transition ms-2"
+              className="mt-4 flex items-center gap-3 text-red-600 hover:opacity-70 transition ms-2"
             >
               <FaSignOutAlt /> Logout
             </button>
@@ -153,14 +141,14 @@ const DashboardLayout = ({ children, sidebarData, classy }: Props) => {
               >
                 <FaWallet />
               </button>
-              <button onClick={Logout} className="hidden lg:flex items-center text-red-600 hover:opacity-70 transition"> 
+              <button onClick={Logout} className="flex items-center text-red-600 hover:opacity-70 transition"> 
                 <FaSignOutAlt />
               </button>
             </div>
           </header>
 
           {/* SCROLLABLE PAGE CONTENT */}
-          <section className="flex-1 overflow-y-auto p-4 lg:p-6 pb-15 lg:pb-0">
+          <section className="flex-1 overflow-y-auto p-2 lg:p-3 pb-15 lg:pb-0">
             {children}
           </section>
         </div>

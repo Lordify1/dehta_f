@@ -3,6 +3,7 @@ import { classMap } from "@/components/Tools/Misc";
 import { ComingSoon, DehtaConstruct } from "../../Tools/Misc";
 import PayButton from "../PayButton";
 import { useUser } from "@/context/UserContext";
+import { apiUrl } from "../../../App";
 
 
 const TrendDetail = ({ data }: { data: any }) => {
@@ -39,9 +40,18 @@ const TrendDetail = ({ data }: { data: any }) => {
   return (
     <div className="flex flex-col" key={trend.id}>
     <section className={`w-full p-2 rounded-xl ${classMap.section} flex flex-col gap-2`}>
-
+      <div className="w-full h-full overflow-hidden rounded-md mb-1">
+        <img
+            src={trend.image || `/logo.svg`}
+            // alt={'trend img'}
+            loading="lazy"
+            className="w-full object-cover mb-2"
+            onError={(e) => e.currentTarget.src = '/placeholder.png'}
+        />
+      </div>
+      
       {/* Body */}
-      <p className="text-(--primary) opacity-80">
+      <p className="text-(--primary) opacity-80 mb-1">
         {trend.body}
       </p>
 
@@ -89,9 +99,10 @@ const TrendDetail = ({ data }: { data: any }) => {
       )} */}
 
       {(isOwner && !trendDone) ? (
-        <div className="flex flex-col w-full p-2 items-center justify-center">
-          <p>You can't vote your Trend Mate</p>
-        </div>
+        // <div className="flex flex-col w-full p-2 items-center justify-center">
+        //   <p>You can't vote your Trend Mate</p>
+        // </div>
+        <></>
       ) : hasVoted ? (
         <div className="flex flex-col w-full p-2 items-center justify-center">
           <p>You voted {trend.votes?.find((vote: any) => vote.user_id === user?.id)?.option_id === selected?.id ? selected?.option_text : trend.options.find((opt: any) => opt.id === trend.votes?.find((vote: any) => vote.user_id === user?.id)?.option_id)?.option_text}. Wait for the Results</p>
@@ -106,6 +117,9 @@ const TrendDetail = ({ data }: { data: any }) => {
           <PayButton
           key={selected.id}
           data={voteInfo}
+          successUrl={`${apiUrl}/api/trendbet/vote`}
+          successMessage="Your vote has been counted!"
+          minAmount={2}
           />
         </div>
         </div>

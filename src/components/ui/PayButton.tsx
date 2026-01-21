@@ -2,16 +2,26 @@ import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { apiUrl } from "../../App";
-import { classMap, Loading, LoadingBar } from "../Tools/Misc";
+import { classMap, Loading, LoadingBar, showAlert } from "../Tools/Misc";
 import { useMisc } from "@/context/MiscContext";
 import { useOffCanvas } from "../../context/OffCanvasContext";
 
+type PayProps = {
+  data?: any,
+  successUrl: string,
+  successMessage?: string,
+  minAmount?: number,
+  maxAmount?: number,
+  privateSale?: boolean
+}
 
-export default function PayButton({data}:{data?:object}) {
+export default function PayButton({data, successUrl, successMessage, minAmount, maxAmount, privateSale}:PayProps) {
   const [invoiceUrl, setInvoiceUrl] = useState(null);
   const {getTrends} = useMisc();  
+  const [tokenAmount, setTokenAmount] = useState(0);
   const [loading, setLoading] = useState(false);
   const {setShowOffCanvas} = useOffCanvas()
+  const TOKEN_PRICE = 0.007; 
   const [payInfo, setPayInfo] = useState<any>({
     amount: "",
     ...data
@@ -23,7 +33,7 @@ export default function PayButton({data}:{data?:object}) {
       try {
         const res = await axios.get(`${apiUrl}/api/payment/status/${orderId}`);
 
-        if (res.data.status === "confirmed" || res.data.status === "finished") {
+        if (res.data.status === "confirmed" || res.data.status === "finished" || res.data.status === 'partially_paid') {
           clearInterval(poll);
 
           // close iframe
@@ -31,30 +41,39 @@ export default function PayButton({data}:{data?:object}) {
           setLoading(true);
 
           // register vote
-          await axios.post(`${apiUrl}/api/trendbet/vote`, {
-            order_id: orderId
-          });
+          let nextRes
+          if(privateSale){
+            nextRes = await axios.post(successUrl, {
+              order_id: orderId,
+              token_amount: tokenAmount,
+              amount: payInfo.amount
+            });
+          }else{
+            nextRes = await axios.post(successUrl, {
+              order_id: orderId
+            });
+          }
 
           setLoading(false);
-
           setShowOffCanvas(false)
-
-          toast.success("Your vote has been counted!");
-
+          showAlert(nextRes, 'success')
           getTrends();
         }
 
       } catch (e) {
-        console.log("Polling error", e);
+        console.log(e)
+        showAlert(e, 'error')
+        setLoading(false);
       }
     }, 5000); // every 5 seconds
   };
 
-
   const handlePay = async () => {
     if (!payInfo.amount) return toast.error('Please provide an amount!');
 
-    if (payInfo.amount < 2) return toast.error('Minumum vote is $2!');
+    if (minAmount && payInfo.amount < minAmount) return toast.error(`Minumum amount is $${minAmount}!`);
+
+    if (maxAmount && payInfo.amount > maxAmount) return toast.error(`Maximum amount is $${maxAmount}!`);
 
     try {
       setLoading(true);
@@ -86,8 +105,13 @@ export default function PayButton({data}:{data?:object}) {
     }
   };
 
+  const handleUsdChange = (v: string) => {
+    const parsed = parseFloat(v);
+    setTokenAmount(parsed ? parsed / TOKEN_PRICE : 0);
+  };
+
   return (
-    <div className="flex flex-col gap-1 overflow-x-scroll">
+    <div className="flex flex-col gap-1">
 
       {!invoiceUrl && (
         <>
@@ -96,10 +120,20 @@ export default function PayButton({data}:{data?:object}) {
             value={payInfo.amount}
             onChange={(e) => {
               setPayInfo(prev => ({ ...prev, amount: e.target.value }));
+              privateSale && handleUsdChange(e.target.value)
             }}
             placeholder="Enter amount"
             className={`${classMap.input()}`}
           />
+
+          {privateSale && tokenAmount > 0 && (
+              <p className="text-sm text-white">
+                You’ll receive about
+                <span className="font-bold ml-1 text-(--owner)">
+                  {tokenAmount.toLocaleString(undefined, { maximumFractionDigits: 2 })} $DTA
+                </span>
+              </p>
+            )}
 
           <button
             onClick={handlePay}
@@ -127,9 +161,11 @@ export default function PayButton({data}:{data?:object}) {
         <iframe
           src={invoiceUrl}
           width="100%"
-          height="500px"
-          style={{ overflowY: "scroll", marginTop: "20px" }}
-        />
+          height="696px"
+          style={{ overflowY: "hidden", marginTop: "20px" }}
+        >
+          <span>Can't Load Widget</span>
+        </iframe>
       </>
       )}
     </div>

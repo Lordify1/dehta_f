@@ -6,6 +6,7 @@ import { useUser } from '@/context/UserContext';
 import { ProtectedRoute, GuestRoute, AnyRoute, AdminAuthRoute, AdminGuestRoute, FounderRoute } from './Guard';
 import { Loading } from '@/components/Tools/Misc';
 import 'react-toastify/dist/ReactToastify.css'
+import NewPassword from '../pages/Advisor/Auth/NewPassword';
 
 const FaecesRouter = () => {
     const Home = lazy(() => import('@/pages/Advisor/Projects'));
@@ -20,6 +21,7 @@ const FaecesRouter = () => {
     const MarketPurchase = lazy(() => import('@/pages/Advisor/MarketPurchase'));
     const NotFound = lazy(() => import('@/pages/Error/404'));
     const Wallet = lazy(() => import('@/pages/Advisor/Wallet'));
+    const EarnFi = lazy(() => import('@/pages/Advisor/EarnFi'));
 
 
     // Founder
@@ -33,6 +35,7 @@ const FaecesRouter = () => {
     const AdminProjects = lazy(() => import('@/pages/Admin/Projects/ProjectIndex'))
     const AdminProjectsCreate = lazy(() => import('@/pages/Admin/Projects/CreateProject'))
     const AdminQuest = lazy(() => import('@/pages/Admin/Quest/QuestIndex'));
+    const AdminUsers = lazy(() => import('@/pages/Admin/Users/UsersIndex'));
     const ProjectDetail = lazy(() => import('@/pages/Advisor/ProjectDetail'))
     const TrendBet = lazy(() => import('@/pages/Advisor/TrendBet'));
 
@@ -49,6 +52,8 @@ const FaecesRouter = () => {
         { path: '/register', element: <Register />, type: 'guest' },
         { path: '/login', element: <Login />, type: 'guest' },
         { path: '/reset-password', element: <ForgotPassword/>, type: 'any'},
+        { path: '/new-password', element: <NewPassword/>, type: 'any'},
+
 
         { path: '/dashboard', element: <Dashboard />, type: 'auth' },
         { path: '/profile', element: <Profile />, type: 'auth' },
@@ -59,11 +64,13 @@ const FaecesRouter = () => {
         { path: '/market', element: <Market />, type: 'auth' },
         { path: '/market/purchase/:item/:slug', element: <MarketPurchase />, type: 'auth' },
 
+        { path: '/earnfi', element: <EarnFi />, type: 'any' },
 
-        { path: '/wallet', element: <Wallet />, type: 'auth' },
+        // { path: '/wallet', element: <Wallet />, type: 'auth' },
 
         { path: '/admin/login', element: <AdminLogin />, type: 'any', userType: 'admin' },
         { path: '/admin/dashboard', element: <AdminDashboard />, type: 'auth', userType: 'admin' },
+        { path: '/admin/users', element: <AdminUsers />, type: 'auth', userType: 'admin' },
         { path: '/admin/glasses', element: <AdminGlasses/>, type: "auth", userType: 'admin'},
         { path: '/admin/lens', element: <AdminLens/>, type: "auth", userType: 'admin'},
         { path: '/admin/lens', element: <AdminLens/>, type: "auth", userType: 'admin'},
@@ -77,7 +84,7 @@ const FaecesRouter = () => {
     return (
         <HelmetProvider>
             <Router>
-                <Suspense fallback={<Loading />}>
+                <Suspense fallback={import.meta.env.DEV ? null : <Loading />}>
                 {/* <Suspense> */}
                     <Routes>
                         {urls.map(({ path, element, type, userType }) => {
@@ -116,6 +123,7 @@ const FaecesRouter = () => {
                     </Routes>
                 </Suspense>
                 <ToastContainer
+                style={{'zIndex': 999999999999999}}
                 position="top-right"
                 autoClose={3000}
                 newestOnTop={true}

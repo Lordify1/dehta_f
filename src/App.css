@@ -515,9 +515,9 @@ html {
   content: '';
   position: absolute;
   inset: 0;
-  background-image: url('/images/bgs/hero.webp');
+  background-image: url('/assets/ui/hero_bg.svg');
   background-size: cover;
-  background-position: center;
+  background-position: top;
   opacity: 1;
   z-index: -1;
 

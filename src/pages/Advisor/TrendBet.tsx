@@ -17,9 +17,9 @@ import { Link } from "react-router-dom";
 
 
 const TrendBet = () => {
-    const {user, role, sidebarData} = useUser();
+    const {user, role, sidebarData, userTrends} = useUser();
     const {selectedTrend, setSelectedTrend, trends, isLoading, setIsLoading, getTrends} = useMisc();
-    const [userTrends, setUserTrends] = useState([]);
+    // const [userTrends, setUserTrends] = useState([]);
     const {setShowOffCanvas, OffId, Offtitle, setOffId, SetOfftitle} = useOffCanvas();
     const [search, setSearch] = useState("");
     const [displayedTrends, setDisplayedTrends] = useState([]);
@@ -27,7 +27,7 @@ const TrendBet = () => {
 
 
     useEffect(() => {
-        setUserTrends(user?.trends)
+        // setUserTrends(user?.trends)
 
         getTrends();
 
@@ -125,7 +125,7 @@ const TrendBet = () => {
                     {/* Trendbets  */}
                     <section className={'flex flex-col mt-2'}>
                         <div className="flex flex-col mb-3 bg-(--owner) p-4 text-black rounded-2xl h-40 items-center justify-center">
-                            <h1 className="text-4xl lg:text-5xl">Vote Trend</h1>
+                            <h1 className="text-4xl lg:text-5xl">Vote Trends</h1>
                             <small>Participate in active Trends created by Others</small>
                         </div>
                         <div className="w-full flex items-center gap-2 bg-white/10 p-3 rounded-xl mb-4">
@@ -139,7 +139,9 @@ const TrendBet = () => {
                             />
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5 w-full p-3">
-                        {displayedTrends && displayedTrends.length > 0 ? (displayedTrends.map((trend, key) => {
+                        {isLoading ? (
+                            <LoadingDiv layout={[[1]]} height="h-30"/>
+                        ) : (displayedTrends && displayedTrends.length > 0 ? (displayedTrends.map((trend, key) => {
                             return(
                                 <TrendCard
                                 {...trend}
@@ -150,8 +152,10 @@ const TrendBet = () => {
                                 />
                             )
                         }) ) : (
-                            emptyData('No Trend to Bet On Yet')
-                        )}
+                            <div className="flex flex-col col-span-4 w-full opacity-50">
+                                {emptyData('No Trend to Bet On Yet')}
+                            </div>
+                        ))}
                         </div>
                     </section>
                 </div>

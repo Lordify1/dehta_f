@@ -31,8 +31,8 @@ export default function Projects() {
 
       {/* Header */}
       <div className="w-full max-w-7xl flex flex-col items-center mb-10 text-center">
-        <h1 className="text-5xl lg:text-7xl font-semibold">Projects</h1>
-        <p className="lg:text-2xl text-lg mt-3">
+        <h1 className="text-5xl transition-opacity font-semibold text-[var(--owner)] animate-pulse delay-200">Projects</h1>
+        <p className="lg:text-2xl text-md mt-3 mb-1">
           Explore Verified and AI-Analyzed Projects across the crypto ecosystem
         </p>
 

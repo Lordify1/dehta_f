@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { classMap, emptyData } from "../Tools/Misc";
+import { classMap, emptyData, showAlert } from "../Tools/Misc";
 import { FaCalendar, FaCheckCircle, FaHistory } from "react-icons/fa";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -58,28 +58,31 @@ const CheckInCalendar = ({ lens, streak, transactions, checkins, history, dView 
       const res = await axios.post(`${apiUrl}/api/checkin/create`);
 
 
-      toast.success("✅ Check-in success! +1,000 Lens added.");
+      
       setClaimedToday(true);
       const updated = [...calendar];
       updated[index - 1] = true; // Mark today's as claimed
       setCalendar(updated);
 
-      lens((prev: any) => prev + 1000);
+      lens((prev: any) => prev + 200);
       streak((prev: any) => prev + 1);
       transactions((prev: any) => [
         {
           id: Date.now(),
           desc: "Daily Check-in Reward",
-          amount: "+1,000",
+          amount: "+200",
           date: "Today",
         },
         ...prev,
       ]);
+      
+      showAlert(res, 'success')
 
     } catch (error: any) {
-      console.error(error);
+      // console.error(error);
+      showAlert(error, 'error')
       setClaimedToday(false);
-      toast.error("Failed to check in. Try again later.");
+      // toast.error("Failed to check in. Try again later.");
     }
   };
 
@@ -119,7 +122,7 @@ const CheckInCalendar = ({ lens, streak, transactions, checkins, history, dView 
               {claimed ? <FaCheckCircle className="text-primary" /> : (
                 <div className="text-center">
                 <p>{index + 1}</p>
-                <small className="text-sm opacity-50 text-(--owner)">+1000</small>
+                <small className="text-sm opacity-50 text-(--owner)">+200</small>
                 </div>
               )}
             </div>
@@ -145,7 +148,7 @@ const CheckInCalendar = ({ lens, streak, transactions, checkins, history, dView 
       {view === 'calendar' && <p className="mt-1 text-sm text-gray-400 text-center">
         {claimedToday
           ? "You've already checked in today! 🎉"
-          : "Click today’s box to claim your 1,000 Lens."}
+          : "Click today’s box to claim your 200 Lens."}
       </p>}
     </section>
   );

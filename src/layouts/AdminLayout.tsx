@@ -11,22 +11,11 @@ import { apiUrl } from "../App";
 
 
 export const AdminLayout = ({ children }: PropsWithChildren) => {
-  const {user} = useUser();
+  const { user, Logout } = useUser();
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const [sidebar, setSidebar] = useState(sidebarData);
     const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
     const closeSidebar = () => setSidebarOpen(false);
-
-
-    const Logout = async () => {
-      try{
-        const res = await axios.post(`${apiUrl}/api/logout`);
-        localStorage.removeItem('user')
-        window.location.href = appUrl
-      }catch(err){
-        console.log(err)
-      }
-    }
 
 
     
@@ -35,16 +24,16 @@ export const AdminLayout = ({ children }: PropsWithChildren) => {
     <div className="min-h-screen flex-1 flex flex-col text-primary bg-background">
       <header className="bg-accent border border-border px-6 py-4 flex flex-row w-full items-center justify-between">
         <Link
-          to={`${appUrl}/index`}
-          className="text-2xl font-extrabold tracking-wider text-[var(--primary)] select-none cursor-default"
+          to={`/`}
+          className="text-2xl w-15 font-extrabold tracking-wider text-[var(--primary)] select-none cursor-default"
         >
-          <img src={`${appUrl}/favicon.ico`} alt="" />
+          <img src={`/logo.svg`} alt="" />
         </Link>
         <div className="hidden lg:flex items-center space-x-4">
           <h1 className="font-medium text-sm text-primary">
             {user?.username || user?.name}
           </h1>
-          <img src={user?.avatar || "https://placehold.co/100x100"} alt="" className="w-10 h-10 rounded-full object-cover shadow-lg" />
+          <img src={user?.avatar || "/logo.svg"} alt="" className="w-10 h-10 rounded-full object-cover shadow-lg" />
           <FaSignOutAlt 
             onClick={() => {Logout()}}
             className="text-red-600 cursor-pointer"/>

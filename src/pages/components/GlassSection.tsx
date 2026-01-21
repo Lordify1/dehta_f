@@ -17,12 +17,11 @@ const GlassSection: React.FC = () => {
       className="relative text-(--primary) py-10 px-6 sm:px-16 overflow-hidden"
     >
       <div className="mx-auto max-w-7xl items-center">
-        <h1 className="text-3xl lg:text-6xl mb-4">Glass NFTs</h1>
-        <div className='grid grid-cols-1 gap-3 mb-2 items-center justify-center'>
-            <div className="grid grid-cols-1 lg:grid-cols-2">
+        <div className='grid grid-cols-1 gap-3 mb-2 items-center justify-between'>
+            <div className="grid grid-cols-1 lg:grid-cols-2 items-center lg:justify-between">
               <FadeInAnim delay={5} threshold={0.70}>
                 <section className='flex items-center justify-center'>
-                    <img src={GlassPng} alt="glassPng" className='animate-pulse transition-all duration-initial'/>
+                    <img src='/assets/ui/glass_nft.png' alt="glassPng" className='animate-pulse transition-all duration-initial'/>
                 </section>
               </FadeInAnim>
                 <section className='flex flex-col items-start justify-center w-full p-4 space-x-3'>

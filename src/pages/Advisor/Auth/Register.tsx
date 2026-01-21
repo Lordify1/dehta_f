@@ -22,6 +22,13 @@ export default function Register() {
   const { search } = useLocation();
   const params = new URLSearchParams(search);
   const referralFromQuery = params.get("ref") || "";
+  const [passwordRules, setPasswordRules] = useState({
+    length: false,
+    lowercase: false,
+    uppercase: false,
+    number: false,
+    special: false,
+  });
 
   const [role, setRole] = useState<"founder" | "investor" | null>(null);
   const [form, setForm] = useState({
@@ -35,14 +42,28 @@ export default function Register() {
     referral: "",
   });
 
+
+
   // guestCheck(auth)
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setForm({ ...form, [name]: value });
+
+    if (name === "password") {
+      setPasswordRules({
+        length: value.length >= 8,
+        lowercase: /[a-z]/.test(value),
+        uppercase: /[A-Z]/.test(value),
+        number: /\d/.test(value),
+        special: /[!@#$%^&*(),.?":{}|<>]/.test(value),
+      });
+    }
   };
+
 
   const handleRoleSelect = (selectedRole: "founder" | "investor") => {
     setRole(selectedRole);
@@ -83,6 +104,7 @@ export default function Register() {
               .map((field) => {
                 if (field.name === "password") {
                   return (
+                    <>
                     <div key={field.name}>
                       <label htmlFor="password" className={`${classMap.label()}`}>Password</label>
                       <div className="relative">
@@ -106,6 +128,27 @@ export default function Register() {
                       </button>
                       </div>
                     </div>
+                    <div className="mt-2 text-sm space-y-1">
+                      <p>Password should have:</p>
+                      <ul className="ml-4 list-disc">
+                        <li className={passwordRules.length ? "text-green-500" : "text-gray-400"}>
+                          At least 8 characters
+                        </li>
+                        <li className={passwordRules.lowercase ? "text-green-500" : "text-gray-400"}>
+                          At least one lowercase letter
+                        </li>
+                        <li className={passwordRules.uppercase ? "text-green-500" : "text-gray-400"}>
+                          At least one uppercase letter
+                        </li>
+                        <li className={passwordRules.number ? "text-green-500" : "text-gray-400"}>
+                          At least one number
+                        </li>
+                        <li className={passwordRules.special ? "text-green-500" : "text-gray-400"}>
+                          At least one special character (!@#$%^&* etc.)
+                        </li>
+                      </ul>
+                    </div>
+                    </>
                   );
                 }
                 return (
@@ -133,6 +176,7 @@ export default function Register() {
               redirect={true}
               onResponse={() => {}}
               text="Register"
+              disabled={!Object.values(passwordRules).every(Boolean)}
             />
           </form>
         )}

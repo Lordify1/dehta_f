@@ -2,20 +2,19 @@ import { appName, appUrl, date } from '@/app';
 import ParticleBackground from '@/components/ParticleBackground';
 import React, { ReactNode, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FaArrowDown, FaUserAlt } from 'react-icons/fa';
+import { FaArrowDown, FaTelegramPlane, FaTwitter, FaUserAlt } from 'react-icons/fa';
 import { useUser } from "@/context/UserContext";
 import { classMap, FadeInAnim, PresaleBtn, SlideDown } from '../../components/Tools/Misc';
 
 interface LayoutProps {
   children: ReactNode;
   showNavs: boolean;
+  push?: boolean;
 }
 
   // { href: `${appUrl}/about`, label: 'About' },
 
-const socials = [/* unchanged socials here */];
-
-const Layout: React.FC<LayoutProps> = ({ children, showNavs = true }) => {
+const Layout: React.FC<LayoutProps> = ({ children, showNavs = true, push = false }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
   const [dropdownOpen, setDropdownOpen] = useState('');
@@ -27,8 +26,8 @@ const Layout: React.FC<LayoutProps> = ({ children, showNavs = true }) => {
   }
 
   const navLinks = [
-    // { href: '#allPages', label: 'All Pages', dropDown: true },
     { href: `${appUrl}/projects`, label: 'Projects' },
+    { href: `${appUrl}/earnfi`, label: 'EarnFi' },
     { href: `${appUrl}/trendbet`, label: 'TrendBet' },
     { href: `${appUrl}/${authStatus('dashboard','login')}`, label: `${authStatus('Dashboard','Login')}` },
   ];
@@ -65,7 +64,7 @@ const Layout: React.FC<LayoutProps> = ({ children, showNavs = true }) => {
         
         {/* HEADER */}
         <header className="absolute top-0 left-0 w-full z-50 bg-linear-to-b from-(--tbg) via-[] to-[] backdrop-blur-sm">
-          <div className="max-w-7xl mx-auto flex items-center justify-between px-6 sm:px-12 py-4">
+          <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 py-4">
 
             {/* Logo */}
             <Link to={'/'} replace className="w-20">
@@ -74,7 +73,7 @@ const Layout: React.FC<LayoutProps> = ({ children, showNavs = true }) => {
 
             {/* DESKTOP NAV */}
             {showNavs && (
-              <nav className="hidden md:flex space-x-8 font-medium text-sm relative">
+              <nav className="hidden md:flex space-x-12 font-medium text-sm relative backdrop-blur-xl bg-black/5 border border-white/10 rounded-3xl p-3 ps-5 pe-5">
                 {navLinks.map((link, idx) => (
                   <div key={idx} className="relative">
                     <Link
@@ -150,7 +149,7 @@ const Layout: React.FC<LayoutProps> = ({ children, showNavs = true }) => {
                   <FaUserAlt className="text-[var(--owner)]" />
                 </Link>
               ) : (
-                <Link className={`${classMap.button()}`} to="/register">
+                <Link className={`hidden lg:flex ${classMap.button()}`} to="/register">
                   Get Started
                 </Link>
               ))}
@@ -176,22 +175,26 @@ const Layout: React.FC<LayoutProps> = ({ children, showNavs = true }) => {
         </header>
 
         {/* MAIN */}
-        <main className="relative flex-grow w-full px-0">
-          <ParticleBackground />
+        <main className={`relative px-0 ${push && 'lg:mt-10'}`}>
+          {/* <ParticleBackground /> */}
           {children}
         </main>
         <PresaleBtn/>
 
         {/* FOOTER */}
-        <footer className="bg-[var(--background)] border-t border-[var(--border)] py-10 px-6 sm:px-12 mt-auto">
-          <div className="text-[var(--primary)] flex items-center justify-center gap-6 text-lg">
-            {socials.map(({ name, href, icon }) => (
-              <a key={name} href={href} target="_blank" rel="noopener noreferrer">
-                {icon}
-              </a>
+        <footer className="bg-(--background) border-t border-(--border) py-10 px-6 sm:px-12 mt-auto">
+          <div className="text-(--primary) flex flex-col lg:flex-row items-center justify-center gap-6 text-sm">
+            {navLinks.map((link, idx) => (
+              <Link
+                key={idx}
+                to={link.href}
+                className="block text-(--primary) hover:text-(--owner)"
+              >
+                {link.label}
+              </Link>
             ))}
           </div>
-          <p className="text-center text-[var(--accent)] text-xs mt-8">
+          <p className="text-center text-(--accent) text-xs mt-8">
             © {appName} {date()}. All rights reserved.
           </p>
         </footer>
