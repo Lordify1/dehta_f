@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import { classMap } from "../../Tools/Misc";
+import { useMisc } from '@/context/MiscContext';
+import { useOffCanvas } from '@/context/OffCanvasContext';
+import { IoShield, IoShieldCheckmark, IoShieldHalf } from "react-icons/io5";
 
 
 type JobType = {
@@ -10,6 +13,7 @@ type JobType = {
   organization_name: string;
   is_funded: boolean;
   logo?: string;
+  slug?: any;
 };
 
 type TaskType = {
@@ -21,6 +25,7 @@ type TaskType = {
   platform?: string;
   is_funded: boolean;
   icon?: string;
+  slug?: any;
 };
 
 type Props = {
@@ -31,13 +36,16 @@ type Props = {
 
 
 const EarnFiCard = ({ type, Job, Task }: Props) => {
+  const {setEarnFiOffer} = useMisc();
+  const { setShowOffCanvas, OffId, Offtitle, setOffId, SetOfftitle } = useOffCanvas();
+
   return type === "job" ? (
     <div className="w-full rounded-xl border border-green-500/30 bg-black/60 p-4 shadow-[0_0_20px_rgba(0,255,120,0.08)]">
       {/* Top Row */}
       <section className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="h-12 w-12 rounded-full bg-gradient-to-br from-green-500 to-emerald-400 flex items-center justify-center text-black font-bold">
-            U
+            J
           </div>
 
           <div className="flex flex-col">
@@ -45,17 +53,17 @@ const EarnFiCard = ({ type, Job, Task }: Props) => {
               {Job.title}
             </span>
             <span className="text-sm text-gray-400">
-              ${Job?.reward_amount} · {Job.reward_type} · {Job?.job_duration}
+              ${Job?.reward_amount} · {Job.reward_type.toUpperCase()} · {Job?.job_duration + ' Days'}
             </span>
           </div>
         </div>
 
         <div className="flex flex-col items-end">
-          <span className="text-sm text-green-400">
+          <span className="text-sm text-green-400 truncate w-30 text-end">
             {Job.organization_name}
           </span>
           <span className="text-xs text-green-500">
-            {Job.is_funded ? "Funds secured" : "Not secured"}
+            {Job.is_funded ? <IoShieldCheckmark title="Funded" className="text-sm text-green-400"/> : <IoShield title="Not Funded" className="text-sm text-red-500"/>}
           </span>
         </div>
       </section>
@@ -65,7 +73,13 @@ const EarnFiCard = ({ type, Job, Task }: Props) => {
 
       {/* CTA */}
       <button
-        className="w-full rounded-md bg-white py-2 text-sm font-semibold text-black transition hover:bg-green-400"
+        className={`${classMap.button()} w-full`}
+        onClick={() => {
+          setEarnFiOffer(Job);
+          setOffId('submit_job_or_task');
+          setShowOffCanvas(true);
+          SetOfftitle(`Job ${Job?.slug.toUpperCase()} Detail`)
+        }}
       >
         APPLY NOW
       </button>
@@ -73,12 +87,17 @@ const EarnFiCard = ({ type, Job, Task }: Props) => {
   ) : (
     <div className="w-full rounded-xl border border-green-500/30 bg-black/60 p-4 shadow-[0_0_20px_rgba(0,255,120,0.08)]">
       {/* Top */}
-      <section className="flex items-center gap-3">
-        <div className="h-10 w-10 rounded-full bg-black border border-white/20 flex items-center justify-center text-white">
-          ✕
-        </div>
-        <span className="text-white font-medium">
-          {Task.title}
+      <section className="flex items-center justify-between gap-3">
+        <section className="flex items-center">
+          <div className="h-10 w-10 rounded-full bg-black border border-white/20 flex items-center justify-center text-white">
+          T
+          </div>
+          <span className="ms-2 text-white font-medium">
+            {Task?.title}
+          </span>
+        </section>
+        <span className="text-xs text-green-500">
+            {Task?.is_funded ? <IoShieldCheckmark title="Funded" className="text-sm text-green-400"/> : <IoShield title="Not Funded" className="text-sm text-red-500"/>}
         </span>
       </section>
 
@@ -92,11 +111,19 @@ const EarnFiCard = ({ type, Job, Task }: Props) => {
             Earn ${Task?.reward_amount} {Task.reward_type}
           </span>
           <span className="text-gray-500">
-            {Task?.max_participants} spots left
+            {Number(Task?.max_participants) - Number(Task?.current_participants)} spots left
           </span>
         </div>
 
-        <button className="rounded-md bg-green-500 px-4 py-2 text-sm font-semibold text-black transition hover:bg-green-400">
+        <button 
+        className={`${classMap.button()}`}
+        onClick={() => {
+          setEarnFiOffer(Task);
+          setOffId('submit_job_or_task');
+          setShowOffCanvas(true);
+          SetOfftitle(`Task ${Task?.slug.toUpperCase()} Detail`)
+        }}
+        >
           Start Task
         </button>
       </section>

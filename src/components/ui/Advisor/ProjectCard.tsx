@@ -127,7 +127,7 @@ export default function ProjectCard({
         {!hideButtons && (
           <div className="grid grid-cols-1 justify-between gap-1 mt-2">
             <Link
-            to={`/project/${id}/${slug}`}
+            to={`/buildfi/${id}/${slug}`}
             className={classMap.button()}
             >
             View

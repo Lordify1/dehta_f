@@ -13,7 +13,9 @@ const AdminDashboard = () => {
     const stats = [
         { title: 'Users', id: 'users', url:'/admin/users',sub: 'Total Users' },
         { title: 'Projects', id: 'projects', url:'/admin/projects',sub: 'Total Projects' },
-        { title: 'Trends', id: 'questions', url:'/admin/dashboard',sub: 'Total Trends' },
+        { title: 'Trends', id: 'questions', url:'/admin/trendbet',sub: 'Total Trends' },
+        { title: 'Offers', id: 'earnfi_offers', url:'/admin/earnfi/offers',sub: 'Total Offers' },
+        { title: 'Submissions', id: 'earnfi_submissions', url:'/admin/earnfi/submissions',sub: 'Total Submissions' },
     ];
 
 

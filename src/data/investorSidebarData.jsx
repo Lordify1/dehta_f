@@ -8,8 +8,8 @@ export const investorSidebar = [
       icon: <FaHome className="text-(--accent-foreground)"/>
     },
     { 
-      label: "Projects",
-      path: "/projects",
+      label: "Buildfi",
+      path: "/buildfi",
       icon: <FaBriefcase className="text-(--accent-foreground)"/> 
     },
     { 

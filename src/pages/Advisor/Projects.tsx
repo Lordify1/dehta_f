@@ -27,11 +27,11 @@ export default function Projects() {
   },[])
 
   const Content = (
-    <div className={`min-h-screen flex flex-col items-center text-primary px-6 md:px-10 lg:px-16 py-14 ${user ? '' : 'projectsbg py-20'} w-full`}>
+    <div className={`min-h-screen flex flex-col items-center text-primary px-6 md:px-10 lg:px-16 py-14 ${user ? '' : 'projectsbg py-30'} w-full`}>
 
       {/* Header */}
       <div className="w-full max-w-7xl flex flex-col items-center mb-10 text-center">
-        <h1 className="text-5xl transition-opacity font-semibold text-[var(--owner)] animate-pulse delay-200">Projects</h1>
+        <h1 className="text-5xl transition-opacity font-semibold text-[var(--owner)] animate-pulse delay-200">BuildFi</h1>
         <p className="lg:text-2xl text-md mt-3 mb-1">
           Explore Verified and AI-Analyzed Projects across the crypto ecosystem
         </p>

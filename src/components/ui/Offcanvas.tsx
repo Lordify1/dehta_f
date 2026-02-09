@@ -28,7 +28,7 @@ export default function Offcanvas({ title, children, width = "w-full md:w-[400px
         } ${width} overflow-y-auto p-6`}
       >
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-semibold text-primary">{title}</h2>
+          <h2 className="text-lg font-semibold text-primary truncate w-70">{title}</h2>
           {/* <div className="flex flex-row"> */}
             <button
             onClick={() => setShowOffCanvas(false)}

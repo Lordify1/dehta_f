@@ -13,6 +13,7 @@ import TrendingTokens from "../../../components/Advisor/TrendingTokens";
 import TrendBetDB from "../../../components/Advisor/TrendBetDB";
 import { Link } from "react-router-dom";
 import QuestDB from "../../../components/Advisor/QuestDB";
+import { EmailVerifyGuard } from "../../../components/Tools/Misc";
 
 const FounderDashboard = () => {
   const {user} = useUser()
@@ -43,9 +44,9 @@ const FounderDashboard = () => {
           
 
           {/* User Info & Lens Summary */}
-          <section className={hasProject ? `grid grid-cols-1 lg:grid-cols-2 gap-3 mt-4` : `flex flex-col mt-4`}>
+          <section className={hasProject ? `grid grid-cols-1 ${user?.email_verified_at ? 'lg:grid-cols-2' : 'lg:grid-cols-1'} gap-3 mt-4` : `flex flex-col mt-4`}>
             {hasProject ? (
-              <>
+              (user?.email_verified_at ? (<>
               <Link
               to={'/edit-project'}
               className={`${classMap.dehtaCard()} p-3 text-sm lg:text-lg mt-2 mb-2 w-full flex flex-row items-center justify-between`}
@@ -60,15 +61,28 @@ const FounderDashboard = () => {
                 <span className="opacity-100">View Project</span>
                 <FaEye className="text-2xl"/>
               </Link>
-              </>
+              </>) : (
+                <EmailVerifyGuard
+                height={`min-h-10 w-full`}
+                message={`Verify your Email to Continue`}
+                />
+              ))
             ) : (
-              <Link
+              user?.email_verified_at ? 
+              (<Link
               to={'/edit-project'}
               className={`${classMap.dehtaCard()} p-3 text-sm lg:text-lg mt-2 mb-2 w-full flex flex-row items-center justify-between`}
               >
                 <span className="opacity-50">Create your Project</span>
                 <FaPlusCircle className="text-2xl"/>
-              </Link>
+              </Link>)
+               : 
+              (
+                <EmailVerifyGuard
+                height={`min-h-10 w-full`}
+                message={`Verify your Email to Continue`}
+                />
+              )
             )}
           </section>
 

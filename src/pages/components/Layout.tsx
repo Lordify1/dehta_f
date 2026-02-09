@@ -10,11 +10,12 @@ interface LayoutProps {
   children: ReactNode;
   showNavs: boolean;
   push?: boolean;
+  classy?: string;
 }
 
   // { href: `${appUrl}/about`, label: 'About' },
 
-const Layout: React.FC<LayoutProps> = ({ children, showNavs = true, push = false }) => {
+const Layout: React.FC<LayoutProps> = ({ children, showNavs = true, push = false, classy }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
   const [dropdownOpen, setDropdownOpen] = useState('');
@@ -26,7 +27,7 @@ const Layout: React.FC<LayoutProps> = ({ children, showNavs = true, push = false
   }
 
   const navLinks = [
-    { href: `${appUrl}/projects`, label: 'Projects' },
+    { href: `${appUrl}/buildfi`, label: 'Buildfi' },
     { href: `${appUrl}/earnfi`, label: 'EarnFi' },
     { href: `${appUrl}/trendbet`, label: 'TrendBet' },
     { href: `${appUrl}/${authStatus('dashboard','login')}`, label: `${authStatus('Dashboard','Login')}` },
@@ -158,7 +159,7 @@ const Layout: React.FC<LayoutProps> = ({ children, showNavs = true, push = false
           {/* MOBILE NAV PANEL */}
           {menuOpen && (
             <div className="md:hidden px-6 pb-6 w-full animate-fadeIn">
-              <div className="border border-[var(--border)] rounded-md bg-[var(--background)] p-4 space-y-4">
+              <div className="border border-[var(--border)] rounded-md backdrop-blur-xl bg-black/5 p-4 space-y-4">
                 {navLinks.map((link, idx) => (
                   <Link
                     key={idx}

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { classMap } from "@/components/Tools/Misc";
-import { ComingSoon, DehtaConstruct } from "../../Tools/Misc";
+import { ComingSoon, DehtaConstruct, EmailVerifyGuard } from "../../Tools/Misc";
 import PayButton from "../PayButton";
 import { useUser } from "@/context/UserContext";
 import { apiUrl } from "../../../App";
@@ -108,6 +108,7 @@ const TrendDetail = ({ data }: { data: any }) => {
           <p>You voted {trend.votes?.find((vote: any) => vote.user_id === user?.id)?.option_id === selected?.id ? selected?.option_text : trend.options.find((opt: any) => opt.id === trend.votes?.find((vote: any) => vote.user_id === user?.id)?.option_id)?.option_text}. Wait for the Results</p>
         </div>
       ) : selected && (
+        user?.email_verified_at ? (
         <div className="flex flex-col w-full p-2 gap-2">
         <div className="bg-(--card) rounded-lg border p-2 border-(--owner) flex flex-col">
           <h3 className="font-semibold text-(--owner)">
@@ -122,7 +123,12 @@ const TrendDetail = ({ data }: { data: any }) => {
           minAmount={2}
           />
         </div>
-        </div>
+        </div>) : (
+          <EmailVerifyGuard
+          height={`w-full`}
+          message={`Verify email to Place Vote`}
+          />
+        )
       )}
     </section>
     </div>

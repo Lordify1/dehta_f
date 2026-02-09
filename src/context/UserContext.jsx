@@ -7,19 +7,19 @@ import { investorSidebar } from "@/data/investorSidebarData";
 const UserContext = createContext(null);
 
 export const UserProvider = ({ children }) => {
-  // 🔒 auth state
+  // 🔐 auth state
   const [user, setUser] = useState(null);
   const [role, setRole] = useState(null);
 
-  // 🚀 boot-only loader (THIS is the important one)
+  // 🚀 boot-only loader (initial app hydration)
   const [isBooting, setIsBooting] = useState(true);
 
-  // 🔄 action loader (logout, updates, etc)
+  // 🔄 action loader (logout, manual refresh, etc)
   const [userLoading, setUserLoading] = useState(false);
 
-  // 📦 extra state
-  const [userTrends, setUserTrends] = useState([]);
+  // 📦 extras
   const [sidebarData, setSidebarData] = useState(null);
+  const [project, setProject] = useState([]);
 
   const syncSidebar = (role) => {
     if (!role) return setSidebarData(null);
@@ -32,15 +32,23 @@ export const UserProvider = ({ children }) => {
         withCredentials: true,
       });
 
-      const isAuth = await axios.post(`${apiUrl}/api/auth-check`, {}, { withCredentials: true });
+      const isAuth = await axios.post(
+        `${apiUrl}/api/auth-check`,
+        {},
+        { withCredentials: true }
+      );
+
       if (!isAuth?.data) return;
 
-      const res = await axios.post(`${apiUrl}/api/user`, {}, { withCredentials: true });
+      const res = await axios.post(
+        `${apiUrl}/api/user`,
+        {},
+        { withCredentials: true }
+      );
 
       if (res?.data) {
         setUser(res.data);
         setRole(res.data.role || null);
-        setUserTrends(res.data.trends || []);
         syncSidebar(res.data.role);
       }
     } catch (err) {
@@ -48,7 +56,7 @@ export const UserProvider = ({ children }) => {
       setRole(null);
       setSidebarData(null);
     } finally {
-      // ❗ ONLY HERE
+      // ❗ only ends once on app boot
       setIsBooting(false);
     }
   };
@@ -57,10 +65,38 @@ export const UserProvider = ({ children }) => {
     hydrateUser();
   }, []);
 
+  const getUser = async () => {
+    setUserLoading(true);
+    try {
+      const res = await axios.post(
+        `${apiUrl}/api/user`,
+        {},
+        { withCredentials: true }
+      );
+
+      if (res?.data) {
+        setUser(res.data);
+        setRole(res.data.role || null);
+        syncSidebar(res.data.role);
+      }
+    } catch (err) {
+      setUser(null);
+      setRole(null);
+      setSidebarData(null);
+    } finally {
+      setUserLoading(false);
+    }
+  };
+
   const Logout = async () => {
     setUserLoading(true);
     try {
-      await axios.post(`${apiUrl}/api/logout`, {}, { withCredentials: true });
+      await axios.post(
+        `${apiUrl}/api/logout`,
+        {},
+        { withCredentials: true }
+      );
+
       setUser(null);
       setRole(null);
       setSidebarData(null);
@@ -78,13 +114,14 @@ export const UserProvider = ({ children }) => {
         user,
         role,
         sidebarData,
-        setSidebarData,
-        userTrends,
+        project,
         isBooting,
         userLoading,
         setUser,
         setRole,
+        setSidebarData,
         syncSidebar,
+        getUser,
         Logout,
       }}
     >

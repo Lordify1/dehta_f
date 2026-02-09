@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
-import { classMap, emptyData, showAlert } from "../Tools/Misc";
+import { classMap, EmailVerifyGuard, emptyData, showAlert } from "../Tools/Misc";
 import { FaCalendar, FaCheckCircle, FaHistory } from "react-icons/fa";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { appUrl } from "@/app";
 import { apiUrl } from "../../App";
+import { useUser } from "@/context/UserContext";
+
 
 type Props = {
   lens: (e: any) => void;
@@ -21,6 +23,7 @@ const CheckInCalendar = ({ lens, streak, transactions, checkins, history, dView 
   const [claimedToday, setClaimedToday] = useState(false);
   const [todayIndex, setTodayIndex] = useState(1);
   const [view, setView] = useState(dView || 'calendar')
+  const {user} = useUser();
 
 
   useEffect(() => {
@@ -99,37 +102,44 @@ const CheckInCalendar = ({ lens, streak, transactions, checkins, history, dView 
         </h3>
       }
       </div>
-      {view === 'calendar' ? (<div className="grid grid-cols-5 bg-backdrop-blur rounded-sm p-1">
-        {calendar.map((checked, index) => {
-          const isToday = index + 1 === todayIndex;
-          const isClaimable = isToday && !claimedToday;
-          const claimed = checked;
+      {view === 'calendar' ? (
+        user?.email_verified_at ? ( 
+        <div className="grid grid-cols-5 bg-backdrop-blur rounded-sm p-1">
+          {calendar.map((checked, index) => {
+            const isToday = index + 1 === todayIndex;
+            const isClaimable = isToday && !claimedToday;
+            const claimed = checked;
 
-          return (
-            <>
-            <div
-              key={index}
-              onClick={() => handleCheckin(index + 1)}
-              className={`w-full flex items-center justify-center  transition-normal p-2 h-15 rounded-sm mx-1 border-transparent ${
-                claimed
-                  ? "bg-green-600 text-primary cursor-not-allowed"
-                  : isClaimable
-                  ? "bg-yellow-600 text-primary animate-pulse cursor-pointer"
-                  : "bg-muted opacity-50 cursor-not-allowed"
-              } hover:scale-90`}
-              title={`Day ${index + 1}`}
-            >
-              {claimed ? <FaCheckCircle className="text-primary" /> : (
-                <div className="text-center">
-                <p>{index + 1}</p>
-                <small className="text-sm opacity-50 text-(--owner)">+200</small>
-                </div>
-              )}
-            </div>
-            </>
-          );
-        })}
-      </div>
+            return (
+              <>
+              <div
+                key={index}
+                onClick={() => handleCheckin(index + 1)}
+                className={`w-full flex items-center justify-center  transition-normal p-2 h-15 rounded-sm mx-1 border-transparent ${
+                  claimed
+                    ? "bg-green-600 text-primary cursor-not-allowed"
+                    : isClaimable
+                    ? "bg-yellow-600 text-primary animate-pulse cursor-pointer"
+                    : "bg-muted opacity-50 cursor-not-allowed"
+                } hover:scale-90`}
+                title={`Day ${index + 1}`}
+              >
+                {claimed ? <FaCheckCircle className="text-primary" /> : (
+                  <div className="text-center">
+                  <p>{index + 1}</p>
+                  <small className="text-sm opacity-50 text-(--owner)">+200</small>
+                  </div>
+                )}
+              </div>
+              </>
+            );
+          })}
+        </div>) : (
+          <EmailVerifyGuard
+          height={`h-50 w-full`}
+          message={`Verify your email to Checkin`}
+          />
+        )
       ) : (
         <div className="space-y-3 w-full overflow-y-auto max-h-[50vh]">
           {history ? (history.map((tx:any, index:any) => (

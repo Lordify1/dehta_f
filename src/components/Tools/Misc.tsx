@@ -4,7 +4,7 @@ import { Empty } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FaBatteryEmpty, FaCircle, FaCircleNotch, FaGgCircle, FaPen, FaRegStar, FaSalesforce, FaSearchDollar, FaStar, FaTools } from "react-icons/fa";
-import { IoStar, IoStarOutline } from "react-icons/io5";
+import { IoCopy, IoStar, IoStarOutline } from "react-icons/io5";
 import { toast } from "react-toastify";
 import { useRef } from "react";
 import { Navigate } from "react-router-dom";
@@ -16,6 +16,7 @@ import TrendBetCreatorForm from "../Advisor/Forms/TrendBetCreatorForm";
 import { apiUrl } from "../../App";
 import useEmblaCarousel from "embla-carousel-react";
 import TrendCard from "../ui/Advisor/TrendCard";
+import SendRequest from "./SendRequest";
 
 
 
@@ -310,7 +311,7 @@ export const classMap = {
 
   glassEffect: (padding = 'p-3', rounded = 'rounded-4xl') => `col-span-1 backdrop-blur-xl bg-white/5 border border-white/10 ${rounded} text-white ${padding}`,
 
-  label: () => "flex text-white text-sm font-semibold mb-1 items-center",
+  label: () => "flex text-white text-sm font-semibold mb-1 mt-1 items-center",
 
   input: (width = 'w-full') => `${width} bg-white/10 backdrop-blur-sm border border-white/20
     rounded-xl p-3 text-white placeholder-white/40 focus:outline-none
@@ -354,13 +355,23 @@ export const classMap = {
   h1: `text-2xl font-bold text-primary`,
 
   button: (
-    bg?: string,
-    hover?: string,
-    text?: string,
-    textsize?: string,
-    direction: string = "left"
-  ) =>
-    `rounded-md bg-[var(--owner)] text-black px-2 py-2 hover:text-primary font-extrabold ${hover ? hover : ''}`,
+  bg?: string,
+  hover?: string,
+  text?: string,
+  textsize?: string,
+  direction: string = "left"
+) =>
+  `
+  rounded-md
+  px-4 py-2
+  font-extrabold
+  text-black
+  bg-[radial-gradient(circle_at_center,#22c55e_0%,#16a34a_45%,#065f46_100%)]
+  hover:bg-[radial-gradient(circle_at_center,#4ade80_0%,#22c55e_45%,#14532d_100%)]
+  transition-all
+  duration-300
+  ${hover ?? ""}
+  `,
 
   buttonJsx: ({bg, hover, text, textsize, direction = 'down'} : {
     bg?: string,
@@ -609,7 +620,7 @@ export const stringToJson = (data:string) => {
 
 export const sendPostRequest = async (url:string ,data:[]) => {
     try{
-        const resp = await axios.post(appUrl + url, data);
+        const resp = await axios.post(apiUrl + url, data);
         return resp.data.message;
     }catch(err){
         return err
@@ -1482,4 +1493,117 @@ export const showAlert = (
 
   // final generic fallback
   send(forcedType ?? "error", "Something went wrong, please try again.");
+};
+
+type ClipboardProps = {
+  text: string,
+  alertMessage: string
+}
+
+export const CopyToClipboard = ({text, alertMessage} : ClipboardProps) => {
+  const copy = () => {
+    try{
+      navigator.clipboard.writeText(text)
+      showAlert(alertMessage)
+    }catch(err){
+      showAlert(err)
+    }
+  }
+
+  return(
+    <IoCopy title="Copy" className="text-md inline mx-1 my-1 hover:text-white-900" onClick={() => copy()}/>
+  )
+}
+
+
+export const formatDatePretty = (dateString: string): string => {
+  const date = new Date(dateString.replace(" ", "T"));
+
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+  });
+};
+
+type EVGProps = {
+  height: any,
+  message: String
+}
+
+export const EmailVerifyGuard = ({height, message} : EVGProps) => {
+  const [isRateLimited, setIsRateLimited] = useState(false);
+  const RATE_LIMIT_KEY = 'emailVerifyRequestTime';
+  const RATE_LIMIT_MINUTES = 5;
+
+  useEffect(() => {
+    const lastRequestTime = localStorage.getItem(RATE_LIMIT_KEY);
+    if (lastRequestTime) {
+      const elapsed = Date.now() - parseInt(lastRequestTime);
+      const remainingTime = RATE_LIMIT_MINUTES * 60 * 1000 - elapsed;
+      
+      if (remainingTime > 0) {
+        setIsRateLimited(true);
+        const timer = setTimeout(() => setIsRateLimited(false), remainingTime);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, []);
+
+  const handleVerifyRequest = () => {
+    localStorage.setItem(RATE_LIMIT_KEY, Date.now().toString());
+    setIsRateLimited(true);
+    
+    setTimeout(() => setIsRateLimited(false), RATE_LIMIT_MINUTES * 60 * 1000);
+  };
+
+  return(
+    <div className={`${classMap.glassEffect()} flex flex-col items-center justify-center ${height}`}>
+      <span className="mb-2">{message}</span>
+      <SendRequest
+        url={`/email/verification-notification`}
+        method="post"
+        onResponse={(e) => (e.status === 200 || e.status === 201) && handleVerifyRequest() }
+        text={isRateLimited ? "Check your email" : "Verify Email"}
+        disabled={isRateLimited}
+      />
+    </div>
+  )
+}
+
+
+
+export const FormatAmount = ({ amount, precision = 1 }) => {
+  if (isNaN(amount)) return <>0</>;
+
+  const num = Number(amount);
+
+  if (num < 1000) {
+    return (
+      <>
+        {parseFloat(num.toFixed(2)).toString()}
+      </>
+    );
+  }
+
+  const units = [
+    { value: 1e12, suffix: "T" },
+    { value: 1e9, suffix: "B" },
+    { value: 1e6, suffix: "M" },
+    { value: 1e3, suffix: "k" },
+  ];
+
+  for (const unit of units) {
+    if (num >= unit.value) {
+      const formatted = (num / unit.value).toFixed(precision);
+      return (
+        <>
+          {parseFloat(formatted).toString()}
+          {unit.suffix}
+        </>
+      );
+    }
+  }
+
+  return <>{num}</>;
 };

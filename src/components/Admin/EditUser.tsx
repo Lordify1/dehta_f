@@ -22,7 +22,8 @@ export default function EditUser({ onClose, onResponse, EditData  }: Props) {
     const [isLoading, setIsLoading] = useState(true)
   const [formData, setFormData] = useState({ 
     user_id: 0,
-    glasses: []
+    glasses: [],
+    lens: 0
   });
 
   // console.log(formData)
@@ -74,6 +75,27 @@ export default function EditUser({ onClose, onResponse, EditData  }: Props) {
     <form className="space-y-4" encType="multipart/form-data"> 
 
       <div className="pt-2 flex flex-col items-center text-start gap-4">
+        <h3>Add Lens for User</h3>
+        <input
+        type="number"
+        name="lens"
+        className={`${classMap.input()}`}
+        value={formData.lens ?? ''}
+        onChange={(e) => {
+          handleChange('lens', e.target.value)
+        }}
+        />
+        <SendRequest
+          text="Add Lens"
+          url="/api/admin/users/add_lens"
+          className="w-full"
+          data={formData}
+          onResponse={() => {onResponse(true)}}
+        />
+      </div>
+
+      {/* Add Glasses for User  */}
+      <div className="pt-2 flex flex-col items-center text-start gap-4">
         <h3 className="mb-3">Add Glasses for User</h3>
         {isLoading ? (<Loading/>) : (glasses.length > 0 && glasses.map((it, ind) => {
             return(
@@ -100,15 +122,6 @@ export default function EditUser({ onClose, onResponse, EditData  }: Props) {
           data={formData}
           onResponse={() => {onResponse(true)}}
         />
-        {!EditData && (
-          <button
-          type="button"
-          onClick={() => {onClose, setFormData([])}}
-          className="text-sm text-gray-400 hover:text-red-400 transition"
-        >
-          Cancel
-        </button>
-        )}
       </div>
     </form>
   );

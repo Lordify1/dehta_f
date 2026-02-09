@@ -7,6 +7,7 @@ import { ProtectedRoute, GuestRoute, AnyRoute, AdminAuthRoute, AdminGuestRoute, 
 import { Loading } from '@/components/Tools/Misc';
 import 'react-toastify/dist/ReactToastify.css'
 import NewPassword from '../pages/Advisor/Auth/NewPassword';
+import VerifyEmail from '../pages/Advisor/Auth/VerifyEmail';
 
 const FaecesRouter = () => {
     const Home = lazy(() => import('@/pages/Advisor/Projects'));
@@ -35,24 +36,32 @@ const FaecesRouter = () => {
     const AdminProjects = lazy(() => import('@/pages/Admin/Projects/ProjectIndex'))
     const AdminProjectsCreate = lazy(() => import('@/pages/Admin/Projects/CreateProject'))
     const AdminQuest = lazy(() => import('@/pages/Admin/Quest/QuestIndex'));
+    const AdminTrendbet = lazy(() => import("@/pages/Admin/Trendbet/TrendbetIndex.tsx"));
     const AdminUsers = lazy(() => import('@/pages/Admin/Users/UsersIndex'));
     const ProjectDetail = lazy(() => import('@/pages/Advisor/ProjectDetail'))
     const TrendBet = lazy(() => import('@/pages/Advisor/TrendBet'));
+    const AEOffers = lazy(() => import('@/pages/Admin/EarnFi/AEOffers'));
+    const AESubmissions = lazy(() => import('@/pages/Admin/EarnFi/AESubmissions'));
 
-    const { user, loading } = useUser();
+    const { user, isBooting, userLoading } = useUser();
+  
+    if (isBooting) {
+        return <Loading />;
+    }
 
     const urls = [
         { path: '/', element: <Index />, type: 'any' },
-        { path: '/projects', element: <Home />, type: 'any' },
+        { path: '/buildfi', element: <Home />, type: 'any' },
         { path: '/index', element: <Index />, type: 'any' },
         { path: '/og/private_sale', element: <OGPage />, type: 'any' },
-        { path: '/project/:id/:slug', element: <ProjectDetail/>, type: 'any'},
+        { path: '/buildfi/:id/:slug', element: <ProjectDetail/>, type: 'any'},
         { path: '/trendbet', element: <TrendBet/>, type: 'auth'},
 
         { path: '/register', element: <Register />, type: 'guest' },
         { path: '/login', element: <Login />, type: 'guest' },
         { path: '/reset-password', element: <ForgotPassword/>, type: 'any'},
         { path: '/new-password', element: <NewPassword/>, type: 'any'},
+        { path: '/verify/email', element: <VerifyEmail/>, type: 'auth'},
 
 
         { path: '/dashboard', element: <Dashboard />, type: 'auth' },
@@ -77,6 +86,9 @@ const FaecesRouter = () => {
         { path: '/admin/projects', element: <AdminProjects/>, type: "auth", userType: 'admin'},
         { path: '/admin/projects/create', element: <AdminProjectsCreate/>, type: "auth", userType: 'admin'},
         { path: '/admin/quests', element: <AdminQuest/>, type: "auth", userType: 'admin'},
+        { path: '/admin/earnfi/offers', element: <AEOffers/>, type: "auth", userType: 'admin'},
+        { path: '/admin/earnfi/submissions', element: <AESubmissions/>, type: "auth", userType: 'admin'},
+        { path: '/admin/trendbet', element: <AdminTrendbet/>, type: "auth", userType: 'admin'},
         // catch-all 404 route (must be last)
         { path: '*', element: <NotFound />, type: 'any' },
     ];
@@ -84,7 +96,8 @@ const FaecesRouter = () => {
     return (
         <HelmetProvider>
             <Router>
-                <Suspense fallback={import.meta.env.DEV ? null : <Loading />}>
+                <Suspense fallback={<Loading />}>
+                {/* <Suspense fallback={import.meta.env.DEV ? null : <Loading />}> */}
                 {/* <Suspense> */}
                     <Routes>
                         {urls.map(({ path, element, type, userType }) => {
@@ -113,7 +126,7 @@ const FaecesRouter = () => {
                                     key={path}
                                     path={path}
                                     element={
-                                        <Guard user={user} loading={loading}>
+                                        <Guard user={user} loading={userLoading}>
                                             {element}
                                         </Guard>
                                     }

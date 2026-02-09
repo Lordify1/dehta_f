@@ -9,6 +9,7 @@ import { Helmet } from "react-helmet-async";
 import { apiUrl } from "../../../App";
 import { useOffCanvas } from "../../../context/OffCanvasContext";
 import EditUser from "../../../components/Admin/EditUser";
+import { FaCheckCircle } from "react-icons/fa";
 
 
 export default function UsersIndex() {
@@ -27,7 +28,12 @@ export default function UsersIndex() {
   const columns = [
     {
       title: "Username",
-      dataIndex: "username",
+      key: "username",
+      render: (_:any, record:any) => (
+        <div className="flex items-center gap-2">
+          <span>{record?.username} {record?.email_verified_at !== null && (<FaCheckCircle className="text-green-600"/>)}</span>
+        </div>
+      ),
     },
     {
       title: "Tre. Role",
@@ -42,7 +48,7 @@ export default function UsersIndex() {
       dataIndex: "total_lens",
     },
     {
-      title: "Base Addy",
+      title: "USDT Addy",
       dataIndex: "base_address",
     },
     {

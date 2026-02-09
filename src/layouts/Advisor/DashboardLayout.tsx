@@ -9,7 +9,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useUser } from "@/context/UserContext";
 import axios from "axios";
 import { apiUrl } from "../../App";
-import { Lens, PresaleBtn } from "../../components/Tools/Misc";
+import { FormatAmount, Lens, PresaleBtn } from "../../components/Tools/Misc";
 import { useAppKit, useAppKitAccount } from '@reown/appkit/react'
 
 
@@ -87,11 +87,11 @@ const DashboardLayout = ({ children, sidebarData, classy }: Props) => {
             {/* Lens + Glasses */}
             <div className="flex flex-row gap-2 mb-4">
               <div className={`${classMap.tempBtn} bg-black`}>
-                <FaGlasses className="inline mr-1" /> {glasses}
+                <FaGlasses className="inline mr-1" /> <span>{glasses}</span>
               </div>
 
               <div className={`${classMap.tempBtn} bg-black`}>
-                {Lens()} {lens.toLocaleString()}
+                {Lens()} <span><FormatAmount amount={lens}/></span>
               </div>
             </div>
             {/* Avatar + Username */}

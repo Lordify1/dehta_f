@@ -18,6 +18,7 @@ export const MiscProvider = ({children}) => {
     const [earnfiJobs, setEarnfiJobs] = useState([]);
     const [earnfiStats, setEarnFiStats] = useState([]);
     const [isLoading, setIsLoading] = useState(true)
+    const [earnFiOffer, setEarnFiOffer] = useState([]);
 
     const getTrends = async () => {
             try{
@@ -69,21 +70,21 @@ export const MiscProvider = ({children}) => {
         try {
             const offers = await axios.post(`${apiUrl}/api/earnfi`);
 
-            console.log(offers);
-
-            setEarnfiJobs(offers.data?.jobs);
-            setEarnfiTasks(offers.data?.tasks);
-            setEarnFiStats(offers.data?.stats)
-
+            setEarnfiJobs(offers.data?.jobs || []);
+            setEarnfiTasks(offers.data?.tasks || []);
+            setEarnFiStats(offers.data?.stats || {});
             setIsLoading(false);
+
+            return offers.data; // optional, but nice
         } catch (error) {
-            console.log(error)
-            setIsLoading(false)
+            setIsLoading(false);
+            throw error;
         }
-    }
+    };
+
     
     return(
-        <MiscContext.Provider value={{ trends ,selectedTrend, setSelectedTrend, getTrends, isLoading, setIsLoading, getUserProject, userProject, projects, setProjects, getProjects, quests, getQuests, userAns, setUserAns, getEarnFiOffers, earnfiJobs, setEarnfiJobs, earnfiTasks, setEarnfiTasks, earnfiStats, setEarnFiStats }}>
+        <MiscContext.Provider value={{ trends ,selectedTrend, setSelectedTrend, getTrends, isLoading, setIsLoading, getUserProject, userProject, projects, setProjects, getProjects, quests, getQuests, userAns, setUserAns, getEarnFiOffers, earnfiJobs, setEarnfiJobs, earnfiTasks, setEarnfiTasks, earnfiStats, setEarnFiStats, earnFiOffer, setEarnFiOffer }}>
             {children}
         </MiscContext.Provider>
     )

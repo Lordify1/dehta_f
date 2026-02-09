@@ -27,81 +27,8 @@ const TrendBetSection: React.FC = () => {
                 <object data="/assets/ui/trendbet_all.png" className='w-100 lg:w-130' type="image/png"></object>
             </section>
             <div className="flex flex-col lg:flex-row items-center justify-center gap-10 mt-10">
-            {/* Creator Card */}
-            <section className="flex flex-col w-full max-w-sm border border-white/20 rounded-xl overflow-hidden bg-black">
-                {/* Header */}
-                <div className="bg-white px-6 py-4">
-                    <span className="text-black font-semibold text-sm uppercase tracking-wide">
-                    As a Creator
-                    </span>
-                </div>
-                {/* Body */}
-                <div className="grid grid-cols-2 h-full">
-
-                    {/* Steps */}
-                    <div className="flex flex-col justify-between p-6 text-white/60 text-sm">
-                    <span>Step 1</span>
-                    <span>Step 2</span>
-                    <span>Step 3</span>
-                    </div>
-
-                    {/* Divider */}
-                    <div className="absolute left-1/2 top-[72px] bottom-0 w-px bg-white/10" />
-
-                    {/* Actions */}
-                    <div className="flex flex-col justify-between p-6">
-                    <span className="flex items-center gap-3 font-medium">
-                        <IoRocketOutline /> Launch Trend
-                    </span>
-                    <span className="flex items-center gap-3 font-medium">
-                        <IoSettingsOutline /> Set Conditions
-                    </span>
-                    <span className="flex items-center gap-3 font-medium">
-                        <IoMedalOutline /> Get Rewards
-                    </span>
-                    </div>
-
-                </div>
-            </section>
-
-            {/* Participant Card */}
-            <section className="flex flex-col w-full max-w-sm border border-white/20 rounded-xl overflow-hidden bg-black">
-
-                {/* Header */}
-                <div className="bg-white px-6 py-4">
-                    <span className="text-black font-semibold text-sm uppercase tracking-wide">
-                    As a Participant
-                    </span>
-                </div>
-
-                {/* Body */}
-                <div className="grid grid-cols-2 h-full">
-
-                    {/* Steps */}
-                    <div className="flex flex-col justify-between p-6 text-white/60 text-sm">
-                    <span>Step 1</span>
-                    <span>Step 2</span>
-                    <span>Step 3</span>
-                    </div>
-
-                    {/* Divider */}
-                    <div className="absolute left-1/2 top-[72px] bottom-0 w-px bg-white/10" />
-
-                    {/* Actions */}
-                    <div className="flex flex-col justify-between p-6">
-                    <span className="flex items-center gap-3 font-medium">
-                        <IoTrendingUp /> Join Trend
-                    </span>
-                    <span className="flex items-center gap-3 font-medium">
-                        <FaVoteYea /> Cast Vote
-                    </span>
-                    <span className="flex items-center gap-3 font-medium">
-                        <IoMedalOutline /> Win Payouts
-                    </span>
-                    </div>
-
-                </div>
-            </section>
+                <object data="/assets/ui/trend_p.svg" className='w-70' type="image/svg+xml"></object>
+                <object data="/assets/ui/trend_c.svg" className='w-70' type="image/svg+xml"></object>
             </div>
         </div>
       </div>

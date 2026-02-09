@@ -1,6 +1,6 @@
 import React from "react";
 import { appUrl } from "@/app";
-import { FaBriefcase, FaEdit, FaGlasses, FaHome, FaQuestionCircle, FaSearchDollar, FaUsers } from "react-icons/fa";
+import { FaBriefcase, FaChartLine, FaDollarSign, FaEdit, FaEnvelopeSquare, FaGlasses, FaHome, FaQuestionCircle, FaSearchDollar, FaUsers } from "react-icons/fa";
 
 // sidebarData.ts
 export const sidebarData = [
@@ -21,11 +21,23 @@ export const sidebarData = [
             href: "/admin/users",
             icon: React.createElement(FaUsers)
           },
-          { name: "Projects", href: "/admin/projects", 
+          { 
+            name: "Trendbet",
+            href: "/admin/trendbet",
+            icon: React.createElement(FaChartLine)
+          },
+          { name: "Buildfi", href: "/admin/projects", 
             icon: React.createElement(FaBriefcase),
             children: [
               {name: "Create/Edit", href: "/admin/projects/create", icon: React.createElement(FaEdit),},
               {name: "Listed", href: "/admin/projects", icon: ""},
+            ],
+          },
+          { name: "EarnFi", href: "/admin/earnfi/offers", 
+            icon: React.createElement(FaDollarSign),
+            children: [
+              {name: "Offers", href: "/admin/earnfi/offers", icon: React.createElement(FaBriefcase),},
+              {name: "Submissions", href: "/admin/earnfi/submissions", icon: React.createElement(FaEnvelopeSquare),},
             ],
           },
           { name: "Glasses", href: "/admin/glasses",

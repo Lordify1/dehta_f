@@ -1,85 +1,89 @@
 import React, { useEffect, useState } from "react";
-import { Head } from "@inertiajs/react";
 import SendRequest from "@/components/Tools/SendRequest";
 import { IoMailUnreadOutline } from "react-icons/io5";
 import { toast } from "react-toastify";
-import { sendPostRequest } from "@/components/Tools/Misc";
+import { Helmet } from "react-helmet-async";
+import { appName } from "@/app";
+import { useUser } from "@/context/UserContext";
+import { classMap } from "../../../components/Tools/Misc";
 
-export default function VerifyEmail({ user, message }: any) {
-  const [notify, setMessage] = useState<string | null>(message);
+const COOLDOWN = 180;
+const STORAGE_KEY = "verify_email_timer_expiry";
+
+export default function VerifyEmail({ message }: any) {
   const [timer, setTimer] = useState<number>(0);
-  const COOLDOWN = 180; // 3 minutes in seconds
-  const STORAGE_KEY = "verify_email_timer_expiry";
+  const {user} = useUser();
 
-  // ✅ Show toast when component mounts
+  // Show initial server message once
   useEffect(() => {
-    sendPostRequest('/email/verification-notification', [])
-    .then((res) => {
-      setMessage(res),
-    console.log(res),
-    toast.success(res)
-    })
-    .catch((err) => console.log(err))
+    if (message) toast.success(message);
+  }, []);
 
-    if(notify) toast.success(notify)
-  }, [notify]);
-
-  // ✅ Restore timer from localStorage if it exists
+  // Restore timer from localStorage
   useEffect(() => {
     const savedExpiry = localStorage.getItem(STORAGE_KEY);
-    if (savedExpiry) {
-      const expiryTime = parseInt(savedExpiry, 10);
-      const currentTime = Math.floor(Date.now() / 1000);
-      const remaining = expiryTime - currentTime;
+    if (!savedExpiry) return;
 
-      if (remaining > 0) {
-        setTimer(remaining);
-      } else {
-        localStorage.removeItem(STORAGE_KEY);
-      }
+    const remaining =
+      parseInt(savedExpiry, 10) - Math.floor(Date.now() / 1000);
+
+    if (remaining > 0) {
+      setTimer(remaining);
+    } else {
+      localStorage.removeItem(STORAGE_KEY);
     }
   }, []);
 
-  // ✅ Countdown effect
+  // Countdown
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (timer > 0) {
-      interval = setInterval(() => {
-        setTimer((prev) => {
-          if (prev <= 1) {
-            localStorage.removeItem(STORAGE_KEY);
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-    }
+    if (timer <= 0) return;
+
+    const interval = setInterval(() => {
+      setTimer((t) => {
+        if (t <= 1) {
+          localStorage.removeItem(STORAGE_KEY);
+          return 0;
+        }
+        return t - 1;
+      });
+    }, 1000);
+
     return () => clearInterval(interval);
   }, [timer]);
 
-  // ✅ Handle resend & save new expiry time
-  const handleResend = (res: any) => {
-    setMessage("Verification link sent again! Check your inbox ✨");
-    const expiryTime = Math.floor(Date.now() / 1000) + COOLDOWN;
-    localStorage.setItem(STORAGE_KEY, expiryTime.toString());
+  // Resend handler
+  const handleResend = () => {
+    toast.success("Verification link sent again! Check your inbox ✨");
+
+    const expiry =
+      Math.floor(Date.now() / 1000) + COOLDOWN;
+
+    localStorage.setItem(STORAGE_KEY, expiry.toString());
     setTimer(COOLDOWN);
   };
 
   return (
     <>
-      <Head title="Verify Email" />
-      <div className="min-h-screen flex flex-col justify-center items-center bg-[#0f0f0f] text-white px-4">
+      <Helmet>
+        <title>Verify Email - {appName}</title>
+      </Helmet>
+
+      <div className="min-h-screen flex items-center justify-center bg-[#0f0f0f] text-white px-4">
         <div className="max-w-lg w-full bg-[#1c1c1c] p-8 rounded-xl shadow-lg text-center space-y-6">
-          <div className="flex justify-center text-center">
-            <IoMailUnreadOutline className="text-6xl font-bold text-[#00FFD1]" />
-          </div>
-          <h1 className="text-3xl font-bold text-[#00FFD1]">Email Verification</h1>
+          <IoMailUnreadOutline className="mx-auto text-6xl text-[var(--owner)]" />
+
+          <h1 className="text-3xl font-bold text-[var(--owner)]">
+            Email Verification
+          </h1>
+
           {user?.email_verified_at ? (
-            <div>
-              <p className="text-green-400">✅ Your email is already verified.</p>
+            <div className="space-y-3">
+              <p className="text-green-400">
+                Your email is already verified.
+              </p>
               <a
                 href="/dashboard"
-                className="mt-4 inline-block bg-[#00FFD1] text-black font-semibold px-5 py-2 rounded hover:bg-[#00ccaa]"
+                className={`${classMap.button()}`}
               >
                 Go to Dashboard
               </a>
@@ -87,34 +91,32 @@ export default function VerifyEmail({ user, message }: any) {
           ) : (
             <div className="space-y-4">
               <p>
-                A verification link has been sent to your email:
-                <strong className="block mt-1">{user?.email}</strong>
+                A verification link was sent to:
+                <strong className="block mt-1">
+                  {user?.email}
+                </strong>
               </p>
 
               <p className="text-sm text-gray-400">
-                Didn’t receive the email? Click below to resend.
+                Didn’t receive the email?
               </p>
 
-              {/* Show button only if timer is 0 */}
-              <div className="grid grid cols-1 justify-center items-center">
-                {timer === 0 ? (
+              {timer === 0 ? (
                 <SendRequest
                   url="/email/verification-notification"
                   method="post"
-                  text="Resend Email"
+                  className="w-full"
+                  text="Send Email"
                   onResponse={handleResend}
                 />
               ) : (
                 <button
-                  className="w-full bg-gray-100/2 text-gray-400 font-semibold px-5 py-2 rounded cursor-not-allowed"
                   disabled
+                  className="w-full bg-gray-700 text-gray-400 px-5 py-2 rounded cursor-not-allowed"
                 >
                   Resend in {timer}s
                 </button>
               )}
-              </div>
-
-              {/* {notify && <p className="text-sm text-green-400">{notify}</p>} */}
             </div>
           )}
         </div>

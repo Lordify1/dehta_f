@@ -14,21 +14,21 @@ const narData = [
     sub: "621 Tokens",
     mini_text: "15,000 Buys",
     rotation: "-rotate-5",
-    margin: 'ms-10'
+    margin: 'ms-2 lg:ms-10'
   },
   {
     name: "Meme SZN",
     sub: "700 Tokens",
     mini_text: "34,000 Buys",
     rotation: "-rotate-3",
-    margin: 'ms-25'
+    margin: 'ms-5 lg:ms-25'
   },
   {
     name: "GameFi",
     sub: "800 Tokens",
     mini_text: "30,000 Buys",
     rotation: "-rotate-1",
-    margin: 'ms-35'
+    margin: 'ms-7 lg:ms-35'
   }
 ]
 
@@ -59,10 +59,10 @@ const WhyFaecesAI: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Feature Card */}
           <section
-            className={`${classMap.indexCard()} lg:col-span-3 relative`}
+            className={`${classMap.indexCard()} lg:col-span-3 overflow-hidden`}
             style={{ minHeight: '320px' }}
           >
-            <div className="flex items-start gap-4 pt-10 px-3">
+            <div className="flex-col lg:flex-row items-start gap-4 pt-10 px-3 space-y-2">
               <img
                 className="w-10"
                 src="/assets/ui/realtime_why.svg"
@@ -80,16 +80,16 @@ const WhyFaecesAI: React.FC = () => {
             </div>
 
             {/* Mini Cards */}
-            <div className="absolute bottom-4 right-4 grid grid-cols-2 gap-4">
+            <div className="flex flex-col lg:flex-row gap-4 sm:mt-6 sm:justify-end space-y-3">
               <object
                 data="/assets/ui/why_bitcoin.svg"
                 type="image/svg+xml"
-                className="justify-self-end"
+                className="w-full rounded-b-3xl"
               />
               <object
                 data="/assets/ui/Frame 20.svg"
                 type="image/svg+xml"
-                className="justify-self-end"
+                className="w-full rounded-b-3xl"
               />
             </div>
           </section>
@@ -100,7 +100,7 @@ const WhyFaecesAI: React.FC = () => {
               className={`${classMap.indexCard()} lg:col-span-2`}
               style={{ minHeight: '260px' }}
             >
-              <div className="flex items-start gap-4 pt-10 px-3">
+              <div className="flex-col lg:flex-row items-start gap-4 pt-10 px-3 space-y-2">
                 <img
                   className="w-10"
                   src="/assets/ui/ai_icon.svg"
@@ -116,10 +116,10 @@ const WhyFaecesAI: React.FC = () => {
                   </span>
                 </div>
               </div>
-              <div className="relative flex items-center justify-between w-full px-8 mt-6">
+              <div className="flex-col lg:flex-row relative flex items-center justify-between w-full px-8 mt-6">
                   <object data="/assets/ui/why_ai.svg" className='w-60' type="image/svg+xml"></object>
                   <svg
-                    className="absolute left-[270px] top-1/2 -translate-y-1/2"
+                    className="hidden lg:flex absolute left-[270px] top-1/2 -translate-y-1/2"
                     width="120"
                     height="200"
                     viewBox="0 0 120 160"
@@ -129,19 +129,19 @@ const WhyFaecesAI: React.FC = () => {
                     <path d="M0 80 C40 80, 60 80, 120 80" stroke="#22c55e" strokeWidth="1" />
                     <path d="M0 140 C40 140, 60 140, 120 150" stroke="#22c55e" strokeWidth="1" />
                   </svg>
-                  <div className="flex flex-col gap-4">
-                    <span className={`${classMap.glassEffect()} flex text-center items-center gap-2`}>Scans live crypto data</span>
-                    <span className={`${classMap.glassEffect()} flex text-center items-center gap-2`}>Forecasts market movement</span>
-                    <span className={`${classMap.glassEffect()} flex text-center items-center gap-2`}>Predicts early market shifts</span>
+                  <div className="flex flex-col gap-4 mt-3">
+                    <span className={`${classMap.glassEffect()} flex text-center items-center justify-center gap-2`}>Scans live crypto data</span>
+                    <span className={`${classMap.glassEffect()} flex text-center items-center justify-center gap-2`}>Forecasts market movement</span>
+                    <span className={`${classMap.glassEffect()} flex text-center items-center justify-center gap-2`}>Predicts early market shifts</span>
                   </div>
               </div>
             </div>
 
             <div
-              className={`${classMap.indexCard()} lg:col-span-1`}
+              className={`${classMap.indexCard()} lg:col-span-1 overflow-hidden`}
               style={{ minHeight: '260px' }}
             >
-              <div className="flex items-start gap-4 pt-10 px-3">
+              <div className="flex-col lg:flex-row space-y-2 items-start gap-4 pt-10 px-3">
                 <img
                   className="w-10"
                   src="/assets/ui/nar_icon.svg"

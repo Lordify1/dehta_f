@@ -93,7 +93,7 @@ export default function SendRequest({
         withCredentials: true
       });
 
-      // console.log(response)
+      import.meta.env.DEV && console.log(response)
 
       // toast.success(response?.data?.message || "Success!");
       showAlert(response, 'success')
@@ -114,7 +114,7 @@ export default function SendRequest({
     } catch (error) {
       setIsProcessing(false);
       showAlert(error, 'error')
-      // console.log(error)
+      import.meta.env.DEV && console.log(error)
       // const responseData = error?.response?.data;
       // if (responseData?.errors && typeof responseData.errors === "object") {
       //   Object.values(responseData.errors).forEach((errArr) => {

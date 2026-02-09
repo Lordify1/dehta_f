@@ -46,7 +46,7 @@ const ProjectSection: React.FC = () => {
       className="relative text-[--primary] py-20 px-6 sm:px-10 overflow-hidden"
     >
       <div className="mx-auto items-center text-center w-full">
-        <h1 className="text-3xl lg:text-6xl mb-1">Project Creation and Growth</h1>
+        <h1 className="text-3xl lg:text-6xl mb-1">BUILDFi</h1>
         <span className='mb-2'>Create, List, and grow your project at Dehta</span>
         <div className='grid grid-cols-1 lg:grid-cols-3 gap-5 space-y-5 mt-5 mb-5 items-center justify-items-center'>
         {ProjectsData.map((it:any, ind:any) => {

@@ -10,8 +10,12 @@ import {
   FaUsers,
   FaClipboardList,
   FaDollarSign,
-  FaClock
+  FaClock,
+  FaHashtag,
+  FaICursor
 } from "react-icons/fa";
+import { useMisc } from '@/context/MiscContext';
+import { IoNotificationsCircle } from "react-icons/io5";
 
 type EarnFiCreateFormProps = {
   type: "job" | "task";
@@ -25,6 +29,7 @@ type EarnFiOfferFormData = {
   reward_type: "fixed" | "monthly" | "per_task";
   reward_amount: string;
   currency: string;
+  escrow_ref: string;
   expires_at?: string;
 
   // Job only
@@ -38,6 +43,8 @@ type EarnFiOfferFormData = {
 
 const EarnFiCreateForm = ({ type }: EarnFiCreateFormProps) => {
 
+  const {getEarnFiOffers} = useMisc()
+
   const [data, setData] = useState<EarnFiOfferFormData>({
     type: "",
     title: "",
@@ -46,6 +53,7 @@ const EarnFiCreateForm = ({ type }: EarnFiCreateFormProps) => {
     reward_type: type === "job" ? "monthly" : "per_task",
     reward_amount: "",
     currency: "USD",
+    escrow_ref: "",
   });
 
   const handleChange = (
@@ -58,6 +66,11 @@ const EarnFiCreateForm = ({ type }: EarnFiCreateFormProps) => {
   useEffect(() => {
     setData(prev => ({...prev, type: type}))
   }, [type])
+
+  const [agreeToFee, setAgreeToFee] = useState(false);
+
+  const rewardAmountNum = type === 'job' ? Number(data.reward_amount) || 0 : Number(data?.reward_amount) *  Number(data?.max_participants);
+  const platformFee = rewardAmountNum * 0.05;
 
   return (
     <section className="flex flex-col gap-4">
@@ -220,13 +233,102 @@ const EarnFiCreateForm = ({ type }: EarnFiCreateFormProps) => {
         </>
       )}
 
+      <div className={`${classMap.glassEffect("p-4")} mb-4`}>
+        <p className="text-sm text-white/80 leading-relaxed">
+            Dehta Labs uses an escrow system to protect participants.
+            Before your offer is published, you are required to pre-fund
+            <span className="font-semibold text-white mx-1"> {type === 'job' ? '50%' : '100%'}</span>
+            of the total payout.
+        </p>
+      </div>
+
+      <div>
+        <label className={classMap.label()}>
+            <FaHashtag className="inline mr-2 opacity-70 text-[var(--owner)]" />
+            Escrow Transaction Hash
+        </label>
+
+        <input
+            className={classMap.input()}
+            name="escrow_ref"
+            value={data.escrow_ref}
+            onChange={handleChange}
+            placeholder="Paste the blockchain transaction hash here"
+            required
+        />
+
+        <div className={`${classMap.glassEffect("p-4")} space-y-3`}>
+  <div className="flex items-start gap-2 mt-3">
+    <IoNotificationsCircle className="mt-[2px] text-[var(--owner)]" />
+    <p className="text-sm text-white/80 leading-relaxed">
+      To activate this offer, you must pre-fund
+      <span className="font-semibold text-white mx-1">
+        {type === "job" ? "50%" : "100%"}
+      </span>
+      of the total reward amount via escrow.
+    </p>
+  </div>
+
+  <div className="grid grid-cols-2 gap-3 text-sm">
+    <div>
+      <p className="text-white/50">Wallet</p>
+      <p className="font-mono text-white break-all">
+        0xb7dAD77514A1e63eADe8cf3DA172481274AC5330
+      </p>
+    </div>
+
+    <div>
+      <p className="text-white/50">Network</p>
+      <p className="text-white">Base ETH</p>
+    </div>
+  </div>
+
+  <p className="text-xs text-white/50">
+    Paste the transaction hash below after completing payment.
+    Offers without a valid escrow transaction will not be approved.
+  </p>
+</div>
+
+        </div>
+      <div className={`${classMap.glassEffect("p-4")} space-y-2`}>
+        {/* <p className="text-sm text-white/80 leading-relaxed">
+          Dehta Labs charges a
+          <span className="font-semibold text-white mx-1">5%</span>
+          platform fee on every offer created.
+        </p> */}
+
+        {/* {rewardAmountNum > 0 && (
+          <p className="text-sm text-white/70">
+            You will be paying
+            <span className="font-semibold text-white mx-1">
+              ${platformFee.toFixed(2)}
+            </span>
+            as a platform fee.
+          </p>
+        )} */}
+
+        {/* <label className="flex items-start gap-2 mt-2 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={agreeToFee}
+            onChange={(e) => setAgreeToFee(e.target.checked)}
+            className="mt-1"
+          />
+          <span className="text-sm text-white/70 leading-snug">
+            I understand and agree to pay the 5% platform fee to Dehta Labs.
+          </span>
+        </label> */}
+      </div>
+
       {/* Submit */}
       <SendRequest
         url="/api/earnfi/create"
         data={data}
+        onResponse={() => getEarnFiOffers()}
         method="post"
         text={`Create ${type === "job" ? "Job" : "Task"}`}
         className="mt-4"
+        // disabled={!agreeToFee}
       />
     </section>
   );

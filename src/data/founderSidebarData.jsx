@@ -8,8 +8,8 @@ export const founderSidebar = [
       icon: <FaHome className="text-[var(--accent-foreground)]"/>
     },
     { 
-      label: "Projects",
-      path: "/projects",
+      label: "Buildfi",
+      path: "/buildfi",
       icon: <FaBriefcase className="text-[var(--accent-foreground)]"/> 
     },
     { 

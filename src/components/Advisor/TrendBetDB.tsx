@@ -33,6 +33,7 @@ const TrendBetDB = () => {
     setIsLoading(false);
   }, [user]);
 
+
   return (
     <section className={`${classMap.dehtaCard()} border-(--owner) min-h-[60vh]`}>
       <div className="overflow-y-scroll">

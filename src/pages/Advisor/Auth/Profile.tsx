@@ -6,8 +6,8 @@ import { investorSidebar } from "@/data/investorSidebarData";
 import DashboardLayout from "@/layouts/Advisor/DashboardLayout";
 import { useState, useRef, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
-import { FaCopy, FaEdit } from "react-icons/fa";
-import { emptyResult, Lens, Loading, LoadingDiv, postData, UpperCase } from "../../../components/Tools/Misc";
+import { FaCopy, FaEdit, FaMoneyBillWave } from "react-icons/fa";
+import { CopyToClipboard, emptyResult, Lens, Loading, FormatAmount, LoadingDiv, postData, UpperCase } from "../../../components/Tools/Misc";
 import AchievementPanel from "../../../components/Advisor/Achievements";
 import LensActivity from "../../../components/Advisor/LensActivity";
 import CheckInCalendar from "../../../components/Advisor/CheckInCalendar";
@@ -16,6 +16,8 @@ import Offcanvas from "../../../components/ui/Offcanvas";
 import EditProfile from "../../../components/Advisor/Forms/EditProfile";
 import { apiUrl, appUrl } from "../../../App";
 import axios from "axios";
+import ReferralList from "../../../components/Advisor/ReferralList";
+import LensWithdrawal from "../../../components/Advisor/Forms/LensWithdrawForm";
 
 const Profile = () => {
   const { user, setUser } = useUser();
@@ -160,35 +162,32 @@ const Profile = () => {
               </div>
 
               <div className="mt-3 w-full flex flex-col items-center gap-2">
-              <p
-                className={`${classMap.dehtaBorder()} rounded-full px-3 py-1 flex items-center gap-2`}
+              <section
+                className={`${classMap.glassCard()} px-3 py-1 flex flex-col justify-center items-center gap-2`}
                 aria-live="polite"
               >
-                {Lens()}
-                <span className="font-medium">
-                {(user?.total_lens ?? 0).toLocaleString()} Lens
-                </span>
-              </p>
+                <div className="flex">
+                  {Lens()}
+                  <span className="font-medium">
+                  <FormatAmount
+                  amount={user?.total_lens ?? 0}
+                  /> &nbsp; Lens
+                  </span>
+                </div>
+                <button className={`${classMap.button()} btn-sm text-sm`}>
+                  <span className="text-sm flex items-center justify-items-center">
+                    <FaMoneyBillWave /> &nbsp; Withdraw
+                  </span>
+                </button>
+              </section>
 
               {user?.ref_id && (
                 <div className="flex items-center gap-2 text-sm text-gray-500">
                 <span className="font-mono bg-muted px-2 py-1 rounded">{user.ref_id}</span>
-                <button
-                  type="button"
-                  onClick={() => {
-                  const txt = `${appUrl}/register?ref=${user.ref_id}`;
-                  if (navigator.clipboard?.writeText) {
-                    navigator.clipboard.writeText(txt).catch(() => window.prompt("Copy referral id:", txt));
-                  } else {
-                    window.prompt("Copy referral id:", txt);
-                  }
-                  }}
-                  className="text-xs px-2 py-1 rounded border border-gray-200 hover:bg-gray-100"
-                  title="Copy referral id"
-                  aria-label="Copy referral id"
-                >
-                  <FaCopy />
-                </button>
+                <CopyToClipboard
+                text={`${appUrl}/register?ref=${user.ref_id}`}
+                alertMessage="Referral Link Copied"
+                />
                 </div>
               )}
               </div>
@@ -234,7 +233,7 @@ const Profile = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
             <AchievementPanel userAchievements={user?.achievements} />
             <LensActivity userTransact={user?.lens_transactions} />
             <CheckInCalendar
@@ -245,11 +244,13 @@ const Profile = () => {
               history={user?.checkinhistory}
               dView="history"
             />
+            <ReferralList/>
           </div>
         </section>
 
         <Offcanvas title={Offtitle}>
           {OffId === "editProfile" && <EditProfile />}
+          {OffId === "lensWithdraw" && <LensWithdrawal/>}
         </Offcanvas>
       </DashboardLayout>
     </>
